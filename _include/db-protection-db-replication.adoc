@@ -1,0 +1,31 @@
+= 
+:allow-uri-read: 
+
+
+[.underline]*Planung des Playbooks für Binär- und Datenbankreplikation*
+
+*Konfigurieren und starten Sie die Jobvorlage.*
+
+. Kopieren Sie die zuvor erstellte Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Suchen Sie die ONTAP/CVO-Setup-Vorlage und klicken Sie ganz rechts auf „Vorlage kopieren“.
+.. Klicken Sie in der kopierten Vorlage auf „Vorlage bearbeiten“ und ändern Sie den Namen in „Binary and Database Replication Playbook“.
+.. Behalten Sie dasselbe Inventar, Projekt und dieselben Anmeldeinformationen für die Vorlage bei.
+.. Wählen Sie „ora_replication_cg.yml“ als auszuführendes Playbook aus.
+.. Die Variablen bleiben gleich, aber die CVO-Cluster-IP muss in der Variable dst_cluster_ip festgelegt werden.
+.. Klicken Sie auf Speichern.
+
+
+. Planen Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die Playbook-Vorlage für Binär- und Datenbankreplikation und dann im oberen Optionssatz auf Zeitpläne.
+.. Klicken Sie auf „Hinzufügen“, fügen Sie „Zeitplan für Binär- und Datenbankreplikation“ hinzu, wählen Sie „Startdatum/-zeit zu Beginn der Stunde“, wählen Sie Ihre lokale Zeitzone und die Ausführungshäufigkeit.  Die Ausführungshäufigkeit ist, wie oft die SnapMirror -Replikation aktualisiert wird.
++
+
+NOTE: Für die Replikation des Protokollvolumes wird ein separater Zeitplan erstellt, sodass die Replikation in kürzeren Abständen erfolgen kann.
+
+
+
+

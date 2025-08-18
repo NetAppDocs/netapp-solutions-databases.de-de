@@ -1,0 +1,171 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-prereq-onprem.html 
+summary: Die in diesem Abschnitt beschriebenen Aufgaben müssen vor Ort ausgeführt werden, um die SnapCenter Hybrid-Cloud-Datenbank-Workloadumgebung vorzubereiten. 
+keywords: prerequisites, on prem, on premises, installation, security, automation 
+---
+= Voraussetzungen vor Ort
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die folgenden Aufgaben müssen vor Ort abgeschlossen werden, um die SnapCenter Hybrid-Cloud-Datenbank-Workloadumgebung vorzubereiten.
+
+
+
+== Installation und Konfiguration von SnapCenter
+
+Das NetApp SnapCenter -Tool ist eine Windows-basierte Anwendung, die normalerweise in einer Windows-Domänenumgebung ausgeführt wird, obwohl auch eine Bereitstellung in Arbeitsgruppen möglich ist.  Es basiert auf einer mehrschichtigen Architektur, die einen zentralen Verwaltungsserver (den SnapCenter -Server) und ein SnapCenter Plug-In auf den Datenbankserver-Hosts für Datenbank-Workloads umfasst.  Hier sind einige wichtige Überlegungen zur Hybrid-Cloud-Bereitstellung.
+
+* *Einzelinstanz oder HA-Bereitstellung.*  Die HA-Bereitstellung bietet Redundanz für den Fall, dass ein einzelner SnapCenter -Instanzserver ausfällt.
+* *Namensauflösung.*  DNS muss auf dem SnapCenter -Server konfiguriert werden, um alle Datenbankhosts aufzulösen, sowie auf dem Speicher-SVM für die Vorwärts- und Rückwärtssuche.  DNS muss auch auf Datenbankservern konfiguriert werden, um den SnapCenter -Server und die Speicher-SVM sowohl für die Vorwärts- als auch für die Rückwärtssuche aufzulösen.
+* *Konfiguration der rollenbasierten Zugriffskontrolle (RBAC).*  Bei gemischten Datenbank-Workloads möchten Sie möglicherweise RBAC verwenden, um die Verwaltungsverantwortung für verschiedene DB-Plattformen zu trennen, z. B. einen Administrator für die Oracle-Datenbank oder einen Administrator für SQL Server.  Dem DB-Admin-Benutzer müssen die erforderlichen Berechtigungen erteilt werden.
+* *Aktivieren Sie eine richtlinienbasierte Sicherungsstrategie.*  Um die Konsistenz und Zuverlässigkeit der Sicherung zu gewährleisten.
+* *Öffnen Sie die erforderlichen Netzwerkports in der Firewall.*  Damit der lokale SnapCenter -Server mit im Cloud-DB-Host installierten Agenten kommunizieren kann.
+* *Ports müssen geöffnet sein, um SnapMirror Verkehr zwischen On-Premise und der öffentlichen Cloud zu ermöglichen.*  Der SnapCenter -Server verwendet ONTAP SnapMirror , um Snapshot-Backups vor Ort auf Cloud-CVO-Speicher-SVMs zu replizieren.
+
+
+Nach sorgfältiger Planung und Überlegung vor der Installation klicken Sie auf dieselink:https://docs.netapp.com/us-en/snapcenter/install/requirements-to-install-snapcenter-server.html["Voraussetzungen für die SnapCenter -Installation"^] für Details zur Installation und Konfiguration von SnapCenter .
+
+
+
+== Speicherkonfiguration des lokalen Datenbankservers
+
+Die Speicherleistung spielt eine wichtige Rolle für die Gesamtleistung von Datenbanken und Anwendungen.  Ein gut konzipiertes Speicherlayout kann nicht nur die DB-Leistung verbessern, sondern auch die Verwaltung der Datenbanksicherung und -wiederherstellung vereinfachen.  Bei der Definition Ihres Speicherlayouts sollten Sie mehrere Faktoren berücksichtigen, darunter die Größe der Datenbank, die erwartete Datenänderungsrate für die Datenbank und die Häufigkeit, mit der Sie Sicherungen durchführen.
+
+Das direkte Anschließen von Speicher-LUNs an die Gast-VM über NFS oder iSCSI für virtualisierte Datenbank-Workloads bietet im Allgemeinen eine bessere Leistung als die Speicherzuweisung über VMDK.  NetApp empfiehlt das in der folgenden Abbildung dargestellte Speicherlayout für eine große SQL Server-Datenbank auf LUNs.
+
+image:storage-layout-sqlsvr-large.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Die folgende Abbildung zeigt das von NetApp empfohlene Speicherlayout für kleine oder mittlere SQL Server-Datenbanken auf LUNs.
+
+image:storage-layout-sqlsvr-smallmedium.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+NOTE: Das Protokollverzeichnis ist SnapCenter vorbehalten, um das Transaktionsprotokoll-Rollup für die Datenbankwiederherstellung durchzuführen.  Bei einer besonders großen Datenbank können einem Volume mehrere LUNs zugewiesen werden, um die Leistung zu verbessern.
+
+Für Oracle-Datenbank-Workloads unterstützt SnapCenter Datenbankumgebungen, die von ONTAP -Speicher unterstützt werden und als physische oder virtuelle Geräte auf dem Host bereitgestellt werden.  Sie können die gesamte Datenbank je nach Kritikalität der Umgebung auf einem oder mehreren Speichergeräten hosten.  Normalerweise isolieren Kunden Datendateien auf dediziertem Speicher von allen anderen Dateien wie Steuerdateien, Redo-Dateien und Archivprotokolldateien.  Dies hilft Administratoren, mithilfe der Snapshot-Technologie innerhalb weniger Sekunden bis Minuten eine große kritische Datenbank (im Petabyte-Bereich) schnell wiederherzustellen (ONTAP Single-File SnapRestore) oder zu klonen.
+
+image:storage-layout-oracle-typical.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Für geschäftskritische Workloads, die empfindlich auf Latenz reagieren, sollte ein dediziertes Speichervolume für verschiedene Arten von Oracle-Dateien bereitgestellt werden, um die bestmögliche Latenz zu erreichen.  Bei einer großen Datenbank sollten den Datendateien mehrere LUNs (NetApp empfiehlt bis zu acht) pro Volume zugewiesen werden.
+
+image:storage-layout-oracle-dedicated.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Für kleinere Oracle-Datenbanken unterstützt SnapCenter gemeinsam genutzte Speicherlayouts, in denen Sie mehrere Datenbanken oder Teile einer Datenbank auf demselben Speichervolume oder LUN hosten können.  Als Beispiel für dieses Layout können Sie Datendateien für alle Datenbanken auf einer +DATA ASM-Datenträgergruppe oder einer Datenträgergruppe hosten.  Die restlichen Dateien (Redo-, Archivprotokoll- und Steuerdateien) können auf einer anderen dedizierten Datenträgergruppe oder Volumegruppe (LVM) gehostet werden.  Ein solches Bereitstellungsszenario wird unten veranschaulicht.
+
+image:storage-layout-oracle-shared.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Um die Verlagerung von Oracle-Datenbanken zu erleichtern, sollte die Oracle-Binärdatei auf einer separaten LUN installiert werden, die in der regulären Sicherungsrichtlinie enthalten ist.  Dadurch wird sichergestellt, dass im Falle einer Datenbankverschiebung auf einen neuen Serverhost der Oracle-Stack zur Wiederherstellung gestartet werden kann, ohne dass aufgrund einer nicht synchronisierten Oracle-Binärdatei potenzielle Probleme auftreten.
+
+
+
+== Lizenzanforderungen
+
+SnapCenter ist eine lizenzierte Software von NetApp.  Es ist im Allgemeinen in einer lokalen ONTAP -Lizenz enthalten.  Für die Hybrid-Cloud-Bereitstellung ist jedoch auch eine Cloud-Lizenz für SnapCenter erforderlich, um CVO als Ziel für die Datenreplikation zu SnapCenter hinzuzufügen.  Weitere Informationen zur kapazitätsbasierten Standardlizenz von SnapCenter finden Sie unter den folgenden Links:
+
+link:https://docs.netapp.com/us-en/snapcenter/install/concept_snapcenter_standard_controller_based_licenses.html["SnapCenter Standard-Kapazitätslizenzen"^]
+
+
+
+== Vernetzung und Sicherheit
+
+Bei einem hybriden Datenbankbetrieb, der eine lokale Produktionsdatenbank erfordert, die für Entwicklung/Test und Notfallwiederherstellung in die Cloud ausgelagert werden kann, sind Vernetzung und Sicherheit wichtige Faktoren, die beim Einrichten der Umgebung und beim Herstellen einer Verbindung mit der öffentlichen Cloud von einem lokalen Rechenzentrum aus berücksichtigt werden müssen.
+
+Öffentliche Clouds verwenden normalerweise eine virtuelle private Cloud (VPC), um verschiedene Benutzer innerhalb einer öffentlichen Cloud-Plattform zu isolieren.  Innerhalb einer einzelnen VPC wird die Sicherheit mithilfe von Maßnahmen wie Sicherheitsgruppen gesteuert, die je nach Benutzeranforderungen für die Sperrung einer VPC konfigurierbar sind.
+
+Die Konnektivität vom lokalen Rechenzentrum zum VPC kann durch einen VPN-Tunnel gesichert werden.  Auf dem VPN-Gateway kann die Sicherheit mithilfe von NAT- und Firewall-Regeln erhöht werden, die Versuche blockieren, Netzwerkverbindungen von Hosts im Internet zu Hosts im Unternehmensrechenzentrum herzustellen.
+
+Überprüfen Sie aus Netzwerk- und Sicherheitsgründen die relevanten CVO-Regeln für eingehenden und ausgehenden Datenverkehr für die öffentliche Cloud Ihrer Wahl:
+
+* link:https://docs.netapp.com/us-en/occm/reference_security_groups.html#inbound-rules["Sicherheitsgruppenregeln für CVO – AWS"]
+* link:https://docs.netapp.com/us-en/occm/reference_networking_azure.html#outbound-internet-access["Sicherheitsgruppenregeln für CVO – Azure"]
+* link:https://docs.netapp.com/us-en/occm/reference_networking_gcp.html#outbound-internet-access["Firewall-Regeln für CVO – GCP"]
+
+
+
+
+== Verwenden der Ansible-Automatisierung zum Synchronisieren von DB-Instances zwischen lokalen Standorten und der Cloud – optional
+
+Um die Verwaltung einer Hybrid-Cloud-Datenbankumgebung zu vereinfachen, empfiehlt NetApp dringend, einen Ansible-Controller einzusetzen, um einige Verwaltungsaufgaben zu automatisieren, beispielsweise die Synchronisierung von Compute-Instanzen vor Ort und in der Cloud. Dies ist jedoch nicht zwingend erforderlich.  Dies ist besonders wichtig, da eine nicht synchronisierte Compute-Instanz in der Cloud die wiederhergestellte Datenbank in der Cloud aufgrund fehlender Kernel-Pakete und anderer Probleme fehleranfällig machen kann.
+
+Die Automatisierungsfunktion eines Ansible-Controllers kann auch verwendet werden, um SnapCenter für bestimmte Aufgaben zu erweitern, z. B. das Aufteilen der SnapMirror Instanz, um die DR-Datenkopie für die Produktion zu aktivieren.
+
+Befolgen Sie diese Anweisungen, um Ihren Ansible-Steuerknoten für RedHat- oder CentOS-Maschinen einzurichten:
+
+. Anforderungen für den Ansible-Steuerknoten:
++
+.. Eine RHEL/CentOS-Maschine mit den folgenden installierten Paketen:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie über eine neue RHEL/CentOS-Maschine verfügen, auf der die oben genannten Anforderungen nicht installiert sind, führen Sie die folgenden Schritte aus, um diese Maschine als Ansible-Steuerknoten einzurichten:
+
+. Aktivieren Sie das Ansible-Repository für RHEL-8/RHEL-7
++
+.. Für RHEL-8 (führen Sie den folgenden Befehl als Root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+----
+.. Für RHEL-7 (führen Sie den folgenden Befehl als Root aus)
++
+[source, cli]
+----
+subscription-manager repos --enable rhel-7-server-ansible-2.9-rpms
+----
+
+
+. Fügen Sie den folgenden Inhalt in das Terminal ein
++
+[source, cli]
+----
+sudo yum -y install python3 >> install.log
+sudo yum -y install python3-pip >> install.log
+python3 -W ignore -m pip --disable-pip-version-check install ansible >> install.log
+sudo yum -y install git >> install.log
+----
+
+
+Befolgen Sie diese Anweisungen, um Ihren Ansible-Steuerknoten für Ubuntu- oder Debian-Maschinen einzurichten:
+
+. Anforderungen für den Ansible-Steuerknoten:
++
+.. Eine Ubuntu/Debian-Maschine mit den folgenden installierten Paketen:
++
+... Python3
+... Pip3
+... Ansible (Version größer als 2.10.0)
+... Git
+
+
+
+
+
+
+Wenn Sie über eine neue Ubuntu/Debian-Maschine verfügen, auf der die oben genannten Anforderungen nicht installiert sind, führen Sie die folgenden Schritte aus, um diese Maschine als Ansible-Steuerknoten einzurichten:
+
+. Fügen Sie den folgenden Inhalt in das Terminal ein
++
+[source, cli]
+----
+sudo apt-get -y install python3 >> outputlog.txt
+sudo apt-get -y install python3-pip >> outputlog.txt
+python3 -W ignore -m pip --disable-pip-version-check install ansible >> outputlog.txt
+sudo apt-get -y install git >> outputlog.txt
+----
+

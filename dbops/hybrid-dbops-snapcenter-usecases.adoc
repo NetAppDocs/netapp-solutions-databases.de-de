@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-snapcenter-usecases.html 
+summary: Diese Lösung bietet NetApp -Mitarbeitern und Kunden Anweisungen und Anleitungen zum Konfigurieren, Betreiben und Migrieren von Datenbanken in eine Hybrid-Cloud-Umgebung mithilfe des GUI-basierten Tools NetApp SnapCenter und des NetApp -Speicherdienstes CVO in öffentlichen Clouds. 
+keywords: tr-4908, tr4908, 4908, hybrid cloud, database, snapcenter, gui 
+---
+= TR-4908: Hybrid Cloud-Datenbanklösungen mit SnapCenter – Übersicht
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Alan Cao, Felix Melligan, NetApp
+
+[role="lead"]
+Diese Lösung bietet NetApp -Mitarbeitern und Kunden Anweisungen und Anleitungen zum Konfigurieren, Betreiben und Migrieren von Datenbanken in eine Hybrid-Cloud-Umgebung mithilfe des GUI-basierten Tools NetApp SnapCenter und des NetApp Storage-Dienstes CVO in öffentlichen Clouds für die folgenden Anwendungsfälle:
+
+* Datenbank-Entwicklungs-/Testvorgänge in der Hybrid Cloud
+* Datenbank-Notfallwiederherstellung in der Hybrid Cloud
+
+
+Heutzutage befinden sich viele Unternehmensdatenbanken aus Leistungs-, Sicherheits- und/oder anderen Gründen noch immer in privaten Unternehmensrechenzentren.  Diese Hybrid-Cloud-Datenbanklösung ermöglicht es Unternehmen, ihre primären Datenbanken vor Ort zu betreiben und gleichzeitig eine öffentliche Cloud für Entwicklungs-/Test-Datenbankvorgänge sowie für die Notfallwiederherstellung zu verwenden, um Lizenz- und Betriebskosten zu senken.
+
+Viele Unternehmensdatenbanken wie Oracle, SQL Server, SAP HANA usw. sind mit hohen Lizenz- und Betriebskosten verbunden.  Viele Kunden zahlen eine einmalige Lizenzgebühr sowie jährliche Supportkosten, die auf der Anzahl der Rechenkerne in ihrer Datenbankumgebung basieren, unabhängig davon, ob die Kerne für Entwicklung, Tests, Produktion oder Notfallwiederherstellung verwendet werden.  Viele dieser Umgebungen werden während des gesamten Anwendungslebenszyklus möglicherweise nicht vollständig genutzt.
+
+Die Lösungen bieten Kunden die Möglichkeit, die Anzahl ihrer lizenzierbaren Kerne potenziell zu reduzieren, indem sie ihre Datenbankumgebungen, die für Entwicklung, Tests oder Notfallwiederherstellung vorgesehen sind, in die Cloud verschieben.  Durch die Nutzung der Skalierbarkeit, Redundanz, Hochverfügbarkeit und eines verbrauchsbasierten Abrechnungsmodells der öffentlichen Cloud können erhebliche Kosteneinsparungen bei Lizenzierung und Betrieb erzielt werden, ohne dass dabei die Benutzerfreundlichkeit oder Verfügbarkeit der Anwendung beeinträchtigt wird.
+
+Neben potenziellen Einsparungen bei den Datenbanklizenzkosten ermöglicht das kapazitätsbasierte CVO-Lizenzmodell von NetApp den Kunden, Speicherkosten pro GB einzusparen und bietet ihnen gleichzeitig ein hohes Maß an Datenbankverwaltungsfreundlichkeit, das bei konkurrierenden Speicherdiensten nicht verfügbar ist.  Das folgende Diagramm zeigt einen Vergleich der Speicherkosten beliebter Speicherdienste, die in der öffentlichen Cloud verfügbar sind.
+
+image:cvo-cloud-cost-comparision.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Diese Lösung zeigt, dass sich Hybrid-Cloud-Datenbankvorgänge mithilfe des GUI-basierten Softwaretools SnapCenter und der NetApp SnapMirror Technologie einfach einrichten, implementieren und betreiben lassen.
+
+Die folgenden Videos zeigen SnapCenter in Aktion:
+
+* https://www.youtube.com/watch?v=-DDTVtd868Q&list=PLdXI3bZJEw7nofM6lN44eOe4aOSoryckg&index=35["Sicherung einer Oracle-Datenbank über eine Hybrid Cloud mit SnapCenter"^]
+* https://www.youtube.com/watch?v=NpeDbhK5f4c["SnapCenter– DEV/TEST für eine Oracle-Datenbank in die AWS Cloud klonen"^]
+
+
+Obwohl die Abbildungen in diesem Dokument CVO als Zielspeicherinstanz in der öffentlichen Cloud zeigen, ist die Lösung auch für die neue Version der FSx ONTAP -Speicher-Engine für AWS vollständig validiert.

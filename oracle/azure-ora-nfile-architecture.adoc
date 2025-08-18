@@ -1,0 +1,31 @@
+---
+sidebar: sidebar 
+permalink: oracle/azure-ora-nfile-architecture.html 
+summary: Dieser Abschnitt beschreibt die Architektur einer Oracle-Datenbankbereitstellung und Datenschutzlösung mit virtueller Azure-Maschine und Azure NetApp Files Speicher. 
+keywords: architecture, database, Oracle, Azure, Azure NetApp Files 
+---
+= Lösungsarchitektur
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Das folgende Architekturdiagramm veranschaulicht eine hochverfügbare Oracle-Datenbankbereitstellung auf Azure-VM-Instanzen und dem Azure NetApp Files Speicher.
+
+Innerhalb der Umgebung wird die Oracle-Compute-Instanz über eine Azure-Dienste-VM-Konsole bereitgestellt.  In der Konsole sind mehrere Azure-Instanztypen verfügbar.  NetApp empfiehlt die Bereitstellung einer datenbankorientierten Azure-VM-Instanz, die Ihrer erwarteten Arbeitslast entspricht.
+
+Oracle-Datenbankspeicher hingegen wird mit dem Azure NetApp Files -Dienst bereitgestellt, der über die Azure-Konsole verfügbar ist.  Anschließend werden die Oracle-Binär-, Daten- oder Protokollvolumes präsentiert und auf einem Linux-Host einer Azure-VM-Instanz bereitgestellt.
+
+image:db-ora-azure-anf-architecture.png["Dieses Bild zeigt die Beziehung zwischen dem primären Standort, dem Standby-Standort und dem vNet-Peering jedes dieser Standorte.  Dadurch entstehen vier separate virtuelle Netzwerke."]
+
+In vielerlei Hinsicht ähnelt die Implementierung von Azure NetApp Files in der Azure-Cloud sehr stark einer lokalen ONTAP Datenspeicherarchitektur mit vielen integrierten Redundanzen wie RAID und Dual-Controllern.  Zur Notfallwiederherstellung kann in verschiedenen Regionen ein Standby-Standort eingerichtet und die Datenbank mithilfe einer Replikation auf Anwendungsebene (z. B. Oracle Data Guard) mit dem primären Standort synchronisiert werden.
+
+Bei unserer Testvalidierung für die Bereitstellung und den Datenschutz von Oracle-Datenbanken wird die Oracle-Datenbank auf einer einzelnen Azure-VM bereitgestellt, wie im folgenden Diagramm dargestellt:
+
+image:db-ora-azure-anf-architecture2.png["Dieses Bild zeigt die Organisation einer einzelnen Azure-VM mit vNet-Peering zur Erstellung zweier separater virtueller Netzwerke."]
+
+Die Azure Oracle-Umgebung kann mit einem Ansible-Controller-Knoten zur Automatisierung verwaltet werden, wobei von NetApp bereitgestellte Toolkits für die Datenbankbereitstellung, Sicherung, Wiederherstellung und Datenbankmigration verwendet werden.  Alle Updates des Betriebssystemkernels der Oracle Azure VM-Instanz oder Oracle-Patches können parallel durchgeführt werden, um die Synchronisierung zwischen Primär- und Standby-Instanz aufrechtzuerhalten.  Tatsächlich können die anfänglichen Toolkits bei Bedarf problemlos erweitert werden, um tägliche Oracle-Aufgaben auszuführen.  Wenn Sie Hilfe beim Einrichten eines CLI-Ansible-Controllers benötigen, lesen Sielink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^] um loszulegen.

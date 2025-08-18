@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-gs.html 
+summary: Dieser Abschnitt enthält eine Zusammenfassung der Aufgaben, die abgeschlossen werden müssen, um die im vorherigen Abschnitt beschriebenen Voraussetzungen zu erfüllen.  Der folgende Abschnitt enthält eine allgemeine Aufgabenliste für lokale und öffentliche Cloud-Vorgänge.  Die detaillierten Prozesse und Verfahren können durch Anklicken der entsprechenden Links abgerufen werden. 
+keywords: introduction, workflow 
+---
+= Erste Schritte – Übersicht
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dieser Abschnitt enthält eine Zusammenfassung der Aufgaben, die abgeschlossen werden müssen, um die im vorherigen Abschnitt beschriebenen Voraussetzungen zu erfüllen.  Der folgende Abschnitt enthält eine allgemeine Aufgabenliste für lokale und öffentliche Cloud-Vorgänge.  Die detaillierten Prozesse und Verfahren können durch Anklicken der entsprechenden Links abgerufen werden.
+
+
+
+== Vor Ort
+
+* Richten Sie den Datenbankadministratorbenutzer in SnapCenter ein
+* Voraussetzungen für die Installation des SnapCenter -Plugins
+* Installation des SnapCenter Host-Plugins
+* DB-Ressourcenerkennung
+* Einrichten von Storage-Cluster-Peering und DB-Volume-Replikation
+* Fügen Sie SnapCenter CVO-Datenbankspeicher-SVM hinzu
+* Richten Sie die Datenbanksicherungsrichtlinie in SnapCenter ein
+* Implementieren Sie eine Sicherungsrichtlinie zum Schutz der Datenbank
+* Sicherung validieren
+
+
+
+
+== Öffentliche AWS-Cloud
+
+* Vorflugkontrolle
+* Schritte zum Bereitstellen von Cloud Manager und Cloud Volumes ONTAP in AWS
+* EC2-Compute-Instanz für Datenbank-Workload bereitstellen
+
+
+Klicken Sie für weitere Informationen auf die folgenden Links:
+
+link:hybrid-dbops-sc-gs-onprem.html["Vor Ort"],link:hybrid-dbops-sc-gs-aws.html["Öffentliche Cloud – AWS"]

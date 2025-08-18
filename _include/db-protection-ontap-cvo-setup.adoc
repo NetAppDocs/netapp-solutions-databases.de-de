@@ -1,0 +1,30 @@
+= 
+:allow-uri-read: 
+
+
+[.underline]* ONTAP und CVO-Setup*
+
+*Konfigurieren und starten Sie die Jobvorlage.*
+
+. Erstellen Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen → Hinzufügen und klicken Sie auf Jobvorlage hinzufügen.
+.. Geben Sie den Namen ONTAP/CVO Setup ein
+.. Wählen Sie den Jobtyp aus. „Ausführen“ konfiguriert das System basierend auf einem Playbook.
+.. Wählen Sie das entsprechende Inventar, Projekt, Playbook und die Anmeldeinformationen für das Playbook aus.
+.. Wählen Sie das Playbook ontap_setup.yml für eine On-Prem-Umgebung oder wählen Sie cvo_setup.yml für die Replikation auf eine CVO-Instanz.
+.. Fügen Sie die aus Schritt 4 kopierten globalen Variablen in das Feld „Vorlagenvariablen“ unter der Registerkarte „YAML“ ein.
+.. Klicken Sie auf Speichern.
+
+
+. Starten Sie die Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Klicken Sie auf die gewünschte Vorlage und dann auf „Starten“.
++
+
+NOTE: Wir werden diese Vorlage verwenden und sie für die anderen Playbooks kopieren.
+
+
+
+

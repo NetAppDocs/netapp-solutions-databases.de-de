@@ -1,0 +1,555 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-gs-onprem.html 
+summary: 'Das NetApp SnapCenter -Tool verwendet eine rollenbasierte Zugriffskontrolle (RBAC), um den Zugriff auf Benutzerressourcen und die Erteilung von Berechtigungen zu verwalten. Bei der SnapCenter -Installation werden vorab ausgefüllte Rollen erstellt.  Sie können auch benutzerdefinierte Rollen basierend auf Ihren Anforderungen oder Anwendungen erstellen.' 
+keywords: workflow, on premises, rbac, roles, permissions 
+---
+= Erste Schritte vor Ort
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Das NetApp SnapCenter -Tool verwendet eine rollenbasierte Zugriffskontrolle (RBAC), um den Zugriff auf Benutzerressourcen und die Erteilung von Berechtigungen zu verwalten. Bei der SnapCenter -Installation werden vorab ausgefüllte Rollen erstellt.  Sie können auch benutzerdefinierte Rollen basierend auf Ihren Anforderungen oder Anwendungen erstellen.
+
+
+
+== Vor Ort
+
+
+
+=== 1. Richten Sie den Datenbankadministratorbenutzer in SnapCenter ein
+
+Es ist sinnvoll, für jede von SnapCenter unterstützte Datenbankplattform eine dedizierte Administrator-Benutzer-ID für die Datenbanksicherung, -wiederherstellung und/oder -notfallwiederherstellung zu haben.  Sie können auch eine einzige ID verwenden, um alle Datenbanken zu verwalten.  In unseren Testfällen und Demonstrationen haben wir jeweils einen dedizierten Administratorbenutzer für Oracle und SQL Server erstellt.
+
+Bestimmte SnapCenter -Ressourcen können nur mit der Rolle „SnapCenterAdmin“ bereitgestellt werden.  Anschließend können Ressourcen anderen Benutzerkennungen für den Zugriff zugewiesen werden.
+
+In einer vorinstallierten und konfigurierten SnapCenter Umgebung vor Ort wurden die folgenden Aufgaben möglicherweise bereits abgeschlossen.  Wenn nicht, erstellen Sie mit den folgenden Schritten einen Datenbankadministratorbenutzer:
+
+. Fügen Sie den Administratorbenutzer zu Windows Active Directory hinzu.
+. Melden Sie sich bei SnapCenter mit einer ID an, die Ihnen mit der Rolle SnapCenterAdmin zugewiesen wurde.
+. Navigieren Sie unter „Einstellungen“ und „Benutzer“ zur Registerkarte „Zugriff“ und klicken Sie auf „Hinzufügen“, um einen neuen Benutzer hinzuzufügen.  Die neue Benutzer-ID wird mit dem in Schritt 1 in Windows Active Directory erstellten Administratorbenutzer verknüpft. .  Weisen Sie dem Benutzer nach Bedarf die richtige Rolle zu.  Weisen Sie dem Administratorbenutzer gegebenenfalls Ressourcen zu.
+
+
+image:snapctr-admin-users.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+=== 2. Voraussetzungen für die Installation des SnapCenter -Plugins
+
+SnapCenter führt Backup-, Wiederherstellungs-, Klon- und andere Funktionen mithilfe eines Plugin-Agenten durch, der auf den DB-Hosts ausgeführt wird.  Es stellt über die auf der Registerkarte „Einstellungen und Anmeldeinformationen“ konfigurierten Anmeldeinformationen eine Verbindung zum Datenbankhost und zur Datenbank für die Plug-in-Installation und andere Verwaltungsfunktionen her.  Es gibt spezifische Berechtigungsanforderungen, die auf dem Zielhosttyp (z. B. Linux oder Windows) sowie dem Datenbanktyp basieren.
+
+Die Anmeldeinformationen des DB-Hosts müssen vor der Installation des SnapCenter -Plugins konfiguriert werden.  Im Allgemeinen möchten Sie ein Administratorbenutzerkonto auf dem DB-Host als Ihre Host-Verbindungsdaten für die Plugin-Installation verwenden.  Sie können dieselbe Benutzer-ID auch für den Datenbankzugriff mithilfe der betriebssystembasierten Authentifizierung gewähren.  Andererseits können Sie für den DB-Verwaltungszugriff auch eine Datenbankauthentifizierung mit unterschiedlichen Datenbankbenutzer-IDs verwenden.  Wenn Sie sich für die Verwendung der betriebssystembasierten Authentifizierung entscheiden, muss der Benutzer-ID des Betriebssystemadministrators DB-Zugriff gewährt werden.  Bei der domänenbasierten SQL Server-Installation von Windows kann ein Domänenadministratorkonto zum Verwalten aller SQL Server innerhalb der Domäne verwendet werden.
+
+Windows-Host für SQL-Server:
+
+. Wenn Sie Windows-Anmeldeinformationen zur Authentifizierung verwenden, müssen Sie Ihre Anmeldeinformationen einrichten, bevor Sie Plugins installieren.
+. Wenn Sie zur Authentifizierung eine SQL Server-Instanz verwenden, müssen Sie die Anmeldeinformationen nach der Installation der Plug-Ins hinzufügen.
+. Wenn Sie beim Einrichten der Anmeldeinformationen die SQL-Authentifizierung aktiviert haben, wird die erkannte Instanz oder Datenbank mit einem roten Schlosssymbol angezeigt.  Wenn das Schlosssymbol angezeigt wird, müssen Sie die Anmeldeinformationen der Instanz oder Datenbank angeben, um die Instanz oder Datenbank erfolgreich zu einer Ressourcengruppe hinzuzufügen.
+. Sie müssen die Anmeldeinformationen einem RBAC-Benutzer ohne Systemadministratorzugriff zuweisen, wenn die folgenden Bedingungen erfüllt sind:
++
+** Die Anmeldeinformationen werden einer SQL-Instanz zugewiesen.
+** Die SQL-Instanz oder der Host wird einem RBAC-Benutzer zugewiesen.
+** Der RBAC-DB-Administratorbenutzer muss sowohl über die Ressourcengruppen- als auch über die Sicherungsberechtigungen verfügen.
+
+
+
+
+Unix-Host für Oracle:
+
+. Sie müssen die passwortbasierte SSH-Verbindung für den Root- oder Nicht-Root-Benutzer aktiviert haben, indem Sie sshd.conf bearbeiten und den SSHD-Dienst neu starten.  Die passwortbasierte SSH-Authentifizierung auf der AWS-Instanz ist standardmäßig deaktiviert.
+. Konfigurieren Sie die Sudo-Berechtigungen für den Nicht-Root-Benutzer, um den Plug-in-Prozess zu installieren und zu starten.  Nach der Installation des Plugins werden die Prozesse als effektiver Root-Benutzer ausgeführt.
+. Erstellen Sie Anmeldeinformationen mit dem Linux-Authentifizierungsmodus für den Installationsbenutzer.
+. Sie müssen Java 1.8.x (64-Bit) auf Ihrem Linux-Host installieren.
+. Durch die Installation des Oracle-Datenbank-Plugins wird auch das SnapCenter -Plugin für Unix installiert.
+
+
+
+
+=== 3. Installation des SnapCenter Host-Plugins
+
+
+NOTE: Bevor Sie versuchen, SnapCenter -Plugins auf Cloud-DB-Serverinstanzen zu installieren, stellen Sie sicher, dass alle Konfigurationsschritte abgeschlossen sind, wie im entsprechenden Cloud-Abschnitt für die Bereitstellung von Compute-Instanzen aufgeführt.
+
+Die folgenden Schritte veranschaulichen, wie ein Datenbankhost zu SnapCenter hinzugefügt wird, während ein SnapCenter -Plugin auf dem Host installiert ist.  Das Verfahren gilt sowohl für das Hinzufügen von lokalen Hosts als auch von Cloud-Hosts.  Die folgende Demonstration fügt einen Windows- oder Linux-Host hinzu, der sich in AWS befindet.
+
+
+
+==== Konfigurieren der globalen SnapCenter VMware-Einstellungen
+
+Navigieren Sie zu Einstellungen > Globale Einstellungen.  Wählen Sie unter „Hypervisor-Einstellungen“ die Option „VMs haben iSCSI-Direktanschlussdatenträger oder NFS für alle Hosts“ und klicken Sie auf „Aktualisieren“.
+
+image:snapctr-vmware-global.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+==== Windows-Host hinzufügen und Plugin auf dem Host installieren
+
+. Melden Sie sich bei SnapCenter mit einer Benutzer-ID mit SnapCenterAdmin-Berechtigungen an.
+. Klicken Sie im linken Menü auf die Registerkarte „Hosts“ und dann auf „Hinzufügen“, um den Workflow „Host hinzufügen“ zu öffnen.
+. Wählen Sie „Windows“ als Hosttyp. Der Hostname kann entweder ein Hostname oder eine IP-Adresse sein.  Der Hostname muss vom SnapCenter Host in die richtige Host-IP-Adresse aufgelöst werden.  Wählen Sie die in Schritt 2 erstellten Host-Anmeldeinformationen aus.  Wählen Sie Microsoft Windows und Microsoft SQL Server als zu installierende Plugin-Pakete.
++
+image:snapctr-add-windows-host-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Nachdem das Plug-In auf einem Windows-Host installiert wurde, wird sein Gesamtstatus als „Protokollverzeichnis konfigurieren“ angezeigt.
++
+image:snapctr-add-windows-host-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf den Hostnamen, um die Konfiguration des SQL Server-Protokollverzeichnisses zu öffnen.
++
+image:snapctr-add-windows-host-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Protokollverzeichnis konfigurieren“, um „Plug-in für SQL Server konfigurieren“ zu öffnen.
++
+image:snapctr-add-windows-host-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Durchsuchen“, um den NetApp -Speicher zu ermitteln, sodass ein Protokollverzeichnis festgelegt werden kann. SnapCenter verwendet dieses Protokollverzeichnis, um die Transaktionsprotokolldateien des SQL-Servers zusammenzufassen.  Klicken Sie dann auf Speichern.
++
+image:snapctr-add-windows-host-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+
+NOTE: Damit auf einem DB-Host bereitgestellter NetApp Speicher erkannt werden kann, muss der Speicher (vor Ort oder CVO) zu SnapCenter hinzugefügt werden, wie in Schritt 6 für CVO als Beispiel dargestellt.
+
+. Nachdem das Protokollverzeichnis konfiguriert wurde, wird der Gesamtstatus des Windows-Host-Plugins in „Wird ausgeführt“ geändert.
++
+image:snapctr-add-windows-host-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Um den Host der Benutzer-ID für die Datenbankverwaltung zuzuweisen, navigieren Sie zur Registerkarte „Zugriff“ unter „Einstellungen“ und „Benutzer“, klicken Sie auf die Benutzer-ID für die Datenbankverwaltung (in unserem Fall die sqldba, der der Host zugewiesen werden muss) und klicken Sie auf „Speichern“, um die Host-Ressourcenzuweisung abzuschließen.
++
+image:snapctr-add-windows-host-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-add-windows-host-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Unix-Host hinzufügen und Plugin auf dem Host installieren
+
+. Melden Sie sich bei SnapCenter mit einer Benutzer-ID mit SnapCenterAdmin-Berechtigungen an.
+. Klicken Sie im linken Menü auf die Registerkarte „Hosts“ und dann auf „Hinzufügen“, um den Workflow „Host hinzufügen“ zu öffnen.
+. Wählen Sie Linux als Hosttyp.  Der Hostname kann entweder der Hostname oder eine IP-Adresse sein.  Der Hostname muss jedoch aufgelöst werden, um die Host-IP-Adresse vom SnapCenter -Host zu korrigieren.  Wählen Sie die in Schritt 2 erstellten Host-Anmeldeinformationen.  Für die Host-Anmeldeinformationen sind Sudo-Berechtigungen erforderlich.  Aktivieren Sie „Oracle Database“ als zu installierendes Plug-In, wodurch sowohl Oracle- als auch Linux-Host-Plug-Ins installiert werden.
++
+image:snapctr-add-linux-host-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Weitere Optionen“ und wählen Sie „Überprüfungen vor der Installation überspringen“.  Sie werden aufgefordert, das Überspringen der Vorinstallationsprüfung zu bestätigen.  Klicken Sie auf „Ja“ und dann auf „Speichern“.
++
+image:snapctr-add-linux-host-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Senden“, um die Installation des Plugins zu starten.  Sie werden aufgefordert, den Fingerabdruck wie unten gezeigt zu bestätigen.
++
+image:snapctr-add-linux-host-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. SnapCenter führt die Hostvalidierung und -registrierung durch und anschließend wird das Plug-In auf dem Linux-Host installiert.  Der Status wird von „Plugin wird installiert“ in „Wird ausgeführt“ geändert.
++
+image:snapctr-add-linux-host-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Weisen Sie dem neu hinzugefügten Host die richtige Benutzer-ID für die Datenbankverwaltung zu (in unserem Fall oradba).
++
+image:snapctr-add-linux-host-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-add-linux-host-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+=== 4. Datenbankressourcenerkennung
+
+Bei erfolgreicher Plugin-Installation können die Datenbankressourcen auf dem Host sofort erkannt werden.  Klicken Sie im linken Menü auf die Registerkarte „Ressourcen“.  Je nach Art der Datenbankplattform stehen verschiedene Ansichten zur Verfügung, beispielsweise die Datenbank, die Ressourcengruppe usw.  Möglicherweise müssen Sie auf die Registerkarte „Ressourcen aktualisieren“ klicken, wenn die Ressourcen auf dem Host nicht erkannt und angezeigt werden.
+
+image:snapctr-resources-ora.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Wenn die Datenbank zum ersten Mal erkannt wird, wird der Gesamtstatus als „Nicht geschützt“ angezeigt.  Der vorherige Screenshot zeigt eine Oracle-Datenbank, die noch nicht durch eine Sicherungsrichtlinie geschützt ist.
+
+Wenn eine Sicherungskonfiguration oder -richtlinie eingerichtet ist und eine Sicherung ausgeführt wurde, zeigt der Gesamtstatus für die Datenbank den Sicherungsstatus als „Sicherung erfolgreich“ und den Zeitstempel der letzten Sicherung an.  Der folgende Screenshot zeigt den Sicherungsstatus einer SQL Server-Benutzerdatenbank.
+
+image:snapctr-resources-sql.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Wenn die Anmeldeinformationen für den Datenbankzugriff nicht richtig eingerichtet sind, zeigt eine rote Sperrschaltfläche an, dass auf die Datenbank nicht zugegriffen werden kann.  Wenn beispielsweise Windows-Anmeldeinformationen keinen Systemadministratorzugriff auf eine Datenbankinstanz gewähren, müssen die Datenbankanmeldeinformationen neu konfiguriert werden, um das rote Schloss zu entsperren.
+
+image:snapctr-add-windows-host-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+image:snapctr-add-windows-host-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Nachdem die entsprechenden Anmeldeinformationen entweder auf Windows- oder Datenbankebene konfiguriert wurden, verschwindet das rote Schloss und die Informationen zum SQL Server-Typ werden erfasst und überprüft.
+
+image:snapctr-add-windows-host-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+=== 5. Einrichten von Storage-Cluster-Peering und DB-Volume-Replikation
+
+Um Ihre lokalen Datenbankdaten mit einer öffentlichen Cloud als Ziel zu schützen, werden lokale ONTAP Cluster-Datenbankvolumes mithilfe der NetApp SnapMirror -Technologie in das Cloud-CVO repliziert.  Die replizierten Zielvolumes können dann für DEV/OPS oder Disaster Recovery geklont werden.  Mit den folgenden allgemeinen Schritten können Sie Cluster-Peering und die Replikation von DB-Volumes einrichten.
+
+. Konfigurieren Sie Intercluster-LIFs für Cluster-Peering sowohl auf dem lokalen Cluster als auch auf der CVO-Clusterinstanz.  Dieser Schritt kann mit ONTAP System Manager durchgeführt werden.  Bei einer standardmäßigen CVO-Bereitstellung werden LIFs zwischen Clustern automatisch konfiguriert.
++
+Lokaler Cluster:
+
++
+image:snapctr-cluster-replication-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Ziel-CVO-Cluster:
+
++
+image:snapctr-cluster-replication-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn die Intercluster-LIFs konfiguriert sind, können Cluster-Peering und Volume-Replikation per Drag-and-Drop im NetApp Cloud Manager eingerichtet werden.  Sehenlink:hybrid-dbops-sc-gs-aws.html#aws-public-cloud["Erste Schritte – AWS Public Cloud"] für Details.
++
+Alternativ können Cluster-Peering und DB-Volume-Replikation mithilfe von ONTAP System Manager wie folgt durchgeführt werden:
+
+. Melden Sie sich beim ONTAP System Manager an.  Navigieren Sie zu Cluster > Einstellungen und klicken Sie auf Peer-Cluster, um das Cluster-Peering mit der CVO-Instanz in der Cloud einzurichten.
++
+image:snapctr-vol-snapmirror-000.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Gehen Sie zur Registerkarte „Volumes“.  Wählen Sie das zu replizierende Datenbankvolume aus und klicken Sie auf „Schützen“.
++
+image:snapctr-vol-snapmirror-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie die Schutzrichtlinie auf „Asynchron“ fest.  Wählen Sie den Zielcluster und die Speicher-SVM aus.
++
+image:snapctr-vol-snapmirror-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie, ob das Volume zwischen Quelle und Ziel synchronisiert ist und ob die Replikationsbeziehung fehlerfrei ist.
++
+image:snapctr-vol-snapmirror-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+=== 6. Fügen Sie SnapCenter CVO-Datenbankspeicher-SVM hinzu
+
+. Melden Sie sich bei SnapCenter mit einer Benutzer-ID mit SnapCenterAdmin-Berechtigungen an.
+. Klicken Sie im Menü auf die Registerkarte „Speichersystem“ und dann auf „Neu“, um SnapCenter eine CVO-Speicher-SVM hinzuzufügen, die replizierte Zieldatenbank-Volumes hostet.  Geben Sie die Cluster-Verwaltungs-IP in das Feld „Speichersystem“ ein und geben Sie den entsprechenden Benutzernamen und das entsprechende Kennwort ein.
++
+image:snapctr-add-cvo-svm-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Weitere Optionen“, um zusätzliche Speicherkonfigurationsoptionen zu öffnen.  Wählen Sie im Feld „Plattform“ Cloud Volumes ONTAP aus, aktivieren Sie „Sekundär“ und klicken Sie dann auf „Speichern“.
++
+image:snapctr-add-cvo-svm-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Weisen Sie den Speichersystemen die Benutzer-IDs für die SnapCenter Datenbankverwaltung zu, wie in<<3. Installation des SnapCenter Host-Plugins>> .
++
+image:snapctr-add-cvo-svm-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+=== 7. Richten Sie die Datenbanksicherungsrichtlinie in SnapCenter ein
+
+Die folgenden Verfahren veranschaulichen, wie Sie eine vollständige Sicherungsrichtlinie für Datenbanken oder Protokolldateien erstellen.  Die Richtlinie kann dann zum Schutz der Datenbankressourcen implementiert werden.  Das Recovery Point Objective (RPO) oder Recovery Time Objective (RTO) bestimmt die Häufigkeit von Datenbank- und/oder Protokollsicherungen.
+
+
+
+==== Erstellen einer vollständigen Datenbanksicherungsrichtlinie für Oracle
+
+. Melden Sie sich bei SnapCenter mit einer Benutzer-ID für die Datenbankverwaltung an, klicken Sie auf „Einstellungen“ und dann auf „Richtlinien“.
++
+image:snapctr-ora-policy-data-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Neu“, um einen neuen Workflow zur Erstellung einer Sicherungsrichtlinie zu starten, oder wählen Sie eine vorhandene Richtlinie zur Änderung aus.
++
+image:snapctr-ora-policy-data-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Sicherungstyp und die geplante Häufigkeit aus.
++
+image:snapctr-ora-policy-data-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie die Einstellung für die Sicherungsaufbewahrung fest.  Dadurch wird festgelegt, wie viele vollständige Datenbanksicherungskopien aufbewahrt werden sollen.
++
+image:snapctr-ora-policy-data-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die sekundären Replikationsoptionen aus, um lokale primäre Snapshot-Sicherungen an einen sekundären Speicherort in der Cloud zu replizieren.
++
+image:snapctr-ora-policy-data-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor und nach einem Sicherungslauf ausgeführt werden sollen.
++
+image:snapctr-ora-policy-data-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Führen Sie bei Bedarf eine Sicherungsüberprüfung durch.
++
+image:snapctr-ora-policy-data-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-ora-policy-data-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen einer Richtlinie zur Datenbankprotokollsicherung für Oracle
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an, klicken Sie auf „Einstellungen“ und dann auf „Richtlinien“.
+. Klicken Sie auf „Neu“, um einen neuen Workflow zum Erstellen einer Sicherungsrichtlinie zu starten, oder wählen Sie eine vorhandene Richtlinie zur Änderung aus.
++
+image:snapctr-ora-policy-log-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Sicherungstyp und die geplante Häufigkeit aus.
++
+image:snapctr-ora-policy-log-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie den Aufbewahrungszeitraum für das Protokoll fest.
++
+image:snapctr-ora-policy-log-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Aktivieren Sie die Replikation an einem sekundären Standort in der öffentlichen Cloud.
++
+image:snapctr-ora-policy-log-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor und nach der Protokollsicherung ausgeführt werden sollen.
++
+image:snapctr-ora-policy-log-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie alle Sicherungsüberprüfungsskripte an.
++
+image:snapctr-ora-policy-log-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-ora-policy-log-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen einer vollständigen Datenbanksicherungsrichtlinie für SQL
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an, klicken Sie auf „Einstellungen“ und dann auf „Richtlinien“.
++
+image:snapctr-sql-policy-data-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Neu“, um einen neuen Workflow zum Erstellen einer Sicherungsrichtlinie zu starten, oder wählen Sie eine vorhandene Richtlinie zur Änderung aus.
++
+image:snapctr-sql-policy-data-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Definieren Sie die Sicherungsoption und die geplante Häufigkeit.  Für SQL Server, der mit einer Verfügbarkeitsgruppe konfiguriert ist, kann ein bevorzugtes Sicherungsreplikat festgelegt werden.
++
+image:snapctr-sql-policy-data-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie den Aufbewahrungszeitraum für die Sicherung fest.
++
+image:snapctr-sql-policy-data-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Aktivieren Sie die Replikation von Sicherungskopien an einem sekundären Speicherort in der Cloud.
++
+image:snapctr-sql-policy-data-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor oder nach einem Sicherungsauftrag ausgeführt werden sollen.
++
+image:snapctr-sql-policy-data-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die Optionen zum Ausführen der Sicherungsüberprüfung an.
++
+image:snapctr-sql-policy-data-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-sql-policy-data-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen Sie eine Datenbankprotokoll-Sicherungsrichtlinie für SQL.
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an, klicken Sie auf „Einstellungen“ > „Richtlinien“ und dann auf „Neu“, um einen neuen Workflow zur Richtlinienerstellung zu starten.
++
+image:snapctr-sql-policy-log-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Definieren Sie die Protokollsicherungsoption und die geplante Häufigkeit.  Für SQL Server, der mit einer Verfügbarkeitsgruppe konfiguriert ist, kann ein bevorzugtes Sicherungsreplikat festgelegt werden.
++
+image:snapctr-sql-policy-log-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Die Datensicherungsrichtlinie des SQL-Servers definiert die Aufbewahrungsdauer der Protokollsicherung. Übernehmen Sie hier die Standardwerte.
++
+image:snapctr-sql-policy-log-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Aktivieren Sie die Protokollsicherungsreplikation auf sekundäre Server in der Cloud.
++
+image:snapctr-sql-policy-log-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor oder nach einem Sicherungsauftrag ausgeführt werden sollen.
++
+image:snapctr-sql-policy-log-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-sql-policy-log-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+=== 8. Implementieren Sie eine Sicherungsrichtlinie zum Schutz der Datenbank
+
+SnapCenter verwendet eine Ressourcengruppe, um eine Datenbank in einer logischen Gruppierung von Datenbankressourcen zu sichern, z. B. mehrere auf einem Server gehostete Datenbanken, eine Datenbank, die dieselben Speichervolumes gemeinsam nutzt, mehrere Datenbanken, die eine Geschäftsanwendung unterstützen usw.  Durch den Schutz einer einzelnen Datenbank wird eine eigene Ressourcengruppe erstellt.  Die folgenden Verfahren zeigen, wie Sie eine in Abschnitt 7 erstellte Sicherungsrichtlinie zum Schutz von Oracle- und SQL Server-Datenbanken implementieren.
+
+
+
+==== Erstellen Sie eine Ressourcengruppe für die vollständige Sicherung von Oracle
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an und navigieren Sie zur Registerkarte „Ressourcen“.  Wählen Sie in der Dropdownliste „Ansicht“ entweder „Datenbank“ oder „Ressourcengruppe“ aus, um den Workflow zur Erstellung der Ressourcengruppe zu starten.
++
+image:snapctr-ora-rgroup-full-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie einen Namen und Tags für die Ressourcengruppe an.  Sie können ein Benennungsformat für die Snapshot-Kopie definieren und das redundante Archivprotokollziel umgehen, falls konfiguriert.
++
+image:snapctr-ora-rgroup-full-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Fügen Sie der Ressourcengruppe Datenbankressourcen hinzu.
++
+image:snapctr-ora-rgroup-full-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie aus der Dropdown-Liste eine in Abschnitt 7 erstellte vollständige Sicherungsrichtlinie aus.
++
+image:snapctr-ora-rgroup-full-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf das (+)-Zeichen, um den gewünschten Sicherungszeitplan zu konfigurieren.
++
+image:snapctr-ora-rgroup-full-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Lokalisierer laden“, um das Quell- und Zielvolume zu laden.
++
+image:snapctr-ora-rgroup-full-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den SMTP-Server bei Bedarf für E-Mail-Benachrichtigungen.
++
+image:snapctr-ora-rgroup-full-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-ora-rgroup-full-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen einer Ressourcengruppe für die Protokollsicherung von Oracle
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an und navigieren Sie zur Registerkarte „Ressourcen“.  Wählen Sie in der Dropdownliste „Ansicht“ entweder „Datenbank“ oder „Ressourcengruppe“ aus, um den Workflow zur Erstellung der Ressourcengruppe zu starten.
++
+image:snapctr-ora-rgroup-log-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie einen Namen und Tags für die Ressourcengruppe an.  Sie können ein Benennungsformat für die Snapshot-Kopie definieren und das redundante Archivprotokollziel umgehen, falls konfiguriert.
++
+image:snapctr-ora-rgroup-log-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Fügen Sie der Ressourcengruppe Datenbankressourcen hinzu.
++
+image:snapctr-ora-rgroup-log-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie aus der Dropdownliste eine in Abschnitt 7 erstellte Protokollsicherungsrichtlinie aus.
++
+image:snapctr-ora-rgroup-log-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf das (+)-Zeichen, um den gewünschten Sicherungszeitplan zu konfigurieren.
++
+image:snapctr-ora-rgroup-log-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn die Sicherungsüberprüfung konfiguriert ist, wird sie hier angezeigt.
++
+image:snapctr-ora-rgroup-log-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie bei Bedarf einen SMTP-Server für E-Mail-Benachrichtigungen.
++
+image:snapctr-ora-rgroup-log-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-ora-rgroup-log-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen einer Ressourcengruppe für die vollständige Sicherung von SQL Server
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an und navigieren Sie zur Registerkarte „Ressourcen“.  Wählen Sie in der Dropdownliste „Ansicht“ entweder eine Datenbank oder eine Ressourcengruppe aus, um den Workflow zum Erstellen der Ressourcengruppe zu starten.  Geben Sie einen Namen und Tags für die Ressourcengruppe an.  Sie können ein Benennungsformat für die Snapshot-Kopie definieren.
++
+image:snapctr-sql-rgroup-full-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die zu sichernden Datenbankressourcen aus.
++
+image:snapctr-sql-rgroup-full-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine vollständige SQL-Sicherungsrichtlinie aus, die in Abschnitt 7 erstellt wurde.
++
+image:snapctr-sql-rgroup-full-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Fügen Sie genaue Zeitpunkte und Häufigkeiten für Sicherungen hinzu.
++
+image:snapctr-sql-rgroup-full-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Überprüfungsserver für die Sicherung auf dem sekundären Server aus, wenn eine Sicherungsüberprüfung durchgeführt werden soll.  Klicken Sie auf „Localor laden“, um den sekundären Speicherort zu füllen.
++
+image:snapctr-sql-rgroup-full-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den SMTP-Server bei Bedarf für E-Mail-Benachrichtigungen.
++
+image:snapctr-sql-rgroup-full-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-sql-rgroup-full-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Erstellen einer Ressourcengruppe für die Protokollsicherung von SQL Server
+
+. Melden Sie sich mit einer Benutzer-ID für die Datenbankverwaltung bei SnapCenter an und navigieren Sie zur Registerkarte „Ressourcen“.  Wählen Sie in der Dropdownliste „Ansicht“ entweder eine Datenbank oder eine Ressourcengruppe aus, um den Workflow zum Erstellen der Ressourcengruppe zu starten.  Geben Sie den Namen und die Tags für die Ressourcengruppe an.  Sie können ein Benennungsformat für die Snapshot-Kopie definieren.
++
+image:snapctr-sql-rgroup-log-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die zu sichernden Datenbankressourcen aus.
++
+image:snapctr-sql-rgroup-log-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine in Abschnitt 7 erstellte SQL-Protokollsicherungsrichtlinie aus.
++
+image:snapctr-sql-rgroup-log-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Fügen Sie den genauen Zeitpunkt für die Sicherung sowie die Häufigkeit hinzu.
++
+image:snapctr-sql-rgroup-log-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Überprüfungsserver für die Sicherung auf dem sekundären Server aus, wenn eine Sicherungsüberprüfung durchgeführt werden soll.  Klicken Sie auf den Load Locator, um den sekundären Speicherort zu füllen.
++
+image:snapctr-sql-rgroup-log-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den SMTP-Server bei Bedarf für E-Mail-Benachrichtigungen.
++
+image:snapctr-sql-rgroup-log-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung.
++
+image:snapctr-sql-rgroup-log-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+=== 9. Sicherung validieren
+
+Nachdem zum Schutz der Datenbankressourcen Ressourcengruppen für die Datenbanksicherung erstellt wurden, werden die Sicherungsaufträge gemäß dem vordefinierten Zeitplan ausgeführt.  Überprüfen Sie den Status der Auftragsausführung auf der Registerkarte „Überwachen“.
+
+image:snapctr-job-status-sql.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Gehen Sie zur Registerkarte „Ressourcen“, klicken Sie auf den Datenbanknamen, um Details zur Datenbanksicherung anzuzeigen, und wechseln Sie zwischen lokalen Kopien und Spiegelkopien, um zu überprüfen, ob Snapshot-Sicherungen an einen sekundären Speicherort in der öffentlichen Cloud repliziert werden.
+
+image:snapctr-job-status-ora.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+An diesem Punkt stehen Datenbank-Sicherungskopien in der Cloud zum Klonen bereit, um Entwicklungs-/Testprozesse auszuführen oder im Falle eines primären Fehlers eine Notfallwiederherstellung durchzuführen.

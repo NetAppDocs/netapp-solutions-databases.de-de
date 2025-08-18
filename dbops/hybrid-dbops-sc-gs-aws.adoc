@@ -1,0 +1,330 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-gs-aws.html 
+summary: In diesem Abschnitt wird der Prozess der Bereitstellung von Cloud Manager und Cloud Volumes ONTAP in AWS beschrieben. 
+keywords: AWS, cloud volumes ontap, cloud manager, deploy 
+---
+= Erste Schritte mit der AWS Public Cloud
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+In diesem Abschnitt wird der Prozess der Bereitstellung von Cloud Manager und Cloud Volumes ONTAP in AWS beschrieben.
+
+
+
+== Öffentliche AWS-Cloud
+
+
+NOTE: Um die Übersichtlichkeit zu verbessern, haben wir dieses Dokument auf Grundlage einer Bereitstellung in AWS erstellt.  Der Prozess ist für Azure und GCP jedoch sehr ähnlich.
+
+
+
+=== 1. Vorflugkontrolle
+
+Stellen Sie vor der Bereitstellung sicher, dass die Infrastruktur vorhanden ist, um die Bereitstellung in der nächsten Phase zu ermöglichen.  Hierzu gehört Folgendes:
+
+* AWS-Konto
+* VPC in der Region Ihrer Wahl
+* Subnetz mit Zugang zum öffentlichen Internet
+* Berechtigungen zum Hinzufügen von IAM-Rollen zu Ihrem AWS-Konto
+* Ein geheimer Schlüssel und Zugriffsschlüssel für Ihren AWS-Benutzer
+
+
+
+
+=== 2. Schritte zum Bereitstellen von Cloud Manager und Cloud Volumes ONTAP in AWS
+
+
+NOTE: Es gibt viele Methoden zum Bereitstellen von Cloud Manager und Cloud Volumes ONTAP. Diese Methode ist die einfachste, erfordert jedoch die meisten Berechtigungen.  Wenn diese Methode für Ihre AWS-Umgebung nicht geeignet ist, konsultieren Sie bitte die https://docs.netapp.com/us-en/occm/task_creating_connectors_aws.html["NetApp Cloud-Dokumentation"^] .
+
+
+
+==== Bereitstellen des Cloud Manager-Connectors
+
+. Navigieren Sie zu https://www.netapp.com/bluexp/?utm_campaign=b2d-port-all-na-amer-digi-wepp-brand-amer-1745924643379&utm_source=google&utm_medium=paidsearch&utm_content=nativead&gad_source=1&gad_campaignid=21281798861&gclid=EAIaIQobChMIv_GU0KDJjQMVEXRHAR2A2hJzEAAYASAAEgKAZ_D_BwE["NetApp BlueXP"^] und melden Sie sich an oder registrieren Sie sich.
++
+image:cloud-central-login-page.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Nach der Anmeldung sollten Sie zum Canvas weitergeleitet werden.
++
+image:cloud-central-canvas-page.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Arbeitsumgebung hinzufügen“ und wählen Sie Cloud Volumes ONTAP in AWS.  Hier wählen Sie auch aus, ob Sie ein Einzelknotensystem oder ein Hochverfügbarkeitspaar einsetzen möchten.  Ich habe mich für die Bereitstellung eines Hochverfügbarkeitspaars entschieden.
++
+image:cloud-central-add-we-026.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn kein Connector erstellt wurde, wird ein Popup-Fenster mit der Aufforderung angezeigt, einen Connector zu erstellen.
++
+image:cloud-central-add-conn-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf „Los geht‘s“ und wählen Sie dann „AWS“ aus.
++
+image:cloud-central-add-conn-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie Ihren geheimen Schlüssel und Zugriffsschlüssel ein.  Stellen Sie sicher, dass Ihr Benutzer über die richtigen Berechtigungen verfügt, die auf der https://mysupport.netapp.com/site/info/cloud-manager-policies["NetApp -Richtlinienseite"^] .
++
+image:cloud-central-add-conn-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie dem Connector einen Namen und verwenden Sie entweder eine vordefinierte Rolle, wie auf der https://mysupport.netapp.com/site/info/cloud-manager-policies["NetApp -Richtlinienseite"^] oder bitten Sie Cloud Manager, die Rolle für Sie zu erstellen.
++
+image:cloud-central-add-conn-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die Netzwerkinformationen an, die zum Bereitstellen des Connectors erforderlich sind.  Überprüfen Sie, ob der ausgehende Internetzugriff aktiviert ist, indem Sie:
++
+.. Dem Connector eine öffentliche IP-Adresse zuweisen
+.. Dem Connector einen Proxy zum Arbeiten geben
+.. Dem Connector eine Route zum öffentlichen Internet über ein Internet-Gateway geben
++
+image:cloud-central-add-conn-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+. Stellen Sie die Kommunikation mit dem Connector über SSH, HTTP und HTTPs bereit, indem Sie entweder eine Sicherheitsgruppe bereitstellen oder eine neue Sicherheitsgruppe erstellen.  Ich habe den Zugriff auf den Connector nur von meiner IP-Adresse aus aktiviert.
++
+image:cloud-central-add-conn-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie die Informationen auf der Übersichtsseite und klicken Sie auf „Hinzufügen“, um den Connector bereitzustellen.
++
+image:cloud-central-add-conn-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Der Connector wird jetzt mithilfe eines Cloud-Formation-Stacks bereitgestellt.  Sie können den Fortschritt über Cloud Manager oder AWS überwachen.
++
+image:cloud-central-add-conn-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn die Bereitstellung abgeschlossen ist, wird eine Erfolgsseite angezeigt.
++
+image:cloud-central-add-conn-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Bereitstellen von Cloud Volumes ONTAP
+
+. Wählen Sie AWS und den Bereitstellungstyp entsprechend Ihren Anforderungen aus.
++
+image:cloud-central-add-we-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn kein Abonnement zugewiesen wurde und Sie mit PAYGO kaufen möchten, wählen Sie „Anmeldeinformationen bearbeiten“.
++
+image:cloud-central-add-we-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie Abonnement hinzufügen.
++
+image:cloud-central-add-we-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Art des Vertrags, den Sie abonnieren möchten.  Ich habe mich für Pay-as-you-go entschieden.
++
+image:cloud-central-add-we-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Sie werden zu AWS weitergeleitet. Wählen Sie „Weiter zum Abonnieren“ aus.
++
+image:cloud-central-add-we-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Abonnieren Sie und Sie werden zurück zu NetApp Cloud Central weitergeleitet.  Wenn Sie bereits abonniert haben und nicht weitergeleitet werden, wählen Sie den Link „Hier klicken“.
++
+image:cloud-central-add-we-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Sie werden zu Cloud Central weitergeleitet, wo Sie Ihrem Abonnement einen Namen geben und es Ihrem Cloud Central-Konto zuordnen müssen.
++
+image:cloud-central-add-we-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Bei erfolgreichem Abschluss wird eine Seite mit einem Häkchen angezeigt.  Navigieren Sie zurück zu Ihrer Registerkarte „Cloud Manager“.
++
+image:cloud-central-add-we-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Das Abonnement wird jetzt in Cloud Central angezeigt.  Klicken Sie auf „Übernehmen“, um fortzufahren.
++
+image:cloud-central-add-we-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die Details der Arbeitsumgebung ein, beispielsweise:
++
+.. Clustername
+.. Clusterkennwort
+.. AWS-Tags (optional)
++
+image:cloud-central-add-we-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+. Wählen Sie aus, welche zusätzlichen Dienste Sie bereitstellen möchten.  Um mehr über diese Dienste zu erfahren, besuchen Sie die https://bluexp.netapp.com/["BlueXP: Moderne Datenverwaltung leicht gemacht"^] .
++
+image:cloud-central-add-we-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie, ob die Bereitstellung in mehreren Verfügbarkeitszonen (erfordert drei Subnetze, jedes in einer anderen AZ) oder in einer einzigen Verfügbarkeitszone erfolgen soll.  Ich habe mehrere AZs ausgewählt.
++
+image:cloud-central-add-we-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Region, VPC und Sicherheitsgruppe für den Cluster aus, in dem er bereitgestellt werden soll.  In diesem Abschnitt weisen Sie auch die Verfügbarkeitszonen pro Knoten (und Mediator) sowie die von ihnen belegten Subnetze zu.
++
+image:cloud-central-add-we-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Verbindungsmethoden für die Knoten sowie den Mediator.
++
+image:cloud-central-add-we-014.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+TIP: Der Mediator erfordert die Kommunikation mit den AWS-APIs.  Eine öffentliche IP-Adresse ist nicht erforderlich, solange die APIs nach der Bereitstellung der Mediator-EC2-Instanz erreichbar sind.
+
+. Floating-IP-Adressen werden verwendet, um den Zugriff auf die verschiedenen IP-Adressen zu ermöglichen, die Cloud Volumes ONTAP verwendet, einschließlich Cluster-Management und Datenbereitstellungs-IPs.  Dabei muss es sich um Adressen handeln, die in Ihrem Netzwerk noch nicht geroutet werden können und zu Routentabellen in Ihrer AWS-Umgebung hinzugefügt werden.  Diese sind erforderlich, um während des Failovers konsistente IP-Adressen für ein HA-Paar zu aktivieren.  Weitere Informationen zu Floating IP-Adressen finden Sie in der https://docs.netapp.com/us-en/occm/reference_networking_aws.html#requirements-for-ha-pairs-in-multiple-azs["NetApp Cloud-Dokumentation"^] .
++
+image:cloud-central-add-we-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie aus, zu welchen Routentabellen die Floating-IP-Adressen hinzugefügt werden.  Diese Routentabellen werden von Clients zur Kommunikation mit Cloud Volumes ONTAP verwendet.
++
+image:cloud-central-add-we-016.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie, ob Sie die von AWS verwaltete Verschlüsselung oder AWS KMS aktivieren möchten, um die ONTAP -Root-, Boot- und Datenfestplatten zu verschlüsseln.
++
+image:cloud-central-add-we-017.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie Ihr Lizenzmodell.  Wenn Sie nicht wissen, welche Option Sie wählen sollen, wenden Sie sich an Ihren NetApp Vertreter.
++
+image:cloud-central-add-we-018.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Konfiguration aus, die am besten zu Ihrem Anwendungsfall passt.  Dies hängt mit den Größenüberlegungen zusammen, die auf der Seite mit den Voraussetzungen behandelt werden.
++
+image:cloud-central-add-we-019.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Erstellen Sie optional ein Volume.  Dies ist nicht erforderlich, da in den nächsten Schritten SnapMirror verwendet wird, das die Volumes für uns erstellt.
++
+image:cloud-central-add-we-020.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie die getroffene Auswahl und aktivieren Sie die Kontrollkästchen, um zu bestätigen, dass Sie verstehen, dass Cloud Manager Ressourcen in Ihrer AWS-Umgebung bereitstellt.  Wenn Sie fertig sind, klicken Sie auf „Los“.
++
+image:cloud-central-add-we-021.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Cloud Volumes ONTAP startet jetzt seinen Bereitstellungsprozess.  Cloud Manager verwendet AWS-APIs und Cloud-Formationsstapel, um Cloud Volumes ONTAP bereitzustellen.  Anschließend wird das System gemäß Ihren Vorgaben konfiguriert, sodass Sie ein sofort einsatzbereites System erhalten, das Sie sofort nutzen können.  Der Zeitrahmen für diesen Vorgang variiert je nach getroffener Auswahl.
++
+image:cloud-central-add-we-022.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Sie können den Fortschritt überwachen, indem Sie zur Zeitleiste navigieren.
++
+image:cloud-central-add-we-023.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Die Zeitleiste dient als Überprüfung aller im Cloud Manager durchgeführten Aktionen.  Sie können alle API-Aufrufe anzeigen, die von Cloud Manager während der Einrichtung sowohl an AWS als auch an den ONTAP Cluster getätigt werden.  Dies kann auch effektiv zur Behebung aller auftretenden Probleme verwendet werden.
++
+image:cloud-central-add-we-024.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Nach Abschluss der Bereitstellung wird der CVO-Cluster mit der aktuellen Kapazität auf der Leinwand angezeigt.  Der ONTAP Cluster ist in seinem aktuellen Zustand vollständig konfiguriert, um ein echtes Out-of-the-Box-Erlebnis zu ermöglichen.
++
+image:cloud-central-add-we-025.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+==== Konfigurieren Sie SnapMirror von On-Premises in die Cloud
+
+Nachdem Sie nun ein Quell- ONTAP -System und ein Ziel- ONTAP -System bereitgestellt haben, können Sie Volumes mit Datenbankdaten in die Cloud replizieren.
+
+Eine Anleitung zu kompatiblen ONTAP Versionen für SnapMirror finden Sie im https://docs.netapp.com/ontap-9/index.jsp?topic=%2Fcom.netapp.doc.pow-dap%2FGUID-0810D764-4CEA-4683-8280-032433B1886B.html["SnapMirror -Kompatibilitätsmatrix"^] .
+
+. Klicken Sie auf das Quell ONTAP -System (vor Ort) und ziehen Sie es per Drag & Drop zum Ziel, wählen Sie Replikation > Aktivieren oder wählen Sie Replikation > Menü > Replizieren.
++
+image:cloud-central-replication-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Wählen Sie Aktivieren.
+
++
+image:cloud-central-replication-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Oder Optionen.
+
++
+image:cloud-central-replication-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Replizieren.
+
++
+image:cloud-central-replication-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wenn Sie nicht per Drag & Drop verschoben haben, wählen Sie den Zielcluster für die Replikation aus.
++
+image:cloud-central-replication-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie das Volume aus, das Sie replizieren möchten.  Wir haben die Daten und alle Protokollvolumes repliziert.
++
+image:cloud-central-replication-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Zieldatenträgertyp und die Tiering-Richtlinie aus.  Für die Notfallwiederherstellung empfehlen wir eine SSD als Datenträgertyp und zur Aufrechterhaltung der Datenschichtung.  Durch Data Tiering werden die gespiegelten Daten in kostengünstigen Objektspeicher verschoben, wodurch Sie Geld für lokale Festplatten sparen.  Wenn Sie die Beziehung trennen oder das Volume klonen, verwenden die Daten den schnellen, lokalen Speicher.
++
+image:cloud-central-replication-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Namen des Zielvolumes aus: Wir haben gewählt `[source_volume_name]_dr` .
++
+image:cloud-central-replication-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die maximale Übertragungsrate für die Replikation.  Dadurch können Sie Bandbreite sparen, wenn Sie über eine Verbindung zur Cloud mit geringer Bandbreite, beispielsweise ein VPN, verfügen.
++
+image:cloud-central-replication-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Definieren Sie die Replikationsrichtlinie.  Wir haben uns für einen Mirror entschieden, der den aktuellsten Datensatz nimmt und diesen auf das Zielvolume repliziert.  Sie können je nach Ihren Anforderungen auch eine andere Police wählen.
++
+image:cloud-central-replication-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Zeitplan zum Auslösen der Replikation.  NetApp empfiehlt, einen „täglichen“ Zeitplan für das Datenvolumen und einen „stündlichen“ Zeitplan für die Protokollvolumes festzulegen, obwohl dieser je nach Bedarf geändert werden kann.
++
+image:cloud-central-replication-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie die eingegebenen Informationen, klicken Sie auf „Los“, um den Cluster-Peer und den SVM-Peer auszulösen (wenn Sie zum ersten Mal zwischen den beiden Clustern replizieren), und implementieren und initialisieren Sie dann die SnapMirror Beziehung.
++
+image:cloud-central-replication-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Setzen Sie diesen Vorgang für Datenvolumes und Protokollvolumes fort.
+. Um alle Ihre Beziehungen zu überprüfen, navigieren Sie zur Registerkarte „Replikation“ im Cloud Manager.  Hier können Sie Ihre Beziehungen verwalten und deren Status überprüfen.
++
+image:cloud-central-replication-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Nachdem alle Volumes repliziert wurden, befinden Sie sich in einem stabilen Zustand und sind bereit, mit den Disaster Recovery- und Dev/Test-Workflows fortzufahren.
+
+
+
+
+=== 3. EC2-Compute-Instanz für Datenbank-Workload bereitstellen
+
+AWS verfügt über vorkonfigurierte EC2-Recheninstanzen für verschiedene Workloads.  Die Wahl des Instanztyps bestimmt die Anzahl der CPU-Kerne, die Speicherkapazität, den Speichertyp und die Speicherkapazität sowie die Netzwerkleistung.  Für die Anwendungsfälle wird der Hauptspeicher zum Ausführen der Datenbank-Workload, mit Ausnahme der Betriebssystempartition, von CVO oder der FSx ONTAP -Speicher-Engine zugewiesen.  Daher sind die wichtigsten zu berücksichtigenden Faktoren die Wahl der CPU-Kerne, des Speichers und der Netzwerkleistungsstufe.  Typische AWS EC2-Instanztypen finden Sie hier: https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#InstanceTypes:["EC2-Instanztyp"] .
+
+
+
+==== Dimensionierung der Compute-Instanz
+
+. Wählen Sie den richtigen Instanztyp basierend auf der erforderlichen Arbeitslast aus.  Zu den zu berücksichtigenden Faktoren zählen die Anzahl der zu unterstützenden Geschäftstransaktionen, die Anzahl gleichzeitiger Benutzer, die Größe des Datensatzes usw.
+. Die Bereitstellung einer EC2-Instanz kann über das EC2-Dashboard gestartet werden.  Die genauen Bereitstellungsverfahren gehen über den Rahmen dieser Lösung hinaus.  Sehen https://aws.amazon.com/pm/ec2/?trk=ps_a134p000004f2ZGAAY&trkCampaign=acq_paid_search_brand&sc_channel=PS&sc_campaign=acquisition_US&sc_publisher=Google&sc_category=Cloud%20Computing&sc_country=US&sc_geo=NAMER&sc_outcome=acq&sc_detail=%2Bec2%20%2Bcloud&sc_content=EC2%20Cloud%20Compute_bmm&sc_matchtype=b&sc_segment=536455698896&sc_medium=ACQ-P|PS-GO|Brand|Desktop|SU|Cloud%20Computing|EC2|US|EN|Text&s_kwcid=AL!4422!3!536455698896!b!!g!!%2Bec2%20%2Bcloud&ef_id=EAIaIQobChMIua378M-p8wIVToFQBh0wfQhsEAMYASAAEgKTzvD_BwE:G:s&s_kwcid=AL!4422!3!536455698896!b!!g!!%2Bec2%20%2Bcloud["Amazon EC2"] für Details.
+
+
+
+
+==== Linux-Instanzkonfiguration für Oracle-Workload
+
+Dieser Abschnitt enthält zusätzliche Konfigurationsschritte nach der Bereitstellung einer EC2-Linux-Instance.
+
+. Fügen Sie dem DNS-Server eine Oracle-Standby-Instanz zur Namensauflösung innerhalb der SnapCenter -Verwaltungsdomäne hinzu.
+. Fügen Sie eine Linux-Verwaltungsbenutzer-ID als SnapCenter OS-Anmeldeinformationen mit Sudo-Berechtigungen ohne Kennwort hinzu.  Aktivieren Sie die ID mit SSH-Passwortauthentifizierung auf der EC2-Instanz.  (Standardmäßig sind die SSH-Passwortauthentifizierung und das passwortlose Sudo auf EC2-Instanzen deaktiviert.)
+. Konfigurieren Sie die Oracle-Installation so, dass sie mit der lokalen Oracle-Installation übereinstimmt, z. B. mit Betriebssystem-Patches, Oracle-Versionen und -Patches usw.
+. NetApp Ansible DB-Automatisierungsrollen können genutzt werden, um EC2-Instanzen für Anwendungsfälle in den Bereichen Datenbankentwicklung/-test und Notfallwiederherstellung zu konfigurieren.  Der Automatisierungscode kann von der öffentlichen GitHub-Site von NetApp heruntergeladen werden: https://github.com/NetApp-Automation/na_oracle19c_deploy["Automatisierte Bereitstellung von Oracle 19c"^] .  Das Ziel besteht darin, einen Datenbanksoftware-Stack auf einer EC2-Instanz zu installieren und zu konfigurieren, um ihn an die lokalen Betriebssystem- und Datenbankkonfigurationen anzupassen.
+
+
+
+
+==== Windows-Instanzkonfiguration für SQL Server-Workload
+
+In diesem Abschnitt werden zusätzliche Konfigurationsschritte nach der ersten Bereitstellung einer EC2-Windows-Instance aufgeführt.
+
+. Rufen Sie das Windows-Administratorkennwort ab, um sich über RDP bei einer Instanz anzumelden.
+. Deaktivieren Sie die Windows-Firewall, fügen Sie den Host der Windows SnapCenter -Domäne hinzu und fügen Sie die Instanz zur Namensauflösung dem DNS-Server hinzu.
+. Stellen Sie ein SnapCenter -Protokollvolume bereit, um SQL Server-Protokolldateien zu speichern.
+. Konfigurieren Sie iSCSI auf dem Windows-Host, um das Volume zu mounten und das Festplattenlaufwerk zu formatieren.
+. Auch hier können viele der vorherigen Aufgaben mit der NetApp -Automatisierungslösung für SQL Server automatisiert werden.  Suchen Sie auf der öffentlichen GitHub-Site zur NetApp Automatisierung nach neu veröffentlichten Rollen und Lösungen: https://github.com/NetApp-Automation["NetApp Automatisierung"^] .
+

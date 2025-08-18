@@ -1,0 +1,157 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-snapcenter-devtest.html 
+summary: Die Agilität der Public Cloud, die schnelle Wertschöpfung und die Kosteneinsparungen sind allesamt wichtige Vorteile für Unternehmen, die die Public Cloud für die Entwicklung und das Testen von Datenbankanwendungen nutzen.  Es gibt kein besseres Tool als SnapCenter , um dies schnell zu verwirklichen.  SnapCenter kann nicht nur Ihre Produktionsdatenbank vor Ort schützen, sondern auch schnell eine Kopie für die Anwendungsentwicklung oder Codetests in der öffentlichen Cloud klonen und verbraucht dabei nur sehr wenig zusätzlichen Speicherplatz.  Nachfolgend finden Sie Einzelheiten zu den schrittweisen Prozessen bei der Verwendung des Tools. 
+keywords: hybrid cloud, database, solutions, dev/test, workflow 
+---
+= Workflow für Dev/Test Bursting in die Cloud
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die Agilität der öffentlichen Cloud, die schnelle Wertschöpfung und die Kosteneinsparungen sind allesamt bedeutende Wertversprechen für Unternehmen, die die öffentliche Cloud für die Entwicklung und das Testen von Datenbankanwendungen nutzen.  Um dies zu verwirklichen, gibt es kein besseres Tool als SnapCenter .  SnapCenter kann nicht nur Ihre Produktionsdatenbank vor Ort schützen, sondern auch schnell eine Kopie für die Anwendungsentwicklung oder Codetests in der öffentlichen Cloud klonen und verbraucht dabei nur sehr wenig zusätzlichen Speicherplatz.  Nachfolgend finden Sie eine schrittweise Anleitung zur Verwendung dieses Tools.
+
+
+
+== Klonen Sie eine Oracle-Datenbank für Entwicklung/Test aus einer replizierten Snapshot-Sicherung
+
+. Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für Oracle an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
++
+image:snapctr-ora-clone-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf den gewünschten lokalen Datenbanknamen für die Sicherungstopologie und die Detailansicht.  Wenn ein sekundärer Replikationsstandort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
++
+image:snapctr-ora-clone-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Durch Klicken auf „Gespiegelte Backups“ können Sie zur Ansicht „Gespiegelte Backups“ wechseln.  Anschließend werden die sekundären Spiegelsicherungen angezeigt.
++
+image:snapctr-ora-clone-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine gespiegelte sekundäre Datenbanksicherungskopie zum Klonen aus und bestimmen Sie einen Wiederherstellungspunkt entweder nach Zeit und Systemänderungsnummer oder nach SCN.  Im Allgemeinen sollte der Wiederherstellungspunkt hinter der vollständigen Datenbanksicherungszeit oder dem zu klonenden SCN liegen.  Nachdem ein Wiederherstellungspunkt festgelegt wurde, muss die erforderliche Protokolldateisicherung zur Wiederherstellung bereitgestellt werden.  Die Protokolldateisicherung sollte auf dem Ziel-DB-Server bereitgestellt werden, auf dem die Klondatenbank gehostet werden soll.
++
+image:snapctr-ora-clone-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-ora-clone-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+
+NOTE: Wenn die Protokollbereinigung aktiviert ist und der Wiederherstellungspunkt über die letzte Protokollbereinigung hinaus erweitert wird, müssen möglicherweise mehrere Archivprotokollsicherungen bereitgestellt werden.
+
+. Markieren Sie die vollständige Datenbanksicherungskopie, die geklont werden soll, und klicken Sie dann auf die Schaltfläche „Klonen“, um den DB-Klon-Workflow zu starten.
++
+image:snapctr-ora-clone-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine geeignete Klon-DB-SID für eine vollständige Containerdatenbank oder einen CDB-Klon.
++
+image:snapctr-ora-clone-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Ziel-Klonhost in der Cloud aus, und durch den Klon-Workflow werden Datendatei-, Steuerdatei- und Redo-Log-Verzeichnisse erstellt.
++
+image:snapctr-ora-clone-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Der Anmeldeinformationsname „Keine“ wird für die betriebssystembasierte Authentifizierung verwendet, wodurch der Datenbankport irrelevant wird.  Geben Sie das richtige Oracle Home, den Oracle OS-Benutzer und die Oracle OS-Gruppe ein, wie sie im Ziel-Klon-DB-Server konfiguriert sind.
++
+image:snapctr-ora-clone-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die Skripte an, die vor dem Klonvorgang ausgeführt werden sollen.  Noch wichtiger ist, dass hier die Datenbankinstanzparameter angepasst oder definiert werden können.
++
+image:snapctr-ora-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den Wiederherstellungspunkt entweder nach Datum und Uhrzeit oder nach SCN an.  „Bis zum Abbrechen“ stellt die Datenbank bis zu den verfügbaren Archivprotokollen wieder her.  Geben Sie den externen Speicherort des Archivprotokolls vom Zielhost an, auf dem das Archivprotokollvolume bereitgestellt ist.  Wenn der Oracle-Besitzer des Zielservers nicht mit dem lokalen Produktionsserver identisch ist, überprüfen Sie, ob das Archivprotokollverzeichnis vom Oracle-Besitzer des Zielservers gelesen werden kann.
++
+image:snapctr-ora-clone-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-ora-clone-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den SMTP-Server bei Bedarf für E-Mail-Benachrichtigungen.
++
+image:snapctr-ora-clone-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klonzusammenfassung.
++
+image:snapctr-ora-clone-014.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Sie sollten nach dem Klonen eine Validierung durchführen, um sicherzustellen, dass die geklonte Datenbank betriebsbereit ist.  Einige zusätzliche Aufgaben, wie das Starten des Listeners oder das Deaktivieren des DB-Protokollarchivmodus, können in der Dev/Test-Datenbank ausgeführt werden.
++
+image:snapctr-ora-clone-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Klonen Sie eine SQL-Datenbank für Entwicklung/Test aus einer replizierten Snapshot-Sicherung
+
+. Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für SQL Server an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die von SnapCenter geschützten SQL Server-Benutzerdatenbanken und eine Ziel-Standby-SQL-Instanz in der öffentlichen Cloud angezeigt werden.
++
+image:snapctr-sql-clone-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf den gewünschten lokalen SQL Server-Benutzerdatenbanknamen, um die Sicherungstopologie und die Detailansicht anzuzeigen.  Wenn ein sekundärer replizierter Speicherort aktiviert ist, werden verknüpfte Spiegelsicherungen angezeigt.
++
+image:snapctr-sql-clone-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wechseln Sie zur Ansicht „Gespiegelte Sicherungen“, indem Sie auf „Gespiegelte Sicherungen“ klicken.  Anschließend werden sekundäre Spiegelsicherungen angezeigt.  Da SnapCenter das SQL Server-Transaktionsprotokoll zur Wiederherstellung auf einem dedizierten Laufwerk sichert, werden hier nur vollständige Datenbanksicherungen angezeigt.
++
+image:snapctr-sql-clone-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine Sicherungskopie aus und klicken Sie dann auf die Schaltfläche „Klonen“, um den Arbeitsablauf „Aus Sicherung klonen“ zu starten.
++
+image:snapctr-sql-clone-004-a.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-sql-clone-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie einen Cloud-Server als Zielklonserver, den Namen der Kloninstanz und den Namen der Klondatenbank aus.  Wählen Sie entweder einen automatisch zugewiesenen Einhängepunkt oder einen benutzerdefinierten Einhängepunktpfad.
++
+image:snapctr-sql-clone-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Bestimmen Sie einen Wiederherstellungspunkt entweder anhand der Sicherungszeit eines Protokolls oder anhand eines bestimmten Datums und einer bestimmten Uhrzeit.
++
+image:snapctr-sql-clone-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor und nach dem Klonvorgang ausgeführt werden sollen.
++
+image:snapctr-sql-clone-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie einen SMTP-Server, wenn eine E-Mail-Benachrichtigung gewünscht ist.
++
+image:snapctr-sql-clone-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klonzusammenfassung.
++
+image:snapctr-sql-clone-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überwachen Sie den Auftragsstatus und überprüfen Sie, ob die gewünschte Benutzerdatenbank an eine SQL-Zielinstanz im Cloud-Klonserver angehängt wurde.
++
+image:snapctr-sql-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Konfiguration nach dem Klonen
+
+. Eine lokale Oracle-Produktionsdatenbank wird normalerweise im Protokollarchivmodus ausgeführt.  Dieser Modus ist für eine Entwicklungs- oder Testdatenbank nicht erforderlich.  Um den Protokollarchivierungsmodus zu deaktivieren, melden Sie sich als sysdba bei der Oracle-Datenbank an, führen Sie einen Befehl zum Ändern des Protokollmodus aus und starten Sie die Datenbank für den Zugriff.
+. Konfigurieren Sie einen Oracle-Listener oder registrieren Sie die neu geklonte Datenbank mit einem vorhandenen Listener für den Benutzerzugriff.
+. Ändern Sie für SQL Server den Protokollmodus von „Vollständig“ in „Einfach“, damit die Entwicklungs-/Testprotokolldatei von SQL Server problemlos verkleinert werden kann, wenn sie das Protokollvolumen füllt.
+
+
+
+
+== Klondatenbank aktualisieren
+
+. Löschen Sie geklonte Datenbanken und bereinigen Sie die Cloud-DB-Serverumgebung.  Befolgen Sie dann die vorherigen Verfahren, um eine neue Datenbank mit neuen Daten zu klonen.  Das Klonen einer neuen Datenbank dauert nur wenige Minuten.
+. Fahren Sie die Klondatenbank herunter und führen Sie mithilfe der CLI einen Befehl zum Aktualisieren des Klons aus.  Weitere Informationen finden Sie in der folgenden SnapCenter -Dokumentation:link:https://docs.netapp.com/us-en/snapcenter/protect-sco/task_refresh_a_clone.html["Aktualisieren eines Klons"^] .
+
+
+
+
+== Wo bekomme ich Hilfe?
+
+Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

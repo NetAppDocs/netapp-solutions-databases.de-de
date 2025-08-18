@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: oracle/nva-1155.html 
+keywords:  
+summary:  
+---
+= NVA-1155: Oracle 19c RAC-Datenbanken im FlexPod Datacenter mit Cisco UCS und NetApp AFF A800 über FC – Entwurfs- und Bereitstellungshandbuch
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Allen Cao, NetApp
+
+[role="lead"]
+Dieses Design- und Bereitstellungshandbuch für Oracle 19c RAC-Datenbanken im FlexPod Datacenter mit Cisco UCS und NetApp AFF A800 über FC enthält Details zum Lösungsdesign sowie schrittweise Bereitstellungsprozesse für das Hosten von Oracle RAC-Datenbanken auf der aktuellsten FlexPod Datacenter-Infrastruktur mit dem Betriebssystem Oracle Linux 8.2 und einem Red Hat-kompatiblen Kernel.
+
+link:https://www.netapp.com/pdf.html?item=/media/25782-nva-1155.pdf["NVA-1155: Oracle 19c RAC-Datenbanken im FlexPod Datacenter mit Cisco UCS und NetApp AFF A800 über FC"^]

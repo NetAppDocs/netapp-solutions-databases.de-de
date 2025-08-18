@@ -1,0 +1,184 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-snapcenter-dr.html 
+summary: Hybrid-Cloud-Datenbanklösungen mit SnapCenter DR-Workflow 
+keywords: 'netapp, solutions, database, SnapCenter, DR, "business continuity", "disaster recovery"' 
+---
+= Workflow zur Notfallwiederherstellung
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Unternehmen haben die öffentliche Cloud als praktikable Ressource und Ziel für die Notfallwiederherstellung angenommen.  SnapCenter gestaltet diesen Prozess so nahtlos wie möglich.  Dieser Notfallwiederherstellungs-Workflow ist dem Klon-Workflow sehr ähnlich, allerdings wird bei der Datenbankwiederherstellung das letzte verfügbare Protokoll verwendet, das in die Cloud repliziert wurde, um alle möglichen Geschäftstransaktionen wiederherzustellen.  Es gibt jedoch zusätzliche Schritte vor und nach der Konfiguration, die speziell für die Notfallwiederherstellung erforderlich sind.
+
+
+
+== Klonen Sie eine lokale Oracle-Produktionsdatenbank für die Notfallwiederherstellung in die Cloud
+
+. Um zu überprüfen, ob die Klonwiederherstellung über das letzte verfügbare Protokoll läuft, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt.  Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
++
+image:snapctr-ora-dr-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für Oracle an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
++
+image:snapctr-ora-dr-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Oracle-Protokollressourcengruppe aus und klicken Sie auf „Jetzt sichern“, um manuell eine Oracle-Protokollsicherung auszuführen und die letzte Transaktion an das Ziel in der Cloud zu übertragen.  In einem echten DR-Szenario hängt die letzte wiederherstellbare Transaktion von der Replikationshäufigkeit des Datenbankprotokollvolumens in die Cloud ab, die wiederum von der RTO- oder RPO-Richtlinie des Unternehmens abhängt.
++
+image:snapctr-ora-dr-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-ora-dr-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+
+NOTE: Beim asynchronen SnapMirror gehen in einem Notfallwiederherstellungsszenario Daten verloren, die es im Intervall der Datenbankprotokollsicherung nicht zum Cloud-Ziel geschafft haben.  Um Datenverluste zu minimieren, können häufigere Protokollsicherungen geplant werden.  Allerdings gibt es eine technisch erreichbare Grenze für die Häufigkeit der Protokollsicherung.
+
+. Wählen Sie die letzte Protokollsicherung auf den sekundären Spiegelsicherungen aus und mounten Sie die Protokollsicherung.
++
+image:snapctr-ora-dr-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-ora-dr-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die letzte vollständige Datenbanksicherung aus und klicken Sie auf „Klonen“, um den Klon-Workflow zu starten.
++
+image:snapctr-ora-dr-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie eine eindeutige Klon-DB-ID auf dem Host aus.
++
+image:snapctr-ora-dr-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Stellen Sie ein Protokollvolume bereit und mounten Sie es auf dem Ziel-DR-Server für den Oracle-Flash-Wiederherstellungsbereich und die Online-Protokolle.
++
+image:snapctr-ora-dr-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-ora-dr-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+
+NOTE: Beim Oracle-Klonvorgang wird kein Protokollvolume erstellt, das vor dem Klonen auf dem DR-Server bereitgestellt werden muss.
+
+. Wählen Sie den Ziel-Klonhost und den Speicherort für die Datendateien, Steuerdateien und Redo-Protokolle aus.
++
+image:snapctr-ora-dr-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Anmeldeinformationen für den Klon aus.  Geben Sie die Details der Oracle-Home-Konfiguration auf dem Zielserver ein.
++
+image:snapctr-ora-dr-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die Skripte an, die vor dem Klonen ausgeführt werden sollen.  Datenbankparameter können bei Bedarf angepasst werden.
++
+image:snapctr-ora-dr-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie „Bis zum Abbrechen“ als Wiederherstellungsoption aus, damit die Wiederherstellung alle verfügbaren Archivprotokolle durchläuft, um die letzte an den sekundären Cloud-Speicherort replizierte Transaktion wiederherzustellen.
++
+image:snapctr-ora-dr-014.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den SMTP-Server bei Bedarf für E-Mail-Benachrichtigungen.
++
+image:snapctr-ora-dr-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung des DR-Klons.
++
+image:snapctr-ora-dr-016.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geklonte Datenbanken werden unmittelbar nach Abschluss des Klonvorgangs bei SnapCenter registriert und stehen dann für den Backup-Schutz zur Verfügung.
++
+image:snapctr-ora-dr-016-a.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Validierung und Konfiguration des Post-DR-Klons für Oracle
+
+. Validieren Sie die letzte Testtransaktion, die am DR-Standort in der Cloud gelöscht, repliziert und wiederhergestellt wurde.
++
+image:snapctr-ora-dr-017.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den Flash-Wiederherstellungsbereich.
++
+image:snapctr-ora-dr-018.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den Oracle-Listener für den Benutzerzugriff.
+. Trennen Sie das geklonte Volume vom replizierten Quellvolume.
+. Führen Sie eine umgekehrte Replikation von der Cloud zum lokalen Server durch und erstellen Sie den ausgefallenen lokalen Datenbankserver neu.
+
+
+
+NOTE: Durch die Klonaufteilung kann es zu einer deutlich höheren temporären Speicherplatzauslastung als im Normalbetrieb kommen.  Nach dem Neuaufbau des lokalen DB-Servers kann jedoch zusätzlicher Speicherplatz freigegeben werden.
+
+
+
+== Klonen Sie eine lokale SQL-Produktionsdatenbank zur Notfallwiederherstellung in die Cloud.
+
+. Um zu überprüfen, ob die SQL-Klonwiederherstellung das letzte verfügbare Protokoll durchlaufen hat, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt.  Die Testdaten würden nach einer vollständigen Wiederherstellung bis zum letzten verfügbaren Protokoll wiederhergestellt.
++
+image:snapctr-sql-dr-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für SQL Server an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die SQL Server-Schutzressourcengruppe angezeigt wird.
++
+image:snapctr-sql-dr-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Führen Sie manuell eine Protokollsicherung aus, um die letzte zu replizierende Transaktion in den sekundären Speicher in der öffentlichen Cloud zu übertragen.
++
+image:snapctr-sql-dr-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die letzte vollständige SQL Server-Sicherung für den Klon aus.
++
+image:snapctr-sql-dr-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie die Kloneinstellungen fest, z. B. Klonserver, Kloninstanz, Klonname und Mount-Option.  Der sekundäre Speicherort, an dem das Klonen durchgeführt wird, wird automatisch ausgefüllt.
++
+image:snapctr-sql-dr-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie alle anzuwendenden Protokollsicherungen aus.
++
+image:snapctr-sql-dr-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie optionale Skripts an, die vor oder nach dem Klonen ausgeführt werden sollen.
++
+image:snapctr-sql-dr-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie einen SMTP-Server an, wenn eine E-Mail-Benachrichtigung gewünscht ist.
++
+image:snapctr-sql-dr-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Zusammenfassung des DR-Klons.  Geklonte Datenbanken werden sofort bei SnapCenter registriert und stehen für den Backup-Schutz zur Verfügung.
++
+image:snapctr-sql-dr-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:snapctr-sql-dr-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Validierung und Konfiguration des Post-DR-Klons für SQL
+
+. Überwachen Sie den Status des Klonauftrags.
++
+image:snapctr-sql-dr-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie, ob die letzte Transaktion mit allen Protokolldateiklonen und -wiederherstellungen repliziert und wiederhergestellt wurde.
++
+image:snapctr-sql-dr-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie ein neues SnapCenter -Protokollverzeichnis auf dem DR-Server für die SQL Server-Protokollsicherung.
+. Trennen Sie das geklonte Volume vom replizierten Quellvolume.
+. Führen Sie eine umgekehrte Replikation von der Cloud zum lokalen Server durch und erstellen Sie den ausgefallenen lokalen Datenbankserver neu.
+
+
+
+
+== Wo bekomme ich Hilfe?
+
+Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie bitte demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

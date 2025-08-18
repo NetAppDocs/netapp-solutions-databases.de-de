@@ -1,0 +1,441 @@
+---
+sidebar: sidebar 
+permalink: oracle/snapctr-svcs-ora-azure.html 
+keywords: Oracle, Database, SnapCenter, SnapShot, FlexClone, BlueXP, Database Backup, Database Restore, Database Clone 
+summary: Die Lösung bietet einen Überblick und Details zum Sichern, Wiederherstellen und Klonen von Oracle-Datenbanken mithilfe von NetApp SnapCenter SaaS und der BlueXP Konsole. 
+---
+= TR-4977: Sichern, Wiederherstellen und Klonen von Oracle-Datenbanken mit SnapCenter Services – Azure
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Allen Cao, Niyaz Mohamed, NetApp
+
+[role="lead"]
+Diese Lösung bietet einen Überblick und Details zum Sichern, Wiederherstellen und Klonen von Oracle-Datenbanken mit NetApp SnapCenter SaaS unter Verwendung der BlueXP -Konsole.
+
+
+
+== Zweck
+
+SnapCenter Services ist die SaaS-Version des klassischen SnapCenter -Datenbankverwaltungs-UI-Tools, das über die NetApp BlueXP -Cloud-Verwaltungskonsole verfügbar ist.  Es ist ein integraler Bestandteil des NetApp Cloud-Backup- und Datenschutzangebots für Datenbanken wie Oracle und HANA, die auf Azure NetApp Files ausgeführt werden.  Dieser SaaS-basierte Dienst vereinfacht die herkömmliche Bereitstellung eigenständiger SnapCenter -Server, für die im Allgemeinen ein Windows-Server erforderlich ist, der in einer Windows-Domänenumgebung ausgeführt wird.
+
+In dieser Dokumentation zeigen wir, wie Sie SnapCenter Services zum Sichern, Wiederherstellen und Klonen von Oracle-Datenbanken einrichten, die auf Azure NetApp Files Volumes und Azure-Compute-Instanzen bereitgestellt sind.  Mit der webbasierten BlueXP -Benutzeroberfläche ist es sehr einfach, den Datenschutz für eine auf Azure NetApp Files bereitgestellte Oracle-Datenbank einzurichten.
+
+Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
+
+* Datenbanksicherung mit Snapshots für Oracle-Datenbanken, die in Azure NetApp Files und Azure VMs gehostet werden
+* Oracle-Datenbankwiederherstellung im Falle eines Ausfalls
+* Schnelles Klonen von Primärdatenbanken für Entwicklungs-, Testumgebungen oder andere Anwendungsfälle
+
+
+
+
+== Publikum
+
+Diese Lösung ist für die folgenden Zielgruppen gedacht:
+
+* Der DBA, der Oracle-Datenbanken verwaltet, die auf Azure NetApp Files -Speicher ausgeführt werden
+* Der Lösungsarchitekt, der daran interessiert ist, die Sicherung, Wiederherstellung und das Klonen von Oracle-Datenbanken in Azure zu testen
+* Der Speicheradministrator, der den Azure NetApp Files Speicher unterstützt und verwaltet
+* Der Anwendungsbesitzer, dem die Anwendungen gehören, die im Azure NetApp Files Speicher und auf Azure-VMs bereitgestellt werden
+
+
+
+
+== Test- und Validierungsumgebung für Lösungen
+
+Das Testen und Validieren dieser Lösung wurde in einer Laborumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
+
+
+
+=== Architektur
+
+image:snapctr-svcs-azure-architect.png["Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery für Anwendungen innerhalb der BlueXP Konsole, einschließlich der Benutzeroberfläche, des Connectors und der verwalteten Ressourcen."]
+
+Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery für Anwendungen innerhalb der BlueXP Konsole, einschließlich der Benutzeroberfläche, des Connectors und der von ihm verwalteten Ressourcen.
+
+
+
+=== Hardware- und Softwarekomponenten
+
+*Hardware*
+
+[cols="30%, 30%, 40%"]
+|===
+
+
+| Azure NetApp Files Speicher | Premium-Service-Level | Auto-QoS-Typ und 4 TB Speicherkapazität im Test 
+
+
+| Azure-Instanz für Compute | Standard B4ms (4 vcpus, 16 GiB Speicher) | Zwei Instanzen bereitgestellt, eine als primärer DB-Server und die andere als Klon-DB-Server 
+|===
+*Software*
+
+[cols="30%, 30%, 40%"]
+|===
+
+
+| RedHat Linux | Red Hat Enterprise Linux 8.7 (LVM) – x64 Gen2 | RedHat-Abonnement zum Testen bereitgestellt 
+
+
+| Oracle-Datenbank | Version 19.18 | RU-Patch p34765931_190000_Linux-x86-64.zip angewendet 
+
+
+| Oracle OPatch | Version 12.2.0.1.36 | Neuester Patch p6880880_190000_Linux-x86-64.zip 
+
+
+| SnapCenter -Dienst | Version v2.5.0-2822 | Agentenversion v2.5.0-2822 
+|===
+
+
+=== Wichtige Faktoren für die Bereitstellungsüberlegungen
+
+* *Connector muss im selben virtuellen Netzwerk/Subnetz wie Datenbanken und Azure NetApp Files bereitgestellt werden.*  Wenn möglich, sollte der Connector in denselben virtuellen Azure-Netzwerken und Ressourcengruppen bereitgestellt werden, wodurch die Konnektivität zum Azure NetApp Files -Speicher und den Azure-Compute-Instanzen ermöglicht wird.
+* *Ein Azure-Benutzerkonto oder Active Directory-Dienstprinzipal, das im Azure-Portal für den SnapCenter Connector erstellt wurde.*  Für die Bereitstellung eines BlueXP -Connectors sind bestimmte Berechtigungen zum Erstellen und Konfigurieren einer virtuellen Maschine und anderer Rechenressourcen, zum Konfigurieren des Netzwerks und zum Zugriff auf das Azure-Abonnement erforderlich.  Außerdem sind Berechtigungen erforderlich, um später Rollen und Berechtigungen für den Betrieb des Connectors zu erstellen.  Erstellen Sie in Azure eine benutzerdefinierte Rolle mit Berechtigungen und weisen Sie sie dem Benutzerkonto oder Dienstprinzipal zu.  Weitere Einzelheiten finden Sie unter dem folgenden Link:link:https://docs.netapp.com/us-en/bluexp-setup-admin/task-set-up-permissions-azure.html#set-up-permissions-to-create-the-connector-from-bluexp["Einrichten von Azure-Berechtigungen"^] .
+* *Ein in der Azure-Ressourcengruppe erstelltes SSH-Schlüsselpaar.*  Das SSH-Schlüsselpaar wird dem Azure-VM-Benutzer für die Anmeldung beim Connector-Host und dem Datenbank-VM-Host für die Bereitstellung und Ausführung eines Plug-Ins zugewiesen. Die BlueXP Konsolen-Benutzeroberfläche verwendet den SSH-Schlüssel, um das SnapCenter -Dienst-Plug-In auf dem Datenbank-Host bereitzustellen und so die Plug-In-Installation und Datenbankerkennung des Anwendungshosts in einem Schritt zu ermöglichen.
+* *Ein Anmeldeinformationselement, das der BlueXP Konsoleneinstellung hinzugefügt wurde.*  Um Azure NetApp Files Speicher zur BlueXP Arbeitsumgebung hinzuzufügen, muss in den BlueXP -Konsoleneinstellungen eine Anmeldeinformation eingerichtet werden, die Berechtigungen für den Zugriff auf Azure NetApp Files von der BlueXP -Konsole aus erteilt.
+* *java-11-openjdk auf dem Azure VM-Datenbankinstanzhost installiert.*  Für die Installation des SnapCenter -Dienstes ist Java Version 11 erforderlich.  Es muss vor dem Versuch der Plug-In-Bereitstellung auf dem Anwendungshost installiert werden.
+
+
+
+
+== Lösungsbereitstellung
+
+Es gibt eine umfassende NetApp -Dokumentation mit einem breiteren Anwendungsbereich, die Ihnen beim Schutz Ihrer Cloud-nativen Anwendungsdaten hilft.  Das Ziel dieser Dokumentation besteht darin, schrittweise Verfahren bereitzustellen, die die Bereitstellung des SnapCenter Dienstes mit der BlueXP Konsole abdecken, um Ihre Oracle-Datenbank zu schützen, die auf einem Azure NetApp Files -Speicher und einer Azure-Compute-Instanz bereitgestellt wird.
+
+Führen Sie zunächst die folgenden Schritte aus:
+
+* Lesen Sie die allgemeinen Hinweiselink:https://docs.netapp.com/us-en/bluexp-backup-recovery/["Schützen Sie die Daten Ihrer Cloud-nativen Anwendungen"^] und die Abschnitte zu Oracle und Azure NetApp Files.
+* Sehen Sie sich die folgende Video-Komplettlösung an
++
+.Video zur Bereitstellung von Oracle und ANF
+video::48adf2d8-3f5e-4ab3-b25c-b04a014635ac[panopto]
+
+
+
+
+=== Voraussetzungen für die Bereitstellung des SnapCenter -Dienstes
+
+[%collapsible%open]
+====
+Für die Bereitstellung sind die folgenden Voraussetzungen erforderlich.
+
+. Ein primärer Oracle-Datenbankserver auf einer Azure-VM-Instanz mit einer vollständig bereitgestellten und laufenden Oracle-Datenbank.
+. Ein in Azure bereitgestellter Kapazitätspool des Azure NetApp Files -Speicherdienstes, der über die Kapazität verfügt, den im Abschnitt „Hardwarekomponenten“ aufgeführten Datenbankspeicherbedarf zu erfüllen.
+. Ein sekundärer Datenbankserver auf einer Azure-VM-Instanz, der zum Testen des Klonens einer Oracle-Datenbank auf einen alternativen Host verwendet werden kann, um eine Entwicklungs-/Test-Workload oder beliebige Anwendungsfälle zu unterstützen, die einen vollständigen Datensatz einer Oracle-Produktionsdatenbank erfordern.
+. Weitere Informationen zur Oracle-Datenbankbereitstellung auf Azure NetApp Files und Azure Compute-Instanzen finden Sie unterlink:azure-ora-nfile-usecase.html["Bereitstellung und Schutz von Oracle-Datenbanken auf Azure NetApp Files"^] .
+
+
+====
+
+
+=== Onboarding zur BlueXP -Vorbereitung
+
+[%collapsible%open]
+====
+. Verwenden Sie den Linklink:https://console.bluexp.netapp.com/["NetApp BlueXP"] um sich für den Zugriff auf die BlueXP -Konsole anzumelden.
+. Erstellen Sie ein Azure-Benutzerkonto oder einen Active Directory-Dienstprinzipal und erteilen Sie Berechtigungen mit Rolle im Azure-Portal für die Bereitstellung des Azure-Connectors.
+. Um BlueXP für die Verwaltung von Azure-Ressourcen einzurichten, fügen Sie eine BlueXP -Anmeldeinformation mit Details eines Active Directory-Dienstprinzipals hinzu, den BlueXP zur Authentifizierung bei Azure Active Directory verwenden kann (App-Client-ID), ein Clientgeheimnis für die Dienstprinzipalanwendung (Clientgeheimnis) und die Active Directory-ID für Ihre Organisation (Mandanten-ID).
+. Sie benötigen außerdem das virtuelle Azure-Netzwerk, die Ressourcengruppe, die Sicherheitsgruppe, einen SSH-Schlüssel für den VM-Zugriff usw., die für die Bereitstellung des Connectors und die Installation des Datenbank-Plugins bereit sind.
+
+
+====
+
+
+=== Bereitstellen eines Connectors für SnapCenter -Dienste
+
+[%collapsible%open]
+====
+. Melden Sie sich bei der BlueXP -Konsole an.
++
+image:snapctr-svcs-connector-002-canvas.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Klicken Sie auf den Dropdown-Pfeil *Connector* und dann auf *Connector hinzufügen*, um den Workflow zur Connector-Bereitstellung zu starten.
++
+image:snapctr-svcs-connector-003-addc.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie Ihren Cloud-Anbieter (in diesem Fall *Microsoft Azure*).
++
+image:snapctr-svcs-connector-004-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Überspringen Sie die Schritte *Berechtigung*, *Authentifizierung* und *Netzwerk*, wenn Sie diese bereits in Ihrem Azure-Konto eingerichtet haben.  Wenn nicht, müssen Sie diese konfigurieren, bevor Sie fortfahren.  Von hier aus können Sie auch die Berechtigungen für die Azure-Richtlinie abrufen, auf die im vorherigen Abschnitt verwiesen wird.<<Onboarding zur BlueXP -Vorbereitung>> ."
++
+image:snapctr-svcs-connector-005-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Klicken Sie auf *Zur Bereitstellung springen*, um Ihren Connector *Virtual Machine Authentication* zu konfigurieren.  Fügen Sie das SSH-Schlüsselpaar, das Sie während des Onboardings in der Azure-Ressourcengruppe erstellt haben, zur BlueXP -Vorbereitung für die Connector-OS-Authentifizierung hinzu.
++
+image:snapctr-svcs-connector-006-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Geben Sie einen Namen für die Connector-Instanz ein, wählen Sie *Erstellen* aus, akzeptieren Sie den Standard-*Rollennamen* unter *Details* und wählen Sie das Abonnement für das Azure-Konto aus.
++
+image:snapctr-svcs-connector-007-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Konfigurieren Sie das Netzwerk mit dem richtigen *VNet*, *Subnetz* und deaktivieren Sie die *öffentliche IP*, stellen Sie jedoch sicher, dass der Connector in Ihrer Azure-Umgebung über Internetzugang verfügt.
++
+image:snapctr-svcs-connector-008-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Konfigurieren Sie die *Sicherheitsgruppe* für den Connector, der HTTP-, HTTPS- und SSH-Zugriff zulässt.
++
+image:snapctr-svcs-connector-009-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Überprüfen Sie die Übersichtsseite und klicken Sie auf *Hinzufügen*, um mit der Connector-Erstellung zu beginnen.  Die Bereitstellung dauert in der Regel etwa 10 Minuten.  Nach Abschluss wird die Connector-Instanz-VM im Azure-Portal angezeigt.
++
+image:snapctr-svcs-connector-010-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Nachdem der Connector bereitgestellt wurde, wird der neu erstellte Connector im Dropdown-Menü *Connector* angezeigt.
++
+image:snapctr-svcs-connector-011-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
+
+====
+
+
+=== Definieren Sie in BlueXP eine Anmeldeinformation für den Zugriff auf Azure-Ressourcen
+
+[%collapsible%open]
+====
+. Klicken Sie auf das Einstellungssymbol in der oberen rechten Ecke der BlueXP Konsole, um die Seite *Kontoanmeldeinformationen* zu öffnen, und klicken Sie auf *Anmeldeinformationen hinzufügen*, um den Workflow zur Anmeldeinformationskonfiguration zu starten.
++
+image:snapctr-svcs-credential-001-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie als Speicherort der Anmeldeinformationen „*Microsoft Azure – BlueXP*“.
++
+image:snapctr-svcs-credential-002-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Definieren Sie Azure-Anmeldeinformationen mit dem richtigen *Client Secret*, *Client ID* und *Tenant ID*, die während des vorherigen BlueXP -Onboarding-Prozesses erfasst worden sein sollten.
++
+image:snapctr-svcs-credential-003-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Überprüfen und *Hinzufügen*.image:snapctr-svcs-credential-004-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+. Möglicherweise müssen Sie den Anmeldeinformationen auch ein *Marketplace-Abonnement* zuordnen.image:snapctr-svcs-credential-005-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
+====
+
+
+=== Einrichtung der SnapCenter -Dienste
+
+[%collapsible%open]
+====
+Nachdem die Azure-Anmeldeinformationen konfiguriert wurden, können die SnapCenter -Dienste nun mit den folgenden Verfahren eingerichtet werden:
+
+. Zurück zur Canvas-Seite: Klicken Sie unter *Meine Arbeitsumgebung* auf *Arbeitsumgebung hinzufügen*, um die in Azure bereitgestellten Azure NetApp Files zu ermitteln.
++
+image:snapctr-svcs-connector-011-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie als Speicherort *Microsoft Azure* und klicken Sie auf *Erkennen*.
++
+image:snapctr-svcs-setup-002-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Benennen Sie *Arbeitsumgebung*, wählen Sie den im vorherigen Abschnitt erstellten *Anmeldeinformationsnamen* und klicken Sie auf *Weiter*.
++
+image:snapctr-svcs-setup-003-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Die BlueXP Konsole kehrt zu *Meine Arbeitsumgebungen* zurück und hat festgestellt, dass Azure NetApp Files von Azure jetzt auf *Canvas* angezeigt werden.
++
+image:snapctr-svcs-setup-004-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Klicken Sie auf das Symbol * Azure NetApp Files* und dann auf *Arbeitsumgebung aufrufen*, um die im Azure NetApp Files -Speicher bereitgestellten Oracle-Datenbankvolumes anzuzeigen.
++
+image:snapctr-svcs-setup-005-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Bewegen Sie in der linken Seitenleiste der Konsole den Mauszeiger über das Schutzsymbol und klicken Sie dann auf *Schutz* > *Anwendungen*, um die Startseite „Anwendungen“ zu öffnen.  Klicken Sie auf *Anwendungen erkennen*.
++
+image:snapctr-svcs-setup-009-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie *Cloud Native* als Anwendungsquelltyp.
++
+image:snapctr-svcs-setup-010-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie *Oracle* als Anwendungstyp und klicken Sie auf *Weiter*, um die Seite mit den Hostdetails zu öffnen.
++
+image:snapctr-svcs-setup-013-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie *SSH verwenden* und geben Sie die Oracle Azure VM-Details an, z. B. *IP-Adresse*, *Connector*, *Benutzername* für die Azure VM-Verwaltung, z. B. „azureuser“.  Klicken Sie auf *Privaten SSH-Schlüssel hinzufügen*, um das SSH-Schlüsselpaar einzufügen, das Sie zum Bereitstellen der Oracle Azure-VM verwendet haben.  Sie werden außerdem aufgefordert, den Fingerabdruck zu bestätigen.
++
+image:snapctr-svcs-setup-015-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."] image:snapctr-svcs-setup-016-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Fahren Sie mit der nächsten *Konfigurationsseite* fort, um den Sudoer-Zugriff auf die Oracle Azure VM einzurichten.
++
+image:snapctr-svcs-setup-017-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Überprüfen Sie dies und klicken Sie auf *Anwendungen erkennen*, um ein Plug-In auf der Oracle Azure-VM zu installieren und die Oracle-Datenbank auf der VM in einem Schritt zu erkennen.
++
+image:snapctr-svcs-setup-018-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Erkannte Oracle-Datenbanken auf Azure-VM werden zu *Anwendungen* hinzugefügt und auf der Seite *Anwendungen* wird die Anzahl der Hosts und Oracle-Datenbanken innerhalb der Umgebung aufgelistet.  Der *Schutzstatus* der Datenbank wird zunächst als *Ungeschützt* angezeigt.
++
+image:snapctr-svcs-setup-019-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
+
+Damit ist die Ersteinrichtung der SnapCenter -Dienste für Oracle abgeschlossen.  In den nächsten drei Abschnitten dieses Dokuments werden Sicherungs-, Wiederherstellungs- und Klonvorgänge für Oracle-Datenbanken beschrieben.
+
+====
+
+
+=== Oracle-Datenbanksicherung
+
+[%collapsible%open]
+====
+. Unsere Test-Oracle-Datenbank in Azure VM ist mit drei Volumes mit einem Gesamtspeicher von etwa 1,6 TiB konfiguriert.  Dies gibt einen Kontext zum Zeitpunkt der Snapshot-Sicherung, Wiederherstellung und des Klonens einer Datenbank dieser Größe.
+
+
+....
+[oracle@acao-ora01 ~]$ df -h
+Filesystem                 Size  Used Avail Use% Mounted on
+devtmpfs                   7.9G     0  7.9G   0% /dev
+tmpfs                      7.9G     0  7.9G   0% /dev/shm
+tmpfs                      7.9G   17M  7.9G   1% /run
+tmpfs                      7.9G     0  7.9G   0% /sys/fs/cgroup
+/dev/mapper/rootvg-rootlv   40G   23G   15G  62% /
+/dev/mapper/rootvg-usrlv   9.8G  1.6G  7.7G  18% /usr
+/dev/sda2                  496M  115M  381M  24% /boot
+/dev/mapper/rootvg-varlv   7.9G  787M  6.7G  11% /var
+/dev/mapper/rootvg-homelv  976M  323M  586M  36% /home
+/dev/mapper/rootvg-optlv   2.0G  9.6M  1.8G   1% /opt
+/dev/mapper/rootvg-tmplv   2.0G   22M  1.8G   2% /tmp
+/dev/sda1                  500M  6.8M  493M   2% /boot/efi
+172.30.136.68:/ora01-u01   100G   23G   78G  23% /u01
+172.30.136.68:/ora01-u03   500G  117G  384G  24% /u03
+172.30.136.68:/ora01-u02  1000G  804G  197G  81% /u02
+tmpfs                      1.6G     0  1.6G   0% /run/user/1000
+[oracle@acao-ora01 ~]$
+....
+. Um die Datenbank zu schützen, klicken Sie auf die drei Punkte neben dem *Schutzstatus* der Datenbank und dann auf *Richtlinie zuweisen*, um die standardmäßig vorinstallierten oder benutzerdefinierten Datenbankschutzrichtlinien anzuzeigen, die auf Ihre Oracle-Datenbanken angewendet werden können.  Unter *Einstellungen* – *Richtlinien* haben Sie die Möglichkeit, Ihre eigene Richtlinie mit einer benutzerdefinierten Sicherungshäufigkeit und einem benutzerdefinierten Aufbewahrungsfenster für Sicherungsdaten zu erstellen.
++
+image:snapctr-svcs-bkup-001-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wenn Sie mit der Richtlinienkonfiguration zufrieden sind, können Sie die gewünschte Richtlinie zum Schutz der Datenbank *zuweisen*.
++
+image:snapctr-svcs-bkup-002-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Nachdem die Richtlinie angewendet wurde, ändert sich der Datenbankschutzstatus in *Geschützt* mit einem grünen Häkchen.  BlueXP führt die Snapshot-Sicherung gemäß dem definierten Zeitplan aus.  Darüber hinaus ist *ON-Demand Backup* über das Dropdown-Menü mit den drei Punkten verfügbar, wie unten gezeigt.
++
+image:snapctr-svcs-bkup-003-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Auf der Registerkarte *Jobüberwachung* können Details zum Sicherungsauftrag angezeigt werden.  Unsere Testergebnisse zeigten, dass das Sichern einer Oracle-Datenbank mit etwa 1,6 TiB etwa 4 Minuten dauerte.
++
+image:snapctr-svcs-bkup-004-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Über das Dropdown-Menü mit den drei Punkten *Details anzeigen* können Sie die aus der Snapshot-Sicherung erstellten Sicherungssätze anzeigen.
++
+image:snapctr-svcs-bkup-005-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Zu den Details der Datenbanksicherung gehören *Sicherungsname*, *Sicherungstyp*, *SCN*, *RMAN-Katalog* und *Sicherungszeit*.  Ein Sicherungssatz enthält anwendungskonsistente Snapshots für das Datenvolumen bzw. das Protokollvolumen.  Ein Protokollvolume-Snapshot wird direkt nach einem Datenbankdatenvolume-Snapshot durchgeführt.  Sie können einen Filter anwenden, wenn Sie in der Sicherungsliste nach einer bestimmten Sicherung suchen.
++
+image:snapctr-svcs-bkup-006-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
+
+====
+
+
+=== Wiederherstellung und Wiederherstellung von Oracle-Datenbanken
+
+[%collapsible%open]
+====
+. Klicken Sie für eine Datenbankwiederherstellung in *Anwendungen* auf das Dropdown-Menü mit den drei Punkten für die wiederherzustellende Datenbank und dann auf *Wiederherstellen*, um den Arbeitsablauf zur Datenbankwiederherstellung und -wiederherstellung zu starten.
++
+image:snapctr-svcs-restore-001-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie Ihren *Wiederherstellungspunkt* anhand des Zeitstempels.  Jeder Zeitstempel in der Liste stellt einen verfügbaren Datenbanksicherungssatz dar.
++
+image:snapctr-svcs-restore-002-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Wählen Sie für die Wiederherstellung und Wiederherstellung einer Oracle-Datenbank vor Ort den *ursprünglichen Speicherort* als *Wiederherstellungsort* aus.
++
+image:snapctr-svcs-restore-003-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Definieren Sie Ihren *Wiederherstellungsumfang* und *Wiederherstellungsumfang*.  „Alle Protokolle“ bedeutet eine vollständige Wiederherstellung auf dem neuesten Stand, einschließlich der aktuellen Protokolle.
++
+image:snapctr-svcs-restore-004-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Überprüfen und *Wiederherstellen*, um die Wiederherstellung und Wiederherstellung der Datenbank zu starten.
++
+image:snapctr-svcs-restore-005-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+. Auf der Registerkarte „Jobüberwachung“ haben wir festgestellt, dass die vollständige Wiederherstellung und Aktualisierung der Datenbank 2 Minuten dauerte.
++
+image:snapctr-svcs-restore-006-azure.png["Screenshot, der diesen Schritt in der GUI zeigt."]
+
+
+
+====
+
+
+=== Oracle-Datenbankklon
+
+[%collapsible%open]
+====
+Die Verfahren zum Klonen von Datenbanken ähneln denen zur Wiederherstellung, jedoch auf einer alternativen Azure-VM mit identischem, vorinstalliertem und konfiguriertem Oracle-Software-Stack.
+
+
+NOTE: Stellen Sie sicher, dass Ihr Azure NetApp File-Speicher über ausreichend Kapazität für eine geklonte Datenbank derselben Größe wie die zu klonende primäre Datenbank verfügt.  Die alternative Azure-VM wurde zu *Anwendungen* hinzugefügt.
+
+. Klicken Sie in *Anwendungen* auf das Dropdown-Menü mit den drei Punkten für die jeweilige Datenbank, die geklont werden soll, und klicken Sie dann auf *Wiederherstellen*, um den Klon-Workflow zu starten.
++
+image:snapctr-svcs-restore-001-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den *Wiederherstellungspunkt* und aktivieren Sie *An einem anderen Speicherort wiederherstellen*.
++
+image:snapctr-svcs-clone-001-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie auf der nächsten *Konfigurationsseite* den alternativen *Host*, die neue Datenbank-*SID* und *Oracle Home* wie auf der alternativen Azure-VM konfiguriert fest.
++
+image:snapctr-svcs-clone-002-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Auf der Seite „Allgemein“ werden die Details der geklonten Datenbank angezeigt, z. B. SID, alternativer Host, Speicherorte der Datendateien, Wiederherstellungsumfang usw.
++
+image:snapctr-svcs-clone-003-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Auf der Seite „Datenbankparameter überprüfen“ werden die Details der geklonten Datenbankkonfiguration sowie einige Datenbankparametereinstellungen angezeigt.
++
+image:snapctr-svcs-clone-004-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überwachen Sie den Status des Klonauftrags auf der Registerkarte *Auftragsüberwachung*. Wir haben festgestellt, dass das Klonen einer 1,6 TiB großen Oracle-Datenbank 8 Minuten dauerte.
++
+image:snapctr-svcs-clone-005-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Validieren Sie die geklonte Datenbank auf der BlueXP Seite *Anwendungen*, die anzeigt, dass die geklonte Datenbank sofort bei BlueXP registriert wurde.
++
+image:snapctr-svcs-clone-006-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie die geklonte Datenbank auf der Oracle Azure-VM, die zeigte, dass die geklonte Datenbank wie erwartet ausgeführt wurde.
++
+image:snapctr-svcs-clone-007-azure.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Damit ist die Demonstration einer Sicherung, Wiederherstellung und eines Klons einer Oracle-Datenbank in Azure mit der NetApp BlueXP -Konsole unter Verwendung des SnapCenter -Dienstes abgeschlossen.
+
+====
+
+
+== Weitere Informationen
+
+Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:
+
+* BlueXP einrichten und verwalten
++
+link:https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html["https://docs.netapp.com/us-en/cloud-manager-setup-admin/index.html"^]
+
+* BlueXP backup and recovery
++
+link:https://docs.netapp.com/us-en/cloud-manager-backup-restore/index.html["https://docs.netapp.com/us-en/cloud-manager-backup-restore/index.html"^]
+
+* Azure NetApp Files
++
+link:https://azure.microsoft.com/en-us/products/netapp["https://azure.microsoft.com/en-us/products/netapp"^]
+
+* Erste Schritte mit Azure
++
+link:https://azure.microsoft.com/en-us/get-started/["https://azure.microsoft.com/en-us/get-started/"^]
+
+

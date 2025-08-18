@@ -1,0 +1,52 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-prereq.html 
+summary: Vor der Ausführung von Hybrid-Cloud-Datenbank-Workloads müssen bestimmte Voraussetzungen sowohl vor Ort als auch in der Cloud konfiguriert werden.  Der folgende Abschnitt bietet eine allgemeine Zusammenfassung dieses Prozesses und die folgenden Links bieten weitere Informationen zur erforderlichen Systemkonfiguration. 
+keywords: workflow, prerequisites, licensing, networking, security 
+---
+= Voraussetzungen für die Konfiguration
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Vor der Ausführung von Hybrid-Cloud-Datenbank-Workloads müssen bestimmte Voraussetzungen sowohl vor Ort als auch in der Cloud konfiguriert werden.  Der folgende Abschnitt bietet eine allgemeine Zusammenfassung dieses Prozesses und die folgenden Links bieten weitere Informationen zur erforderlichen Systemkonfiguration.
+
+
+
+== Vor Ort
+
+* Installation und Konfiguration von SnapCenter
+* Speicherkonfiguration des lokalen Datenbankservers
+* Lizenzanforderungen
+* Vernetzung und Sicherheit
+* Automatisierung
+
+
+
+
+== Öffentliche Cloud
+
+* Ein NetApp Cloud Central-Login
+* Netzwerkzugriff von einem Webbrowser auf mehrere Endpunkte
+* Ein Netzwerkstandort für einen Connector
+* Cloud-Anbieter-Berechtigungen
+* Vernetzung für einzelne Dienste
+
+
+Wichtige Überlegungen:
+
+. Wo soll der Cloud Manager Connector bereitgestellt werden?
+. Dimensionierung und Architektur von Cloud Volume ONTAP
+. Einzelknoten oder Hochverfügbarkeit?
+
+
+Weitere Einzelheiten finden Sie unter den folgenden Links:
+
+link:hybrid-dbops-sc-prereq-onprem.html["Vor Ort"]
+
+link:hybrid-dbops-sc-prereq-cloud.html["Öffentliche Cloud"]

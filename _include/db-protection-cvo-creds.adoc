@@ -1,0 +1,106 @@
+= 
+:allow-uri-read: 
+
+
+. Konfigurieren Sie die Anmeldeinformationen.
+. Erstellen Sie Anmeldeinformationstypen. Bei Lösungen mit ONTAP müssen Sie den Anmeldeinformationstyp so konfigurieren, dass er mit den Benutzernamen- und Kennworteinträgen übereinstimmt. Wir werden auch Einträge für Cloud Central und AWS hinzufügen.
++
+.. Navigieren Sie zu „Administration“ → „Anmeldeinformationstypen“ und klicken Sie auf „Hinzufügen“.
+.. Geben Sie den Namen und die Beschreibung ein.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
++
+[source, cli]
+----
+fields:
+  - id: dst_cluster_username
+    type: string
+    label: CVO Username
+  - id: dst_cluster_password
+    type: string
+    label: CVO Password
+    secret: true
+  - id: cvo_svm_password
+    type: string
+    label: CVO SVM Password
+    secret: true
+  - id: src_cluster_username
+    type: string
+    label: Source Cluster Username
+  - id: src_cluster_password
+    type: string
+    label: Source Cluster Password
+    secret: true
+  - id: regular_id
+    type: string
+    label: Cloud Central ID
+    secret: true
+  - id: email_id
+    type: string
+    label: Cloud Manager Email
+    secret: true
+  - id: cm_password
+    type: string
+    label: Cloud Manager Password
+    secret: true
+  - id: access_key
+    type: string
+    label: AWS Access Key
+    secret: true
+  - id: secret_key
+    type: string
+    label: AWS Secret Key
+    secret: true
+  - id: token
+    type: string
+    label: Cloud Central Refresh Token
+    secret: true
+----
+.. Fügen Sie den folgenden Inhalt in die Injector-Konfiguration ein und klicken Sie auf Speichern:
++
+[source, cli]
+----
+extra_vars:
+  dst_cluster_username: '{{ dst_cluster_username }}'
+  dst_cluster_password: '{{ dst_cluster_password }}'
+  cvo_svm_password: '{{ cvo_svm_password }}'
+  src_cluster_username: '{{ src_cluster_username }}'
+  src_cluster_password: '{{ src_cluster_password }}'
+  regular_id: '{{ regular_id }}'
+  email_id: '{{ email_id }}'
+  cm_password: '{{ cm_password }}'
+  access_key: '{{ access_key }}'
+  secret_key: '{{ secret_key }}'
+  token: '{{ token }}'
+----
+
+
+. Anmeldeinformationen für ONTAP/CVO/AWS erstellen
++
+.. Navigieren Sie zu Ressourcen → Anmeldeinformationen und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für die ONTAP -Anmeldeinformationen ein
+.. Wählen Sie den Anmeldeinformationstyp aus, der im vorherigen Schritt erstellt wurde.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für Ihre Quell- und CVO-Cluster, Cloud Central/Manager, AWS-Zugriffs-/Geheimschlüssel und Cloud Central-Aktualisierungstoken ein.
+.. Klicken Sie auf Speichern
+
+
+. Anmeldeinformationen für Oracle erstellen (Quelle)
++
+.. Navigieren Sie zu Ressourcen → Anmeldeinformationen und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für den Oracle-Host ein
+.. Wählen Sie den Anmeldeinformationstyp des Computers aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für die Oracle-Hosts ein.
+.. Wählen Sie die richtige Methode zur Rechteerweiterung aus und geben Sie den Benutzernamen und das Kennwort ein.
+.. Klicken Sie auf Speichern
+
+
+. Anmeldeinformationen für Oracle-Ziel erstellen
++
+.. Navigieren Sie zu Ressourcen → Anmeldeinformationen und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für den DR Oracle-Host ein
+.. Wählen Sie den Anmeldeinformationstyp des Computers aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen (ec2-user oder, falls Sie ihn von der Standardeinstellung geändert haben, diesen ein) und den privaten SSH-Schlüssel ein.
+.. Wählen Sie die richtige Methode zur Rechteerweiterung (sudo) und geben Sie bei Bedarf den Benutzernamen und das Kennwort ein.
+.. Klicken Sie auf Speichern
+
+
+

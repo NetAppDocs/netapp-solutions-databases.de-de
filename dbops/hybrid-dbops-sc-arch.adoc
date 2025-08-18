@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-arch.html 
+summary: Dieser Abschnitt beschreibt eine typische Hybrid-Cloud-Architektur für Entwicklungs-/Test- und DR-Vorgänge. 
+keywords: architecture, synchronized database 
+---
+= Lösungsarchitektur
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Das folgende Architekturdiagramm veranschaulicht eine typische Implementierung des Unternehmensdatenbankbetriebs in einer Hybrid Cloud für Entwicklungs-/Test- und Notfallwiederherstellungsvorgänge.
+
+image:hybrid-cloud-db-diagram.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Im normalen Geschäftsbetrieb können synchronisierte Datenbankvolumes in der Cloud geklont und zur Anwendungsentwicklung oder zum Testen in Dev/Test-Datenbankinstanzen eingebunden werden.  Im Falle eines Ausfalls können dann die synchronisierten Datenbankvolumes in der Cloud zur Notfallwiederherstellung aktiviert werden.

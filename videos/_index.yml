@@ -1,0 +1,25 @@
+---
+indexpage:
+  title: Videos zu NetApp -Datenbanklösungen
+  summary: Entdecken Sie Videos zu Oracle, SQL Server, Open Source und hybriden Datenbanklösungen
+    mit NetApp.
+  lead: Entdecken Sie die umfassende Videobibliothek von NetApp, in der Datenbanklösungen
+    für Oracle, SQL Server und Open Source-Datenbanken vorgestellt werden. Jede Sammlung
+    konzentriert sich auf bestimmte Anwendungsfälle und Integrationsszenarien.
+  tiles:
+  - title: Oracle-Datenbankvideos
+    links:
+    - title: Bereitstellung und Automatisierung
+      url: videos-oracle-videos.html#deployment-and-automation
+    - title: Backup, Wiederherstellung und Klonen
+      url: videos-oracle-videos.html#backup-recovery-and-cloning
+    - title: Modernisierung und Migration
+      url: videos-oracle-videos.html#modernization-and-migration
+    - title: Hohe Verfügbarkeit, Notfallwiederherstellung und Replikation
+      url: videos-oracle-videos.html#high-availability-disaster-recovery-and-replication
+  - title: Videos zu SQL Server und Open Source-Datenbanken
+    links:
+    - title: SQL Server-Videos
+      url: videos-sqlserver-videos.html
+    - title: Videos zu Open-Source-Datenbanken
+      url: videos-open-source-videos.html

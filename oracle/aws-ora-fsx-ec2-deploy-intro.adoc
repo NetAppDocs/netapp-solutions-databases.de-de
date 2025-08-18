@@ -1,0 +1,29 @@
+---
+sidebar: sidebar 
+permalink: oracle/aws-ora-fsx-ec2-deploy-intro.html 
+summary: Dieses Whitepaper bietet einen Überblick und eine Validierung einer Lösung für AWS-angepasste Oracle RDS-Datenbank-HA und -DR, die den AWS FSx-Speicherdienst in einer Bereitstellung mit mehreren Verfügbarkeitszonen nutzt. 
+keywords: HA, DR, database, Oracle, RDS, AWS 
+---
+= WP-7357: Einführung in Best Practices zur Oracle-Datenbankbereitstellung auf EC2 und FSx
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Allen Cao, Niyaz Mohamed, Jeffrey Steiner, NetApp
+
+[role="lead"]
+Viele unternehmenskritische Oracle-Datenbanken werden immer noch vor Ort gehostet und viele Unternehmen möchten diese Oracle-Datenbanken in eine öffentliche Cloud migrieren.  Diese Oracle-Datenbanken sind häufig anwendungszentriert und erfordern daher benutzerspezifische Konfigurationen, eine Funktion, die bei vielen Public-Cloud-Angeboten mit Datenbanken als Service fehlt.  Daher erfordert die aktuelle Datenbanklandschaft eine Oracle-Datenbanklösung auf Basis der öffentlichen Cloud, die auf einem leistungsstarken, skalierbaren Rechen- und Speicherdienst basiert, der einzigartige Anforderungen erfüllen kann.  AWS EC2-Recheninstanzen und der AWS FSx-Speicherdienst könnten die fehlenden Teile dieses Puzzles sein, die Sie zum Erstellen und Migrieren Ihrer unternehmenskritischen Oracle-Datenbank-Workloads in eine öffentliche Cloud nutzen können.
+
+Amazon Elastic Compute Cloud (Amazon EC2) ist ein Webdienst, der sichere, skalierbare Rechenkapazität in der Cloud bereitstellt.  Es wurde entwickelt, um Unternehmen das Cloud-Computing im Web-Maßstab zu erleichtern.  Über die einfache Amazon EC2-Webdienstschnittstelle können Sie Kapazitäten mit minimalem Aufwand abrufen und konfigurieren.  Es bietet Ihnen die vollständige Kontrolle über Ihre Computerressourcen und ermöglicht Ihnen die Ausführung in der bewährten Computerumgebung von Amazon.
+
+Amazon FSx ONTAP ist ein AWS-Speicherdienst, der den branchenführenden NetApp ONTAP Block- und Dateispeicher verwendet, der NFS, SMB und iSCSI bereitstellt.  Mit einer so leistungsstarken Speicher-Engine war es noch nie so einfach, unternehmenskritische Oracle-Datenbank-Apps mit Reaktionszeiten von unter einer Millisekunde, mehreren GBps Durchsatz und über 100.000 IOPS pro Datenbankinstanz auf AWS zu verlagern.  Noch besser: Der FSx-Speicherdienst verfügt über eine native Replikationsfunktion, mit der Sie Ihre lokale Oracle-Datenbank problemlos zu AWS migrieren oder Ihre unternehmenskritische Oracle-Datenbank für HA oder DR in eine sekundäre AWS-Verfügbarkeitszone replizieren können.
+
+Das Ziel dieser Dokumentation besteht darin, schrittweise Prozesse, Verfahren und Best-Practice-Anleitungen zur Bereitstellung und Konfiguration einer Oracle-Datenbank mit FSx-Speicher und einer EC2-Instance bereitzustellen, die eine ähnliche Leistung wie ein lokales System bietet.  NetApp bietet außerdem ein Automatisierungs-Toolkit, das die meisten Aufgaben automatisiert, die für die Bereitstellung, Konfiguration und Verwaltung Ihrer Oracle-Datenbank-Workload in der AWS Public Cloud erforderlich sind.
+
+Um mehr über die Lösung und den Anwendungsfall zu erfahren, sehen Sie sich das folgende Übersichtsvideo an:
+
+link:https://www.netapp.tv/insight/details/30000?playlist_id=275&mcid=04891225598830484314259903524057913910["Modernisieren Sie Ihre Oracle-Datenbank mit Hybrid Cloud in AWS und FSx ONTAP, Teil 1 – Anwendungsfall und Lösungsarchitektur"^]

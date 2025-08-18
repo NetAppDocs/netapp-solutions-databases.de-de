@@ -1,0 +1,619 @@
+---
+sidebar: sidebar 
+permalink: mssql/sqlsb-backup-restore-aws-fsxn.html 
+keywords: SQL server, SQL, backup, recover, AWS, aws, sql 
+summary:  
+---
+= TR-4951: Sicherung und Wiederherstellung für Microsoft SQL Server auf AWS FSx ONTAP
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Dieses Dokument behandelt die notwendigen Schritte zum Durchführen von Backup und Wiederherstellung für Microsoft SQL Server auf AWS FSx ONTAP mit SnapCenter.  Hierzu zählen die folgenden Informationen:
+
+* NetApp SnapCenter -Konfiguration
+* SnapCenter -Sicherungsvorgänge
+* Sicherungsvorgang für eine FCI-Datenbank
+* Sicherungsvorgang für mehrere Datenbanken
+* Wiederherstellung und Wiederherstellung
+
+
+
+
+== SnapCenter -Konfiguration
+
+Für die SnapCenter -Konfiguration und den Schutz der Microsoft SQL Server-Ressourcen müssen die folgenden Schritte ausgeführt werden.  Jeder der folgenden Schritte wird in den folgenden Abschnitten ausführlich beschrieben.
+
+. Konfigurieren Sie die Sysadmin-Anmeldeinformationen für den SQL Server-Sicherungs- und Wiederherstellungsbenutzer.
+. Konfigurieren Sie die Speichereinstellungen.  Geben Sie die Anmeldeinformationen für die Verwaltung von Amazon Web Services (AWS) ein, um von SnapCenter aus auf die virtuellen Amazon FSx ONTAP -Speichermaschinen (SVMs) zuzugreifen.
+. Fügen Sie SnapCenter einen SQL Server-Host hinzu.  Stellen Sie die erforderlichen SnapCenter Plug-ins bereit und installieren Sie sie.
+. Konfigurieren Sie Richtlinien.  Definieren Sie den Sicherungsvorgangstyp, die Aufbewahrung und optional die Snapshot-Sicherungsreplikation.
+. Konfigurieren und schützen Sie die Microsoft SQL Server-Datenbank.
+
+
+
+
+== SnapCenter neu installierte Benutzeroberfläche
+
+Konfigurieren Sie die Anmeldeinformationen für die SQL Server-Sicherung und stellen Sie den Benutzer mit Systemadministratorrechten wieder her.
+
+image:sqlsb-aws-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+NetApp empfiehlt die Verwendung der rollenbasierten Zugriffskontrolle (RBAC), um Datenschutz- und Verwaltungsfunktionen im gesamten SnapCenter und auf den Windows-Hosts an einzelne Benutzer zu delegieren.  Der Benutzer muss Zugriff auf den SQL Server haben, auf dem die Datenbank gehostet wird.  Bei mehreren Hosts müssen Benutzername und Passwort auf allen Hosts identisch sein.  Damit SnapCenter das erforderliche Plug-In auf SQL Server-Hosts bereitstellen kann, müssen Sie außerdem die Domäneninformationen für SnapCenter registrieren, um Ihre Anmeldeinformationen und Hosts zu validieren.
+
+Erweitern Sie die folgenden Abschnitte, um detaillierte Anweisungen zum Ausführen der einzelnen Schritte anzuzeigen.
+
+.Fügen Sie die Anmeldeinformationen hinzu
+[%collapsible%open]
+====
+Gehen Sie zu *Einstellungen*, wählen Sie *Anmeldeinformationen* und klicken Sie auf (*+*).
+
+image:sqlsb-aws-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Der neue Benutzer muss über Administratorrechte auf dem SQL Server-Host verfügen.
+
+image:sqlsb-aws-003.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+====
+.Konfigurieren des Speichers
+[%collapsible%open]
+====
+Führen Sie die folgenden Schritte aus, um den Speicher in SnapCenter zu konfigurieren:
+
+. Wählen Sie in der SnapCenter -Benutzeroberfläche *Speichersysteme* aus.  Es gibt zwei Speichertypen: * ONTAP SVM* und * ONTAP Cluster*.  Standardmäßig ist der Speichertyp * ONTAP SVM*.
+. Klicken Sie auf (+*+*), um die Speichersysteminformationen hinzuzufügen.
++
+image:sqlsb-aws-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den *FSx ONTAP -Verwaltungsendpunkt* an.
++
+image:sqlsb-aws-005.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Die SVM ist jetzt in SnapCenter konfiguriert.
++
+image:sqlsb-aws-006.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+====
+.Fügen Sie SnapCenter einen SQL Server-Host hinzu
+[%collapsible%open]
+====
+Führen Sie die folgenden Schritte aus, um einen SQL Server-Host hinzuzufügen:
+
+. Klicken Sie auf der Registerkarte „Host“ auf (*+*), um den Microsoft SQL Server-Host hinzuzufügen.
++
+image:sqlsb-aws-007.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den vollqualifizierten Domänennamen (FQDN) oder die IP-Adresse des Remotehosts an.
++
+
+NOTE: Die Anmeldeinformationen werden standardmäßig ausgefüllt.
+
+. Wählen Sie die Option für Microsoft Windows und Microsoft SQL Server und senden Sie sie dann ab.
++
+image:sqlsb-aws-008.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Die SQL Server-Pakete werden installiert.
+
+image:sqlsb-aws-009.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Nachdem die Installation abgeschlossen ist, gehen Sie zur Registerkarte *Ressource*, um zu überprüfen, ob alle FSx ONTAP iSCSI-Volumes vorhanden sind.
++
+image:sqlsb-aws-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+====
+.Konfigurieren des Protokollverzeichnisses
+[%collapsible%open]
+====
+Führen Sie die folgenden Schritte aus, um ein Host-Protokollverzeichnis zu konfigurieren:
+
+. Aktivieren Sie das Kontrollkästchen.  Es öffnet sich ein neuer Tab.
++
+image:sqlsb-aws-011.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf den Link *Protokollverzeichnis konfigurieren*.
++
+image:sqlsb-aws-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie das Laufwerk für das Host-Protokollverzeichnis und das FCI-Instanz-Protokollverzeichnis aus.  Klicken Sie auf *Speichern*.  Wiederholen Sie den gleichen Vorgang für den zweiten Knoten im Cluster.  Schließen Sie das Fenster.
++
+image:sqlsb-aws-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Der Host befindet sich jetzt im laufenden Zustand.
+
+image:sqlsb-aws-014.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Auf der Registerkarte *Ressourcen* haben wir alle Server und Datenbanken.
++
+image:sqlsb-aws-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+====
+
+
+== Konfigurieren einer Sicherungsrichtlinie
+
+Eine Sicherungsrichtlinie ist ein Satz von Regeln, der die Verwaltung, Planung und Aufbewahrung von Sicherungen regelt.  Es hilft bei der Auswahl des Sicherungstyps und der Häufigkeit basierend auf dem SLA Ihres Unternehmens.
+
+Erweitern Sie die folgenden Abschnitte, um detaillierte Anweisungen zum Ausführen der einzelnen Schritte anzuzeigen.
+
+.Konfigurieren des Sicherungsvorgangs für eine FCI-Datenbank
+[%collapsible%open]
+====
+Führen Sie die folgenden Schritte aus, um eine Sicherungsrichtlinie für eine FCI-Datenbank zu konfigurieren:
+
+. Gehen Sie zu *Einstellungen* und wählen Sie oben links *Richtlinien* aus.  Klicken Sie dann auf *Neu*.
++
+image:sqlsb-aws-016.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den Richtliniennamen und eine Beschreibung ein.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-017.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie als Sicherungstyp *Vollständige Sicherung*.
++
+image:sqlsb-aws-018.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die Zeitplanhäufigkeit aus (diese basiert auf dem SLA des Unternehmens).  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-019.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Aufbewahrungseinstellungen für die Sicherung.
++
+image:sqlsb-aws-020.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Replikationsoptionen.
++
+image:sqlsb-aws-021.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie ein Ausführungsskript an, das vor und nach der Ausführung eines Sicherungsauftrags (sofern vorhanden) ausgeführt werden soll.
++
+image:sqlsb-aws-022.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Führen Sie die Überprüfung basierend auf dem Sicherungszeitplan durch.
++
+image:sqlsb-aws-023.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Auf der Seite *Zusammenfassung* finden Sie Einzelheiten zur Sicherungsrichtlinie.  Eventuelle Fehler können hier korrigiert werden.
++
+image:sqlsb-aws-024.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+====
+
+
+== Konfigurieren und Schützen der MSSQL Server-Datenbank
+
+. Richten Sie das Start- und Ablaufdatum der Sicherungsrichtlinie ein.
++
+image:sqlsb-aws-025.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Definieren Sie den Zeitplan für die Sicherung.  Klicken Sie dazu auf (++*), um einen Zeitplan zu konfigurieren.  Geben Sie das *Startdatum* und das *Läuft ab am*-Datum ein.  Legen Sie die Zeit basierend auf dem SLA des Unternehmens fest.
++
+image:sqlsb-aws-026.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den Verifizierungsserver.  Wählen Sie aus dem Dropdown-Menü den Server aus.
++
+image:sqlsb-aws-027.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Bestätigen Sie den konfigurierten Zeitplan, indem Sie auf das Pluszeichen klicken und bestätigen.
+. Geben Sie Informationen für die E-Mail-Benachrichtigung an.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-028.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Die Zusammenfassung der Sicherungsrichtlinie für die SQL Server-Datenbank ist jetzt konfiguriert.
+
+image:sqlsb-aws-029.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+== SnapCenter -Sicherungsvorgänge
+
+Führen Sie die folgenden Schritte aus, um SQL Server-Sicherungen auf Abruf zu erstellen:
+
+. Wählen Sie in der Ansicht *Ressource* die Ressource aus und wählen Sie *Jetzt sichern*.
++
+image:sqlsb-aws-030.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie im Dialogfeld *Sichern* auf *Sichern*.
++
+image:sqlsb-aws-031.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Ein Bestätigungsbildschirm wird angezeigt.  Klicken Sie zur Bestätigung auf *Ja*.
++
+image:sqlsb-aws-032.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Sicherungsauftrag überwachen
+
+. Klicken Sie auf der Registerkarte *Überwachen* auf den Job und wählen Sie rechts *Details* aus, um die Jobs anzuzeigen.
++
+image:sqlsb-aws-033.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:sqlsb-aws-034.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Wenn die Sicherung abgeschlossen ist, wird in der Topologieansicht ein neuer Eintrag angezeigt.
+
+
+
+== Sicherungsvorgang für mehrere Datenbanken
+
+Um eine Sicherungsrichtlinie für mehrere SQL Server-Datenbanken zu konfigurieren, erstellen Sie Ressourcengruppenrichtlinien, indem Sie die folgenden Schritte ausführen:
+
+. Wechseln Sie im Reiter *Ressourcen* des Menüs *Ansicht* über das Dropdown-Menü zu einer Ressourcengruppe.
++
+image:sqlsb-aws-035.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf (+*+*), um eine neue Ressourcengruppe zu erstellen.
++
+image:sqlsb-aws-036.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie einen Namen und ein Tag an.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-037.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Fügen Sie der Ressourcengruppe Ressourcen hinzu:
++
+** *Gastgeber.*  Wählen Sie aus dem Dropdown-Menü den Server aus, auf dem die Datenbank gehostet wird.
+** *Ressourcentyp.*  Wählen Sie im Dropdown-Menü *Datenbank* aus.
+** *SQL Server-Instanz.*  Wählen Sie den Server aus.
++
+image:sqlsb-aws-038.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Die *Option* „Wählt automatisch alle Ressourcen aus demselben Speichervolume aus“ ist standardmäßig ausgewählt.  Deaktivieren Sie die Option und wählen Sie nur die Datenbanken aus, die Sie der Ressourcengruppe hinzufügen müssen. Klicken Sie zum Hinzufügen auf den Pfeil und klicken Sie auf *Weiter*.
+
++
+image:sqlsb-aws-039.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+. Klicken Sie in den Richtlinien auf (++*).
++
+image:sqlsb-aws-040.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den Namen der Ressourcengruppenrichtlinie ein.
++
+image:sqlsb-aws-041.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie *Vollständige Sicherung* und die geplante Häufigkeit je nach SLA Ihres Unternehmens.
++
+image:sqlsb-aws-042.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Aufbewahrungseinstellungen.
++
+image:sqlsb-aws-043.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Replikationsoptionen.
++
+image:sqlsb-aws-044.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Skripte so, dass sie vor der Durchführung einer Sicherung ausgeführt werden.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-045.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Bestätigen Sie die Überprüfung für die folgenden Sicherungspläne.
++
+image:sqlsb-aws-046.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Überprüfen Sie auf der Seite *Zusammenfassung* die Informationen und klicken Sie auf *Fertig*.
++
+image:sqlsb-aws-047.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Konfigurieren und schützen Sie mehrere SQL Server-Datenbanken
+
+. Klicken Sie auf das Zeichen (+*), um das Startdatum und das Ablaufdatum zu konfigurieren.
++
+image:sqlsb-aws-048.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Stellen Sie die Uhrzeit ein.
++
+image:sqlsb-aws-049.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:sqlsb-aws-050.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie auf der Registerkarte *Verifizierung* den Server aus, konfigurieren Sie den Zeitplan und klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-051.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie Benachrichtigungen zum Senden einer E-Mail.
++
+image:sqlsb-aws-052.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+Die Richtlinie ist jetzt für die Sicherung mehrerer SQL Server-Datenbanken konfiguriert.
+
+image:sqlsb-aws-053.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+== Auslösen einer On-Demand-Sicherung für mehrere SQL Server-Datenbanken
+
+. Wählen Sie auf der Registerkarte *Ressource* die Option „Anzeigen“ aus.  Wählen Sie im Dropdownmenü *Ressourcengruppe* aus.
++
+image:sqlsb-aws-054.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie den Namen der Ressourcengruppe aus.
+. Klicken Sie oben rechts auf *Jetzt sichern*.
++
+image:sqlsb-aws-055.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Es öffnet sich ein neues Fenster.  Aktivieren Sie das Kontrollkästchen *Nach der Sicherung überprüfen* und klicken Sie dann auf „Sichern“.
++
+image:sqlsb-aws-056.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Es wird eine Bestätigungsmeldung angezeigt.  Klicken Sie auf *Ja*.
++
+image:sqlsb-aws-057.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Überwachen mehrerer Datenbanksicherungsaufträge
+
+Klicken Sie in der linken Navigationsleiste auf *Überwachen*, wählen Sie den Sicherungsauftrag aus und klicken Sie auf *Details*, um den Auftragsfortschritt anzuzeigen.
+
+image:sqlsb-aws-058.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+Klicken Sie auf die Registerkarte *Ressource*, um die Zeit anzuzeigen, die für die Fertigstellung der Sicherung benötigt wird.
+
+image:sqlsb-aws-059.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+== Transaktionsprotokollsicherung für die Sicherung mehrerer Datenbanken
+
+SnapCenter unterstützt die vollständigen, protokollierten und einfachen Wiederherstellungsmodelle.  Der einfache Wiederherstellungsmodus unterstützt keine Transaktionsprotokollsicherung.
+
+Führen Sie die folgenden Schritte aus, um eine Transaktionsprotokollsicherung durchzuführen:
+
+. Ändern Sie auf der Registerkarte *Ressourcen* das Ansichtsmenü von *Datenbank* zu *Ressourcengruppe*.
++
+image:sqlsb-aws-060.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die erstellte Sicherungsrichtlinie für die Ressourcengruppe aus.
+. Wählen Sie oben rechts *Ressourcengruppe ändern* aus.
++
+image:sqlsb-aws-061.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Der Abschnitt *Name* enthält standardmäßig den Namen und das Tag der Sicherungsrichtlinie.  Klicken Sie auf *Weiter*.
++
+Auf der Registerkarte *Ressourcen* werden die Grundlagen hervorgehoben, auf denen die Transaktionssicherungsrichtlinie konfiguriert werden soll.
+
++
+image:sqlsb-aws-062.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie den Richtliniennamen ein.
++
+image:sqlsb-aws-063.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die SQL Server-Sicherungsoptionen aus.
+. Wählen Sie die Protokollsicherung aus.
+. Legen Sie die Zeitplanhäufigkeit basierend auf der RTO Ihres Unternehmens fest.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-064.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie die Aufbewahrungseinstellungen für die Protokollsicherung.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-065.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. (Optional) Konfigurieren Sie die Replikationsoptionen.
++
+image:sqlsb-aws-066.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. (Optional) Konfigurieren Sie alle Skripts, die vor der Durchführung eines Sicherungsauftrags ausgeführt werden sollen.
++
+image:sqlsb-aws-067.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. (Optional) Konfigurieren Sie die Sicherungsüberprüfung.
++
+image:sqlsb-aws-068.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig*.
++
+image:sqlsb-aws-069.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Konfigurieren und schützen Sie mehrere MSSQL Server-Datenbanken
+
+. Klicken Sie auf die neu erstellte Sicherungsrichtlinie für Transaktionsprotokolle.
++
+image:sqlsb-aws-070.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Legen Sie das *Startdatum* und das *Läuft ab am*-Datum fest.
+. Geben Sie die Häufigkeit der Protokollsicherungsrichtlinie je nach SLA, RTP und RPO ein.  Klicken Sie auf OK.
++
+image:sqlsb-aws-071.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Sie können beide Richtlinien sehen.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-072.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Konfigurieren Sie den Verifizierungsserver.
++
+image:sqlsb-aws-073.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. E-Mail-Benachrichtigung konfigurieren.
++
+image:sqlsb-aws-074.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig*.
++
+image:sqlsb-aws-075.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Auslösen einer On-Demand-Transaktionsprotokollsicherung für mehrere SQL Server-Datenbanken
+
+Um eine On-Demand-Sicherung des Transaktionsprotokolls für mehrere SQL Server-Datenbanken auszulösen, führen Sie die folgenden Schritte aus:
+
+. Wählen Sie auf der neu erstellten Richtlinienseite oben rechts *Jetzt sichern* aus.
++
+image:sqlsb-aws-076.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie im Popup auf der Registerkarte *Richtlinie* das Dropdown-Menü aus, wählen Sie die Sicherungsrichtlinie aus und konfigurieren Sie die Sicherung des Transaktionsprotokolls.
++
+image:sqlsb-aws-077.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf *Sichern*.  Ein neues Fenster wird angezeigt.
+. Klicken Sie auf *Ja*, um die Sicherungsrichtlinie zu bestätigen.
++
+image:sqlsb-aws-078.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Überwachung
+
+Wechseln Sie zur Registerkarte *Überwachung* und überwachen Sie den Fortschritt des Sicherungsauftrags.
+
+image:sqlsb-aws-079.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+== Wiederherstellung und Wiederherstellung
+
+Beachten Sie die folgenden Voraussetzungen für die Wiederherstellung einer SQL Server-Datenbank in SnapCenter.
+
+* Die Zielinstanz muss online und ausgeführt werden, bevor ein Wiederherstellungsauftrag abgeschlossen wird.
+* SnapCenter -Vorgänge, die für die Ausführung mit der SQL Server-Datenbank geplant sind, müssen deaktiviert werden. Dies gilt auch für alle auf Remoteverwaltungs- oder Remoteüberprüfungsservern geplanten Jobs.
+* Wenn Sie benutzerdefinierte Protokollverzeichnissicherungen auf einem alternativen Host wiederherstellen, muss auf dem SnapCenter Server und dem Plugin-Host dieselbe SnapCenter -Version installiert sein.
+* Sie können die Systemdatenbank auf einem alternativen Host wiederherstellen.
+* SnapCenter kann eine Datenbank in einem Windows-Cluster wiederherstellen, ohne die SQL Server-Clustergruppe offline zu nehmen.
+
+
+
+
+== Wiederherstellen gelöschter Tabellen in einer SQL Server-Datenbank zu einem bestimmten Zeitpunkt
+
+Führen Sie die folgenden Schritte aus, um eine SQL Server-Datenbank auf einen bestimmten Zeitpunkt wiederherzustellen:
+
+. Der folgende Screenshot zeigt den Ausgangszustand der SQL Server-Datenbank vor den gelöschten Tabellen.
++
+image:sqlsb-aws-080.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+Der Screenshot zeigt, dass 20 Zeilen aus der Tabelle gelöscht wurden.
+
++
+image:sqlsb-aws-081.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Melden Sie sich beim SnapCenter -Server an.  Wählen Sie auf der Registerkarte *Ressourcen* die Datenbank aus.
++
+image:sqlsb-aws-082.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie die aktuellste Sicherung aus.
+. Wählen Sie rechts *Wiederherstellen* aus.
++
+image:sqlsb-aws-083.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Ein neues Fenster wird angezeigt.  Wählen Sie die Option *Wiederherstellen*.
+. Stellen Sie die Datenbank auf demselben Host wieder her, auf dem die Sicherung erstellt wurde.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-084.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Wählen Sie für den *Wiederherstellungstyp* *Alle Protokollsicherungen* aus.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-085.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
++
+image:sqlsb-aws-086.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+*Optionen vor der Wiederherstellung:*
+
+. Wählen Sie die Option *Datenbank beim Wiederherstellen mit gleichem Namen überschreiben*.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-087.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+*Optionen nach der Wiederherstellung:*
+
+. Wählen Sie die Option *Funktionsbereit, aber nicht verfügbar zum Wiederherstellen zusätzlicher Transaktionsprotokolle*.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-088.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Geben Sie die E-Mail-Einstellungen an.  Klicken Sie auf *Weiter*.
++
+image:sqlsb-aws-089.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Klicken Sie auf der Seite *Zusammenfassung* auf *Fertig*.
++
+image:sqlsb-aws-090.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Überwachen des Wiederherstellungsfortschritts
+
+. Klicken Sie auf der Registerkarte *Überwachung* auf die Details des Wiederherstellungsauftrags, um den Fortschritt des Wiederherstellungsauftrags anzuzeigen.
++
+image:sqlsb-aws-091.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Stellen Sie die Auftragsdetails wieder her.
++
+image:sqlsb-aws-092.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+. Kehren Sie zu SQL Server-Host > Datenbank > Tabelle zurück.
++
+image:sqlsb-aws-093.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+
+== Wo Sie weitere Informationen finden
+
+Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:
+
+* https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf["TR-4714: Best Practices-Leitfaden für Microsoft SQL Server mit NetApp SnapCenter"^]
++
+https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf["https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf"^]
+
+* https://docs.netapp.com/us-en/snapcenter-45/protect-scsql/concept_requirements_for_restoring_a_database.html["Voraussetzungen für die Wiederherstellung einer Datenbank"^]
++
+https://docs.netapp.com/us-en/snapcenter-45/protect-scsql/concept_requirements_for_restoring_a_database.html["https://docs.netapp.com/us-en/snapcenter-45/protect-scsql/concept_requirements_for_restoring_a_database.html"^]
+
+* Lebenszyklen geklonter Datenbanken verstehen
++
+https://library.netapp.com/ecmdocs/ECMP1217281/html/GUID-4631AFF4-64FE-4190-931E-690FCADA5963.html["https://library.netapp.com/ecmdocs/ECMP1217281/html/GUID-4631AFF4-64FE-4190-931E-690FCADA5963.html"^]
+
+

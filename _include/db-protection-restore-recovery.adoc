@@ -1,0 +1,24 @@
+= 
+:allow-uri-read: 
+
+
+[.underline]*Planung des Playbooks zur Protokollreplikation*
+
+*Konfigurieren und starten Sie die Jobvorlage.*
+
+. Kopieren Sie die zuvor erstellte Jobvorlage.
++
+.. Navigieren Sie zu Ressourcen → Vorlagen.
+.. Suchen Sie die ONTAP/CVO-Setup-Vorlage und klicken Sie ganz rechts auf „Vorlage kopieren“.
+.. Klicken Sie in der kopierten Vorlage auf „Vorlage bearbeiten“ und ändern Sie den Namen in „Wiederherstellungs- und Recovery-Playbook“.
+.. Behalten Sie dasselbe Inventar, Projekt und dieselben Anmeldeinformationen für die Vorlage bei.
+.. Wählen Sie ora_recovery.yml als auszuführendes Playbook aus.
+.. Die Variablen bleiben gleich, aber die CVO-Cluster-IP muss in der Variable dst_cluster_ip festgelegt werden.
+.. Klicken Sie auf Speichern.
+
+
++
+
+NOTE: Dieses Playbook wird erst ausgeführt, wenn Sie bereit sind, Ihre Datenbank am Remote-Standort wiederherzustellen.
+
+

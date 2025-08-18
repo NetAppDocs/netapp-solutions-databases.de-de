@@ -1,0 +1,58 @@
+---
+sidebar: sidebar 
+permalink: automation/db-protection-overview.html 
+keywords: Linux, RHEL Oracle19c, NFS, ONTAP, Ansible 
+summary: Auf dieser Seite wird die automatisierte Methode zum Bereitstellen von Oracle19c auf NetApp ONTAP -Speicher beschrieben. 
+---
+= Lösungsübersicht
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Auf dieser Seite wird die automatisierte Methode zum Bereitstellen von Oracle19c auf NetApp ONTAP -Speicher beschrieben.
+
+
+
+== Automatisierter Datenschutz für Oracle-Datenbanken
+
+Organisationen automatisieren ihre Umgebungen, um die Effizienz zu steigern, Bereitstellungen zu beschleunigen und den manuellen Aufwand zu reduzieren.  Konfigurationsmanagement-Tools wie Ansible werden verwendet, um den Datenbankbetrieb in Unternehmen zu optimieren.  In dieser Lösung zeigen wir, wie Sie mit Ansible den Datenschutz von Oracle mit NetApp ONTAP automatisieren können.  Indem Sie Speicheradministratoren, Systemadministratoren und DBAs die Möglichkeit geben, die Datenreplikation in einem externen Rechenzentrum oder in der öffentlichen Cloud konsistent und schnell einzurichten, erzielen Sie die folgenden Vorteile:
+
+* Beseitigen Sie komplexe Designs und menschliche Fehler und implementieren Sie eine wiederholbare, konsistente Bereitstellung und bewährte Methoden.
+* Verkürzen Sie die Zeit für die Konfiguration der Intercluster-Replikation, CVO-Instanziierung und Wiederherstellung von Oracle-Datenbanken
+* Steigern Sie die Produktivität von Datenbankadministratoren, System- und Speicheradministratoren
+* Bietet einen Datenbankwiederherstellungs-Workflow zum einfachen Testen eines DR-Szenarios.
+
+
+NetApp stellt Kunden validierte Ansible-Module und -Rollen zur Verfügung, um die Bereitstellung, Konfiguration und Lebenszyklusverwaltung Ihrer Oracle-Datenbankumgebung zu beschleunigen.  Diese Lösung bietet Anweisungen und Ansible-Playbook-Code, um Ihnen zu helfen:
+
+
+
+=== On-Prem-zu-On-Prem-Replikation
+
+* Erstellen Sie Intercluster-LIFS an Quelle und Ziel
+* Cluster- und VServer-Peering einrichten
+* Erstellen und initialisieren Sie SnapMirror von Oracle-Volumes
+* Erstellen Sie einen Replikationszeitplan über AWX/Tower für Oracle-Binärdateien, Datenbanken und Protokolle
+* Stellen Sie die Oracle-Datenbank auf dem Ziel wieder her und bringen Sie die Datenbank online
+
+
+
+
+=== On Prem zum CVO in AWS
+
+* AWS-Connector erstellen
+* Erstellen Sie eine CVO-Instanz in AWS
+* On-Prem-Cluster zu Cloud Manager hinzufügen
+* Erstellen Sie Intercluster-LIFs auf der Quelle
+* Cluster- und VServer-Peering einrichten
+* Erstellen und initialisieren Sie SnapMirror von Oracle-Volumes
+* Erstellen Sie einen Replikationszeitplan über AWX/Tower für Oracle-Binärdateien, Datenbanken und Protokolle
+* Stellen Sie die Oracle-Datenbank auf dem Ziel wieder her und bringen Sie die Datenbank online
+
+
+Wenn Sie fertig sind, klicken Sie auflink:db-protection-getting-started.html["Hier erfahren Sie, wie Sie mit der Lösung beginnen können"] .

@@ -1,0 +1,123 @@
+---
+indexpage:
+  title: NetApp Datenbanklösungen
+  summary: NetApp Enterprise-Datenbanklösungen sind eine Reihe strategischer und technologischer
+    Funktionen, die die Leistungsfähigkeit von NetApp Storage in den wichtigsten Unternehmensdatenbanken
+    demonstrieren.
+  lead: NetApp -Datenbanklösungen sind eine Reihe strategischer und technologischer
+    Funktionen, die die Leistungsfähigkeit von NetApp -Speicher in den wichtigsten
+    Unternehmensdatenbanken demonstrieren.
+  tiles:
+  - title: Erste Schritte
+    links:
+    - title: Was ist neu
+      url: "/whats-new.html"
+    - title: Blogs
+      url: "/blogs.html"
+    - title: Videos und Demos
+      url: "/videos/index.html"
+  - title: Oracle für Amazon FSx für ONTAP
+    links:
+    - title: Stellen Sie Oracle HA in AWS EC2 bereit
+      url: "/oracle/aws-ora-ha-pacemaker.html"
+    - title: Oracle auf FSx ONTAP bereitstellen
+      url: "/automation/automation-ora-aws-fsx-iscsi.html"
+    - title: Führen Sie Oracle auf VMware Cloud mit FSx ONTAP aus
+      url: "/oracle/aws-ora-fsx-vmc-guestmount.html"
+    - title: Reduzieren Sie die Data Guard-Kosten mit FSx ONTAP
+      url: "/oracle/aws-ora-fsx-ec2-data-guard.html"
+    - title: Wiederherstellen und Klonen von Oracle VLDB auf FSx ONTAP
+      url: "/oracle/aws-ora-fsx-ec2-inc-merge.html"
+    - title: Schützen und implementieren Sie Oracle auf FSx/EC2
+      url: "/oracle/aws-ora-fsx-ec2-iscsi-asm.html"
+  - title: Oracle für Azure NetApp Files
+    links:
+    - title: Bereitstellen von Oracle VLDB auf ANF
+      url: "/oracle/azure-ora-anf-vldb-dg.html"
+    - title: Reduzieren Sie die Data Guard-Kosten mit ANF
+      url: "/oracle/azure-ora-anf-data-guard.html"
+    - title: Wiederherstellen und Klonen von Oracle VLDB auf ANF
+      url: "/oracle/azure-ora-anf-inc-merge.html"
+    - title: Bereitstellen von Oracle auf Azure NetApp Files mit NFS
+      url: "/automation/automation-ora-anf-nfs.html"
+    - title: Bereitstellen und Migrieren von Oracle auf ANF
+      url: "/oracle/azure-ora-nfile-usecase.html"
+  - title: Oracle für Google Cloud
+    links:
+    - title: Optimieren Sie die Sicherung und Wiederherstellung von Oracle VLDB in
+        Google Cloud
+      url: "/oracle/gcp-ora-gcnv-inc-merge.html"
+    - title: Stellen Sie Oracle VLDB mit Data Guard in Google Cloud bereit
+      url: "/oracle/gcp-ora-gcnv-vldb-dg.html"
+    - title: Überprüfen Sie die Oracle-Speicherlösungen in Google Cloud
+      url: "/oracle/gcp-oracle-gcnv-overview.html"
+  - title: SQL-Server-Lösungen für die Cloud und vor Ort
+    links:
+    - title: Sichern und Wiederherstellen von SQL Server auf AWS FSx ONTAP
+      url: "/mssql/sqlsb-backup-restore-aws-fsxn.html"
+    - title: Führen Sie SQL Server auf AWS EC2 mit FSx ONTAP aus
+      url: "/mssql/sql-aws-ec2.html"
+    - title: Ausführen von SQL Server auf Azure NetApp Files
+      url: "/mssql/sql-srv-anf-overview.html"
+    - title: Migrieren Sie lokale SQL-Workloads zu FSx ONTAP
+      url: "/mssql/customer-usecase-mssql-fsx1.html"
+    - title: SAP mit Microsoft SQL Server unter Windows unter Verwendung von Clustered
+        Data ONTAP
+      url: https://www.netapp.com/pdf.html?item=/media/16865-tr-4467pdf.pdf
+    - title: Modernisieren Sie Microsoft SQL Server
+      url: https://www.netapp.com/pdf.html?item=/media/15613-na-446.pdf
+    - title: Best Practices für Microsoft SQL Server mit ONTAP
+      url: https://www.netapp.com/pdf.html?item=/media/8585-tr4590.pdf
+    - title: Best Practices für Microsoft SQL Server mit EF-Series
+      url: https://www.netapp.com/pdf.html?item=/media/17086-tr4764pdf.pdf
+  - title: Hybrid-Cloud-Datenbanklösungen
+    links:
+    - title: Bereitstellen und Schützen von Oracle RAC mit vVols in VCF
+      url: "/oracle/vcf-ora-rac-vvol.html"
+    - title: Bereitstellen und Schützen von Oracle SI mit vVols in VCF
+      url: "/oracle/vcf-ora-si-vvol.html"
+    - title: Oracle auf NetApp C-Serie mit NFS bereitstellen
+      url: "/automation/automation-ora-c-series-nfs.html"
+    - title: Oracle auf NetApp ASA mit iSCSI bereitstellen
+      url: "/automation/automation-ora-asa-iscsi.html"
+    - title: Stellen Sie Oracle19c auf ONTAP mit Automatisierung bereit
+      url: "/automation/db-protection-overview.html"
+    - title: Führen Sie Oracle-Datenbanken auf der NetApp EF-Serie aus
+      url: https://www.netapp.com/pdf.html?item=/media/17248-tr4794pdf.pdf
+  - title: Open-Source-Datenbanken
+    links:
+    - title: Stellen Sie eine PostgreSQL-Datenbank bereit und richten Sie die Notfallwiederherstellung
+        in AWS FSx/EC2 ein
+      url: "/postgres/aws-postgres-fsx-ec2-hadr.html"
+    - title: MySQL-Datenbank auf ONTAP
+      url: https://www.netapp.com/pdf.html?item=/media/16423-tr-4722pdf.pdf
+  - title: SnapCenter für Datenbanken
+    links:
+    - title: Sichern und Klonen von PostgreSQL auf ONTAP mit SnapCenter
+      url: "/postgres/snapctr-psql-ontap.html"
+    - title: Einrichten, Klonen und Aktualisieren von Oracle-Datenbanken mit Automatisierung
+      url: "/automation/automation-ora-clone-lifecycle.html"
+    - title: Automatisierte Oracle-Bereitstellung in Microsoft Azure NetApp File
+      url: "/oracle/snapctr-ora-azure-anf.html"
+    - title: Stellen Sie Hybrid-Cloud-Datenbanklösungen mit SnapCenter bereit
+      url: "/dbops/hybrid-dbops-snapcenter-usecases.html"
+  - title: DB-Automatisierungs-Toolkits
+    links:
+    - title: Automatisieren Sie den Oracle-Klon-Lebenszyklus auf GCNV mit ASM
+      url: "/automation/automation-ora-clone-gcnv-asm.html"
+    - title: Automatisieren Sie den Oracle-Klon-Lebenszyklus auf ANF mit ASM
+      url: "/automation/automation-ora-clone-anf-asm.html"
+    - title: Migrieren Sie Oracle mit PDB-Verlagerung
+      url: "/automation/automation-ora-migration.html"
+    - title: Stellen Sie Oracle HA/DR mit Amazon FSx for NetApp ONTAP bereit
+      url: "/automation/automation-ora-hadr-fsx.html"
+    - title: Bereitstellung von Amazon FSx for NetApp ONTAP und EC2
+      url: "/automation/automation-fsx-ec2-provision.html"
+    - title: Bereitstellen von PostgreSQL in AWS
+      url: https://github.com/NetApp/na_postgresql_aws_deploy_hadr
+  - title: Lösungsanfragen und Feedback
+    links:
+    - title: Schlagen Sie eine neue Lösung vor
+      url: https://github.com/NetAppDocs/netapp-solutions/issues/new?body=[Request%20Solution]%0d%0a%0d%0aSolution%20Use%20Case:%20%0d%0aSolution%20Description:%20%0d%0aAdditional%20Comments:&title=Request%20Solution%20-%20%3Csolution%3E
+    - title: Geben Sie Feedback zur Lösung
+      url: https://github.com/NetAppDocs/netapp-solutions/issues/new?body=[Solution%20Feedback]%0d%0a%0d%0aSolution%20Name:%20%0d%0aSolution%20Feedback:%20%0d%0aAdditional%20Comments:&title=Solution%20Feedback%20-%20%3Csolution%3E

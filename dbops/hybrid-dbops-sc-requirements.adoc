@@ -1,0 +1,78 @@
+---
+sidebar: sidebar 
+permalink: dbops/hybrid-dbops-sc-requirements.html 
+summary: Diese Lösung ist für eine Hybrid-Cloud-Umgebung konzipiert, um lokale Produktionsdatenbanken zu unterstützen, die für Entwicklungs-/Test- und Notfallwiederherstellungsvorgänge auf alle gängigen öffentlichen Clouds übertragen werden können. 
+keywords: requirements, virtualized, bare metal, versions, automation 
+---
+= SnapCenter Anforderungen
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Diese Lösung ist für eine Hybrid-Cloud-Umgebung konzipiert, um lokale Produktionsdatenbanken zu unterstützen, die für Entwicklungs-/Test- und Notfallwiederherstellungsvorgänge auf alle gängigen öffentlichen Clouds übertragen werden können.
+
+Diese Lösung unterstützt alle Datenbanken, die derzeit von SnapCenter unterstützt werden, obwohl hier nur Oracle- und SQL Server-Datenbanken demonstriert werden.  Diese Lösung wird mit virtualisierten Datenbank-Workloads validiert, obwohl auch Bare-Metal-Workloads unterstützt werden.
+
+Wir gehen davon aus, dass Produktionsdatenbankserver vor Ort gehostet werden und DB-Volumes den DB-Hosts von einem ONTAP Speichercluster bereitgestellt werden.  Die SnapCenter software wird vor Ort für die Datenbanksicherung und Datenreplikation in die Cloud installiert.  Ein Ansible-Controller wird empfohlen, ist aber für die Automatisierung der Datenbankbereitstellung oder die Synchronisierung des Betriebssystemkernels und der Datenbankkonfiguration mit einer Standby-DR-Instanz oder Entwicklungs-/Testinstanzen in der öffentlichen Cloud nicht erforderlich.
+
+
+
+== Anforderungen
+
+[cols="3, 9"]
+|===
+| Umfeld | Anforderungen 
+
+
+.7+| *Vor Ort* | Alle von SnapCenter unterstützten Datenbanken und Versionen 
+
+
+| SnapCenter v4.4 oder höher 
+
+
+| Ansible v2.09 oder höher 
+
+
+| ONTAP Cluster 9.x 
+
+
+| Intercluster-LIFs konfiguriert 
+
+
+| Konnektivität von lokalen Standorten zu einem Cloud-VPC (VPN, Interconnect usw.) 
+
+
+| Netzwerkports geöffnet – SSH 22 – TCP 8145, 8146, 10000, 11104, 11105 
+
+
+.3+| *Cloud – AWS* | https://docs.netapp.com/us-en/occm/task_creating_connectors_aws.html["Cloud Manager-Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_aws.html["Cloud Volumes ONTAP"^] 
+
+
+| Abgleichen von DB OS EC2-Instanzen mit On-Prem 
+
+
+.3+| *Cloud – Azure* | https://docs.netapp.com/us-en/occm/task_creating_connectors_azure.html["Cloud Manager-Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_azure.html["Cloud Volumes ONTAP"^] 
+
+
+| Abgleich von DB OS Azure Virtual Machines mit On-Prem 
+
+
+.3+| *Cloud – GCP* | https://docs.netapp.com/us-en/occm/task_creating_connectors_gcp.html["Cloud Manager-Connector"^] 
+
+
+| https://docs.netapp.com/us-en/occm/task_getting_started_gcp.html["Cloud Volumes ONTAP"^] 
+
+
+| Abgleichen von DB OS Google Compute Engine-Instanzen mit lokalen 
+|===

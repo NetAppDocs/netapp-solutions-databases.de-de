@@ -1,0 +1,62 @@
+= 
+:allow-uri-read: 
+
+
+. Konfigurieren Sie die Anmeldeinformationen.
+. Erstellen Sie Anmeldeinformationstypen.  Bei Lösungen mit ONTAP müssen Sie den Anmeldeinformationstyp so konfigurieren, dass er mit den Benutzernamen- und Kennworteingaben übereinstimmt.
++
+.. Navigieren Sie zu „Administration“ → „Anmeldeinformationstypen“ und klicken Sie auf „Hinzufügen“.
+.. Geben Sie den Namen und die Beschreibung ein.
+.. Fügen Sie den folgenden Inhalt in die Eingabekonfiguration ein:
++
+[source, cli]
+----
+fields:
+  - id: dst_cluster_username
+    type: string
+    label: Destination Cluster Username
+  - id: dst_cluster_password
+    type: string
+    label: Destination Cluster Password
+    secret: true
+  - id: src_cluster_username
+    type: string
+    label: Source Cluster Username
+  - id: src_cluster_password
+    type: string
+    label: Source Cluster Password
+    secret: true
+----
+.. Fügen Sie den folgenden Inhalt in die Injector-Konfiguration ein und klicken Sie dann auf Speichern:
++
+[source, cli]
+----
+extra_vars:
+  dst_cluster_username: '{{ dst_cluster_username }}'
+  dst_cluster_password: '{{ dst_cluster_password }}'
+  src_cluster_username: '{{ src_cluster_username }}'
+  src_cluster_password: '{{ src_cluster_password }}'
+----
+
+
+. Anmeldeinformationen für ONTAP erstellen
++
+.. Navigieren Sie zu Ressourcen → Anmeldeinformationen und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für die ONTAP -Anmeldeinformationen ein
+.. Wählen Sie den Anmeldeinformationstyp aus, der im vorherigen Schritt erstellt wurde.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für Ihre Quell- und Zielcluster ein.
+.. Klicken Sie auf Speichern
+
+
+. Anmeldeinformationen für Oracle erstellen
++
+.. Navigieren Sie zu Ressourcen → Anmeldeinformationen und klicken Sie auf Hinzufügen.
+.. Geben Sie den Namen und die Organisationsdetails für Oracle ein
+.. Wählen Sie den Anmeldeinformationstyp des Computers aus.
+.. Geben Sie unter „Typdetails“ den Benutzernamen und das Kennwort für die Oracle-Hosts ein.
+.. Wählen Sie die richtige Methode zur Rechteerweiterung aus und geben Sie den Benutzernamen und das Kennwort ein.
+.. Klicken Sie auf Speichern
+.. Wiederholen Sie den Vorgang bei Bedarf für andere Anmeldeinformationen für den dr_oracle-Host.
+
+
+

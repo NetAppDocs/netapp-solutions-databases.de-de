@@ -1,0 +1,32 @@
+---
+sidebar: sidebar 
+permalink: mssql/sql-srv-anf-conclusion.html 
+keywords: takeaways, hybrid-cloud 
+summary: Unabhängig davon, ob Sie eine reine Cloud oder eine Hybrid Cloud mit Stretch-Datenbanken anstreben, bietet Azure NetApp Files hervorragende Optionen zum Bereitstellen und Verwalten der Datenbank-Workloads und reduziert gleichzeitig Ihre Gesamtbetriebskosten, indem die Datenanforderungen nahtlos in die Anwendungsebene integriert werden. 
+---
+= Abschluss
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Unabhängig davon, ob Sie eine reine Cloud oder eine Hybrid Cloud mit Stretch-Datenbanken anstreben, bietet Azure NetApp Files hervorragende Optionen zum Bereitstellen und Verwalten der Datenbank-Workloads und reduziert gleichzeitig Ihre Gesamtbetriebskosten, indem die Datenanforderungen nahtlos in die Anwendungsebene integriert werden.
+
+Dieses Dokument enthält Empfehlungen zum Planen, Entwerfen, Optimieren und Skalieren von Microsoft SQL Server-Bereitstellungen mit Azure NetApp Files, die je nach Implementierung stark variieren können.  Die richtige Lösung hängt sowohl von den technischen Details der Implementierung als auch von den geschäftlichen Anforderungen ab, die das Projekt vorantreiben.
+
+
+
+== Imbiss
+
+Zu den wichtigsten Punkten dieses Dokuments gehören:
+
+* Sie können jetzt Azure NetApp Files verwenden, um die Datenbank und den Dateifreigabezeugen für den SQL Server-Cluster zu hosten.
+* Sie können die Reaktionszeiten der Anwendung verkürzen und eine Verfügbarkeit von 99,9999 % gewährleisten, um den Zugriff auf SQL Server-Daten zu ermöglichen, wann und wo immer dies erforderlich ist.
+* Sie können die Gesamtkomplexität der SQL Server-Bereitstellung und der laufenden Verwaltung, wie z. B. RAID-Striping, durch einfache und sofortige Größenanpassung vereinfachen.
+* Sie können sich auf intelligente Betriebsfunktionen verlassen, die Ihnen dabei helfen, SQL Server-Datenbanken in Minutenschnelle bereitzustellen und Entwicklungszyklen zu beschleunigen.
+* Wenn Azure Cloud das Ziel ist, ist Azure NetApp Files die richtige Speicherlösung für eine optimierte Bereitstellung.
+

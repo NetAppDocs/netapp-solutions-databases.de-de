@@ -1,0 +1,62 @@
+---
+sidebar: sidebar 
+permalink: videos/videos-oracle-videos.html 
+summary: Eine Reihe von Videos und Demos, in denen die Funktionen vieler NetApp-Lösungen erläutert werden 
+keywords: netapp, solutions, videos, demos 
+---
+= Sehen Sie sich Videos und Demos zu Datenbanklösungen für Oracle mit NetApp an
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Entdecken Sie die umfassende Videobibliothek von NetApp mit Datenbanklösungen für Oracle mit NetApp.  Jede Sammlung hebt praktische Lösungen, bewährte Integrationsmethoden und moderne Datenbankverwaltung für Unternehmens-Workloads hervor.
+
+
+
+== Bereitstellung und Automatisierung
+
+.Vereinfachte und automatisierte Oracle-Bereitstellung auf Azure NetApp Files mit NFS
+video::d1c859b6-e45a-44c7-8361-b10f012fc89b[panopto,width=360]
+.Vereinfachte und automatisierte Oracle-Bereitstellung auf Amazon FSx ONTAP mit iSCSI
+video::81e389a0-d9b8-495c-883b-b0d701710847[panopto,width=360]
+.Vereinfachte und automatisierte Oracle-Bereitstellung auf NetApp ASA mit iSCSI
+video::79095731-6b02-41d5-9fa1-b0c00100d055[panopto,width=360]
+.Automatisierter Oracle DB-Klon aus dem DataGuard-Standby auf GCNV mit ASM
+video::74062c18-b120-45b7-9bf9-b2db00f73675[panopto,width=360]
+.Automatisierte Oracle 19c RAC-Bereitstellung auf FlexPod mit Ansible
+video::VcQMJIRzhoY[youtube,width=360]
+
+
+== Backup, Wiederherstellung und Klonen
+
+.Sicherung, Wiederherstellung und Klonen von Oracle-Datenbanken auf ANF mit SnapCenter
+video::960fb370-c6e0-4406-b6d5-b110014130e8[panopto,width=360]
+.Teil 4a – Datenbankklon für Entwicklung/Test mit SnapCenter -Benutzeroberfläche aus replizierter Standby-Kopie
+video::2f731d7c-0873-4a4d-8491-b01200f90a82[panopto,width=360]
+.Teil 4b – Datenbanksicherung, -wiederherstellung, -klonen mit der SnapCenter -Benutzeroberfläche
+video::97790d62-ff19-40e0-9784-b01200f920ed[panopto,width=360]
+.Teil 4c – Datenbanksicherung, Wiederherstellung mit BlueXP SaaS Apps Backup und Recovery
+video::4b0fd212-7641-46b8-9e55-b01200f9383a[panopto,width=360]
+.Oracle Multi-Tenant Pluggable Database Clone mit Speicher-Snapshots
+video::krzMWjrrMb0[youtube,width=360]
+
+
+== Modernisierung und Migration
+
+.Teil 1 – Oracle-Modernisierung mit Hybrid Cloud in AWS und FSx ONTAP
+video::b1a7bb05-caea-44a0-bd9a-b01200f372e9[panopto,width=360]
+.Teil 2a – Datenbankmigration von On-Premises zu AWS mithilfe automatisierter PDB-Verlagerung mit maximaler Verfügbarkeit
+video::bb088a3e-bbfb-4927-bf44-b01200f38b17[panopto,width=360]
+.Teil 2b – Datenbankmigration von On-Premises zu AWS mithilfe der BlueXP -Konsole über SnapMirror
+video::c0df32f8-d6d3-4b79-b0bd-b01200f3a2e8[panopto,width=360]
+
+
+== Hohe Verfügbarkeit, Notfallwiederherstellung und Replikation
+
+.Teil 3 – Automatisierte Einrichtung, Failover und Resynchronisierung der Datenbank-HA/DR-Replikation
+video::5fd03759-a691-4007-9748-b01200f3b79c[panopto,width=360]

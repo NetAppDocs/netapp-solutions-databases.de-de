@@ -1,0 +1,93 @@
+---
+sidebar: sidebar 
+permalink: oracle/aws-ora-fsx-ec2-factors.html 
+summary: Dieser Abschnitt enthält Details zu den Faktoren, die bei der Bereitstellung einer Oracle-Datenbank auf einer AWS EC2-Instanz und einem FSx-Speicher zu berücksichtigen sind. 
+keywords: HA, DR, database, Oracle, RDS, AWS, SnapCenter 
+---
+= Zu berücksichtigende Faktoren bei der Bereitstellung einer Oracle-Datenbank
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Eine öffentliche Cloud bietet zahlreiche Möglichkeiten für die Datenverarbeitung und Speicherung. Die Verwendung der richtigen Art von Datenverarbeitungsinstanz und Speicher-Engine ist ein guter Ausgangspunkt für die Datenbankbereitstellung.  Sie sollten außerdem Rechen- und Speicherkonfigurationen auswählen, die für Oracle-Datenbanken optimiert sind.
+
+In den folgenden Abschnitten werden die wichtigsten Überlegungen beim Bereitstellen einer Oracle-Datenbank in einer öffentlichen AWS-Cloud auf einer EC2-Instance mit FSx-Speicher beschrieben.
+
+
+
+== VM-Leistung
+
+Die Auswahl der richtigen VM-Größe ist für die optimale Leistung einer relationalen Datenbank in einer öffentlichen Cloud wichtig.  Für eine bessere Leistung empfiehlt NetApp die Verwendung einer Instanz der EC2 M5-Serie für die Oracle-Bereitstellung, die für Datenbank-Workloads optimiert ist.  Derselbe Instanztyp wird auch verwendet, um eine RDS-Instanz für Oracle von AWS zu betreiben.
+
+* Wählen Sie basierend auf den Arbeitslastmerkmalen die richtige vCPU- und RAM-Kombination.
+* Fügen Sie einer VM Swap-Speicher hinzu.  Bei der standardmäßigen Bereitstellung einer EC2-Instanz wird kein Swap-Speicherplatz erstellt, was für eine Datenbank nicht optimal ist.
+
+
+
+
+== Speicherlayout und -einstellungen
+
+NetApp empfiehlt das folgende Speicherlayout:
+
+* Für die NFS-Speicherung wird ein Volume-Layout mit drei Volumes empfohlen: eines für die Oracle-Binärdatei, eines für Oracle-Daten und eine doppelte Steuerdatei und eines für das aktive Oracle-Protokoll, das archivierte Protokoll und die Steuerdatei.
++
+image:aws-ora-fsx-ec2-stor-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+* Für die iSCSI-Speicherung wird ein Volume-Layout mit drei Volumes empfohlen: eines für die Oracle-Binärdatei, eines für Oracle-Daten und eine doppelte Steuerdatei und eines für das aktive Oracle-Protokoll, das archivierte Protokoll und die Steuerdatei.  Idealerweise sollte jedoch jedes Daten- und Protokollvolume vier LUNs enthalten.  Die LUNs sind auf den HA-Clusterknoten ideal ausbalanciert.
++
+image:aws-ora-fsx-ec2-stor-013.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+* Für Speicher-IOPS und -Durchsatz können Sie den Schwellenwert für bereitgestellte IOPS und Durchsatz für den FSx-Speichercluster auswählen und diese Parameter können jederzeit im laufenden Betrieb angepasst werden, wenn sich die Arbeitslast ändert.
++
+** Die automatische IOPS-Einstellung beträgt drei IOPS pro GiB zugewiesener Speicherkapazität oder benutzerdefiniertem Speicher bis zu 80.000.
+** Der Durchsatz wird wie folgt erhöht: 128, 256, 512, 1024, 2045 MBps.
+
+
+
+
+Überprüfen Sie dielink:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/performance.html["Amazon FSx ONTAP -Leistung"^] Dokumentation zur Dimensionierung von Durchsatz und IOPS.
+
+
+
+== NFS-Konfiguration
+
+Linux, das am weitesten verbreitete Betriebssystem, verfügt über native NFS-Funktionen.  Oracle bietet den Direct NFS (dNFS)-Client an, der nativ in Oracle integriert ist.  Oracle unterstützt NFSv3 seit über 20 Jahren. dNFS wird mit NFSv3 in allen Versionen von Oracle unterstützt.  NFSv4 wird von allen Betriebssystemen unterstützt, die dem NFSv4-Standard folgen. dNFS-Unterstützung für NFSv4 erfordert Oracle 12.1.0.2 oder höher.  NFSv4.1 erfordert spezielle Betriebssystemunterstützung.  Informationen zu unterstützten Betriebssystemen finden Sie im NetApp Interoperability Matrix Tool (IMT). dNFS-Unterstützung für NFSv4.1 erfordert Oracle Version 19.3.0.0 oder höher.
+
+Die automatisierte Oracle-Bereitstellung mit dem NetApp Automatisierungs-Toolkit konfiguriert dNFS automatisch auf NFSv3.
+
+Weitere zu berücksichtigende Faktoren:
+
+* TCP-Slot-Tabellen sind das NFS-Äquivalent zur Warteschlangentiefe des Host-Bus-Adapters (HBA).  Diese Tabellen steuern die Anzahl der NFS-Operationen, die zu einem bestimmten Zeitpunkt ausstehen können.  Der Standardwert liegt normalerweise bei 16, was für eine optimale Leistung viel zu niedrig ist.  Bei neueren Linux-Kerneln tritt das gegenteilige Problem auf, da diese das TCP-Slot-Tabellenlimit automatisch auf ein Niveau erhöhen können, das den NFS-Server mit Anfragen überlastet.
++
+Um eine optimale Leistung zu erzielen und Leistungsprobleme zu vermeiden, passen Sie die Kernelparameter, die die TCP-Slot-Tabellen steuern, auf 128 an.
+
++
+[source, cli]
+----
+sysctl -a | grep tcp.*.slot_table
+----
+* Die folgende Tabelle enthält empfohlene NFS-Mount-Optionen für Linux NFSv3 – Einzelinstanz.
++
+image:aws-ora-fsx-ec2-nfs-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder schriftlichen Inhalt darstellt"]
+
+
+
+
+NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die im Oracle-Dokument 1495104.1 beschriebenen Patches installiert sind.  Die NetApp -Supportmatrix für NFSv3 und NFSv4 umfasst keine spezifischen Betriebssysteme.  Alle Betriebssysteme, die dem RFC entsprechen, werden unterstützt.  Wenn Sie im Online IMT nach NFSv3- oder NFSv4-Unterstützung suchen, wählen Sie kein bestimmtes Betriebssystem aus, da keine Übereinstimmungen angezeigt werden.  Alle Betriebssysteme werden implizit durch die allgemeine Richtlinie unterstützt.
+
+
+
+== Hochverfügbarkeit
+
+Wie in der Lösungsarchitektur angegeben, basiert HA auf der Replikation auf Speicherebene.  Daher hängen der Start und die Verfügbarkeit von Oracle davon ab, wie schnell die Rechen- und Speicherkapazität hochgefahren und wiederhergestellt werden kann.  Beachten Sie die folgenden Schlüsselfaktoren:
+
+* Halten Sie eine Standby-Compute-Instanz bereit und synchronisieren Sie sie mit der primären über ein paralleles Ansible-Update auf beiden Hosts.
+* Replizieren Sie das Binärvolume vom primären Volume für Standby-Zwecke, damit Sie Oracle nicht in letzter Minute installieren und herausfinden müssen, was installiert und gepatcht werden muss.
+* Die Replikationshäufigkeit bestimmt, wie schnell die Oracle-Datenbank wiederhergestellt werden kann, um den Dienst wieder verfügbar zu machen.  Es besteht ein Kompromiss zwischen Replikationshäufigkeit und Speicherverbrauch.
+* Nutzen Sie die Automatisierung, um die Wiederherstellung und Umstellung auf Standby schnell und ohne menschliche Fehler durchzuführen.  NetApp stellt hierfür ein Automatisierungs-Toolkit bereit.
+

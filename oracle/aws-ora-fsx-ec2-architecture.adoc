@@ -1,0 +1,31 @@
+---
+sidebar: sidebar 
+permalink: oracle/aws-ora-fsx-ec2-architecture.html 
+summary: Dieser Abschnitt zeigt eine benutzerdefinierte RDS Oracle-Bereitstellungslösungsarchitektur mit angepasstem Oracle RDS- und FSx ONTAP Speicher. 
+keywords: architecture, Oracle RDS, RDS, FSx ONTAP, FSx, AWS, Oracle, HA, DR 
+---
+= Lösungsarchitektur
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Das folgende Architekturdiagramm veranschaulicht eine hochverfügbare Oracle-Datenbankbereitstellung auf einer AWS EC2-Instance mit dem FSx-Speicherdienst.  Für die Notfallwiederherstellung kann ein ähnliches Bereitstellungsschema eingerichtet werden, allerdings mit dem Standby in einer anderen Region.
+
+Innerhalb der Umgebung wird die Oracle-Compute-Instanz über eine AWS EC2-Instanzkonsole bereitgestellt.  Über die Konsole sind mehrere EC2-Instanztypen verfügbar.  NetApp empfiehlt die Bereitstellung eines datenbankorientierten EC2-Instanztyps, beispielsweise eines m5 Ami-Images mit RedHat Enterprise Linux 8 und bis zu 10 Gps Netzwerkbandbreite.
+
+Oracle-Datenbankspeicher auf FSx-Volumes wird dagegen mit der AWS FSx-Konsole oder CLI bereitgestellt.  Anschließend werden die Oracle-Binär-, Daten- oder Protokollvolumes präsentiert und auf einem Linux-Host der EC2-Instance gemountet.  Jedem Daten- oder Protokollvolume können je nach dem verwendeten zugrunde liegenden Speicherprotokoll mehrere LUNs zugewiesen werden.
+
+image:aws-ora-fsx-ec2-arch.png["Dieses Bild zeigt ein Beispielarchitekturdiagramm, das den primären HA-Cluster, den Standby-HA-Cluster, Verwaltungsknoten und zugehörige Verbindungsknoten umfasst."]
+
+Ein FSx-Speichercluster ist mit doppelter Redundanz konzipiert, sodass sowohl der primäre als auch der Standby-Speichercluster in zwei verschiedenen Verfügbarkeitszonen bereitgestellt werden.  Datenbank-Volumes werden in einem vom Benutzer konfigurierbaren Intervall für alle Oracle-Binär-, Daten- und Protokoll-Volumes von einem primären FSx-Cluster auf einen Standby-FSx-Cluster repliziert.
+
+Diese hochverfügbare Oracle-Umgebung wird mit einem Ansible-Controller-Knoten und einem SnapCenter -Backup-Server und UI-Tool verwaltet.  Die Installation, Konfiguration und Replikation von Oracle werden mithilfe von auf Ansible-Playbooks basierenden Toolkits automatisiert.  Alle Updates des Kernel-Betriebssystems der Oracle EC2-Instanz oder Oracle-Patches können parallel ausgeführt werden, um die Synchronisierung zwischen Primär- und Standby-Instanz aufrechtzuerhalten.  Tatsächlich kann die anfängliche Automatisierungseinrichtung bei Bedarf problemlos erweitert werden, um einige sich täglich wiederholende Oracle-Aufgaben auszuführen.
+
+SnapCenter bietet Workflows für die zeitpunktbezogene Wiederherstellung von Oracle-Datenbanken oder bei Bedarf für das Klonen von Datenbanken in der primären oder Standby-Zone.  Über die SnapCenter -Benutzeroberfläche können Sie die Sicherung und Replikation von Oracle-Datenbanken auf den Standby-FSx-Speicher für hohe Verfügbarkeit oder Notfallwiederherstellung basierend auf Ihren RTO- oder RPO-Zielen konfigurieren.
+
+Die Lösung bietet einen alternativen Prozess, der ähnliche Funktionen bietet wie die Bereitstellung von Oracle RAC und Data Guard.

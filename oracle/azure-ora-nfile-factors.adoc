@@ -1,0 +1,130 @@
+---
+sidebar: sidebar 
+permalink: oracle/azure-ora-nfile-factors.html 
+summary: Dieser Abschnitt enthält Details zu den Faktoren, die bei der Bereitstellung einer Oracle-Datenbank auf einer virtuellen Azure-Maschine und im Azure NetApp Files -Speicher berücksichtigt werden müssen. 
+keywords: database, Oracle, Azure, Azure NetApp Files 
+---
+= Zu berücksichtigende Faktoren bei der Bereitstellung einer Oracle-Datenbank
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Eine öffentliche Cloud bietet zahlreiche Möglichkeiten für die Datenverarbeitung und Speicherung. Die Verwendung der richtigen Art von Datenverarbeitungsinstanz und Speicher-Engine ist ein guter Ausgangspunkt für die Datenbankbereitstellung.  Sie sollten außerdem Rechen- und Speicherkonfigurationen auswählen, die für Oracle-Datenbanken optimiert sind.
+
+In den folgenden Abschnitten werden die wichtigsten Überlegungen beim Bereitstellen einer Oracle-Datenbank in der öffentlichen Azure-Cloud auf einer Azure-VM-Instanz mit Azure NetApp Files -Speicher beschrieben.
+
+
+
+== VM-Typ und -Größe
+
+Die Auswahl des richtigen VM-Typs und der richtigen VM-Größe ist für die optimale Leistung einer relationalen Datenbank in einer öffentlichen Cloud wichtig.  Eine virtuelle Azure-Maschine bietet eine Vielzahl von Compute-Instanzen, die zum Hosten von Oracle-Datenbank-Workloads verwendet werden können.  Siehe die Microsoft-Dokumentationlink:https://docs.microsoft.com/en-us/azure/virtual-machines/sizes["Größen für virtuelle Maschinen in Azure"^] für verschiedene Arten von virtuellen Azure-Maschinen und deren Dimensionierung.  Im Allgemeinen empfiehlt NetApp die Verwendung einer universellen virtuellen Azure-Maschine für die Bereitstellung kleiner und mittelgroßer Oracle-Datenbanken.  Für die Bereitstellung größerer Oracle-Datenbanken eignet sich eine speicheroptimierte Azure-VM.  Mit mehr verfügbarem RAM kann ein größerer Oracle SGA oder Smart Flash Cache konfiguriert werden, um den physischen E/A-Vorgang zu reduzieren, was wiederum die Datenbankleistung verbessert.
+
+Azure NetApp Files fungiert als NFS-Mount, der an eine virtuelle Azure-Maschine angeschlossen ist, was einen höheren Durchsatz bietet und die speicheroptimierte VM-Durchsatzgrenze mit lokalem Speicher überwindet.  Daher könnte die Ausführung von Oracle auf Azure NetApp Files die Anzahl der lizenzierbaren Oracle-CPU-Kerne und die Lizenzkosten reduzieren.  Sehenlink:https://www.netapp.com/media/17105-tr4780.pdf["TR-4780: Oracle-Datenbanken auf Microsoft Azure"^] , Abschnitt 7 – Wie funktioniert die Oracle-Lizenzierung?
+
+Zu den weiteren zu berücksichtigenden Faktoren gehören die folgenden:
+
+* Wählen Sie basierend auf den Arbeitslastmerkmalen die richtige vCPU- und RAM-Kombination.  Mit zunehmender RAM-Größe der VM steigt auch die Anzahl der vCPU-Kerne.  Irgendwann sollte ein Gleichgewicht erreicht sein, da die Oracle-Lizenzgebühren auf der Anzahl der vCPU-Kerne basieren.
+* Fügen Sie einer VM Swap-Speicher hinzu.  Bei der standardmäßigen Azure-VM-Bereitstellung wird kein Auslagerungsspeicher erstellt, was für eine Datenbank nicht optimal ist.
+
+
+
+
+== Azure NetApp Files Leistung
+
+Azure NetApp Files Volumes werden aus einem Kapazitätspool zugewiesen, den der Kunde in seinem Azure NetApp Files -Speicherkonto bereitstellen muss.  Jeder Kapazitätspool wird wie folgt zugewiesen:
+
+* Auf ein Service-Level, das die gesamte Leistungsfähigkeit definiert.
+* Die anfänglich bereitgestellte Speicherkapazität oder das Tiering für diesen Kapazitätspool.  Eine Dienstgütestufe (QoS), die den maximalen Gesamtdurchsatz pro bereitgestelltem Speicherplatz definiert.
+
+
+Das Servicelevel und die anfänglich bereitgestellte Speicherkapazität bestimmen das Leistungsniveau für ein bestimmtes Oracle-Datenbankvolumen.
+
+
+
+=== 1. Servicelevel für Azure NetApp Files
+
+Azure NetApp Files unterstützt drei Servicelevel: Ultra, Premium und Standard.
+
+* *Ultra-Speicher.*  Diese Stufe bietet bis zu 128 MiBps Durchsatz pro 1 TiB zugewiesenem Volumenkontingent.
+* *Premium-Speicher.*  Diese Stufe bietet bis zu 64 MiBps Durchsatz pro 1 TiB zugewiesenem Volumenkontingent.
+* *Standardspeicher.*  Diese Stufe bietet bis zu 16 MiBps Durchsatz pro 1 TiB zugewiesenem Volumenkontingent.
+
+
+
+
+=== 2. Kapazitätspool und Servicequalität
+
+Jede der gewünschten Servicestufen ist mit Kosten für die bereitgestellte Kapazität verbunden und umfasst eine Dienstgütestufe (QoS), die den maximalen Gesamtdurchsatz für den bereitgestellten Speicherplatz definiert.
+
+Beispielsweise bietet ein 10 TiB großer Single-Capacity-Pool mit dem Premium-Service-Level einen insgesamt verfügbaren Durchsatz für alle Volumes in diesem Kapazitätspool von 10 x 64 MBps, also 640 MBps mit 40.000 (16.000) IOPs oder 80.000 (8.000) IOPs.
+
+Die Mindestgröße des Kapazitätspools beträgt 4 TiB.  Sie können die Größe eines Kapazitätspools in 1-TiB-Schritten ändern, um auf Änderungen Ihrer Workload-Anforderungen zu reagieren und so Speicherbedarf und -kosten zu verwalten.
+
+
+
+=== 3. Berechnen Sie den Servicelevel bei einem Datenbankvolumen
+
+Die Durchsatzgrenze für ein Oracle-Datenbankvolume wird durch eine Kombination der folgenden Faktoren bestimmt: Das Servicelevel des Kapazitätspools, zu dem das Volume gehört, und das dem Volume zugewiesene Kontingent.
+
+Das folgende Diagramm zeigt, wie die Durchsatzgrenze für ein Oracle-Datenbankvolume berechnet wird.
+
+image:db-ora-azure-anf-factors-001.png["Dieses Bild zeigt die Gleichung, die auf die drei Kapazitätsstufen angewendet wird, um den Bruttodurchsatz zu bestimmen."]
+
+In Beispiel 1 wird einem Volume aus einem Kapazitätspool mit der Speicherebene „Premium“, dem ein Kontingent von 2 TiB zugewiesen ist, ein Durchsatzlimit von 128 MiBps (2 TiB * 64 MiBps) zugewiesen.  Dieses Szenario gilt unabhängig von der Größe des Kapazitätspools oder dem tatsächlichen Volumenverbrauch.
+
+In Beispiel 2 wird einem Volume aus einem Kapazitätspool mit der Speicherebene „Premium“, dem ein Kontingent von 100 GiB zugewiesen ist, ein Durchsatzlimit von 6,25 MiBps (0,09765625 TiB * 64 MiBps) zugewiesen.  Dieses Szenario gilt unabhängig von der Größe des Kapazitätspools oder dem tatsächlichen Volumenverbrauch.
+
+Bitte beachten Sie, dass die Mindestgröße des Volumes 100 GiB beträgt.
+
+
+
+== Speicherlayout und -einstellungen
+
+NetApp empfiehlt das folgende Speicherlayout:
+
+* Verwenden Sie für kleine Datenbanken ein einzelnes Volume-Layout für alle Oracle-Dateien.
++
+image:db-ora-azure-anf-factors-002.png["Dieses Bild zeigt drei Datenbanken (DB1, DB2 und DB3), die jeweils Datendateien, Redo-Protokolle, Archivprotokolle und Steuerdateien in einem einzigen Kapazitätspool enthalten."]
+
+* Für große Datenbanken wird ein Volume-Layout mit mehreren Volumes empfohlen: eines für Oracle-Daten und eine doppelte Steuerdatei und eines für das aktive Oracle-Protokoll, das archivierte Protokoll und die Steuerdatei.  NetApp empfiehlt dringend, anstelle des lokalen Laufwerks ein Volume für die Oracle-Binärdatei zuzuweisen, damit die Datenbank auf einen neuen Host verschoben und schnell wiederhergestellt werden kann.
++
+image:db-ora-azure-anf-factors-003.png["Dieses Bild zeigt zwei Datenbanken mit jeweils zwei Bänden.  Das erste Volume enthält Datendateien, während das zweite Volume jeder Datenbank Redo-Protokolle, Archivprotokolle und Steuerdateien enthält.  Alles innerhalb eines einzigen Kapazitätspools."]
+
+
+
+
+
+== NFS-Konfiguration
+
+Linux, das am weitesten verbreitete Betriebssystem, verfügt über native NFS-Funktionen.  Oracle bietet einen direkten NFS-Client (dNFS), der nativ in Oracle integriert ist.  Oracle dNFS umgeht den Betriebssystem-Cache und ermöglicht die parallele Verarbeitung, um die Datenbankleistung zu verbessern.  Oracle unterstützt NFSv3 seit über 20 Jahren und NFSv4 wird mit Oracle 12.1.0.2 und höher unterstützt.
+
+Durch die Verwendung von dNFS (verfügbar seit Oracle 11g) kann eine Oracle-Datenbank, die auf einer virtuellen Azure-Maschine ausgeführt wird, deutlich mehr E/A-Vorgänge ausführen als der native NFS-Client.  Die automatisierte Oracle-Bereitstellung mit dem NetApp Automatisierungs-Toolkit konfiguriert dNFS automatisch auf NFSv3.
+
+Das folgende Diagramm zeigt den SLOB-Benchmark für Azure NetApp Files mit Oracle dNFS.
+
+image:db-ora-azure-anf-factors-004.png["Dieses Diagramm zeigt deutlich, dass dNFS die sequentielle DB-Dateilatenz (ms) im Vergleich zu KNFS verbessert."]
+
+Weitere zu berücksichtigende Faktoren:
+
+* TCP-Slot-Tabellen sind das NFS-Äquivalent zur Warteschlangentiefe des Host-Bus-Adapters (HBA).  Diese Tabellen steuern die Anzahl der NFS-Operationen, die zu einem bestimmten Zeitpunkt ausstehen können.  Der Standardwert liegt normalerweise bei 16, was für eine optimale Leistung viel zu niedrig ist.  Bei neueren Linux-Kerneln tritt das gegenteilige Problem auf, da diese das TCP-Slot-Tabellenlimit automatisch auf ein Niveau erhöhen können, das den NFS-Server mit Anfragen überlastet.
++
+Um eine optimale Leistung zu erzielen und Leistungsprobleme zu vermeiden, stellen Sie die Kernelparameter, die die TCP-Slot-Tabellen steuern, auf 128 ein.
+
++
+[source, cli]
+----
+sysctl -a | grep tcp.*.slot_table
+----
+* Die folgende Tabelle enthält empfohlene NFS-Mount-Optionen für eine einzelne Instanz von Linux NFSv3.
++
+image:aws-ora-fsx-ec2-nfs-001.png["Diese Tabelle zeigt die detaillierten NFS-Mount-Optionen für die folgenden Dateitypen: Steuerdateien, Datendateien, Redo-Protokolle, ORACLE_HOME und ORACLE_BASE."]
+
+
+
+
+NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die im Oracle-Dokument 1495104.1 beschriebenen Patches installiert sind.  Die NetApp -Supportmatrix für NFSv3 und NFSv4 umfasst keine spezifischen Betriebssysteme.  Alle Betriebssysteme, die dem RFC entsprechen, werden unterstützt.  Wenn Sie im Online IMT nach NFSv3- oder NFSv4-Unterstützung suchen, wählen Sie kein bestimmtes Betriebssystem aus, da keine Übereinstimmungen angezeigt werden.  Alle Betriebssysteme werden implizit durch die allgemeine Richtlinie unterstützt.
