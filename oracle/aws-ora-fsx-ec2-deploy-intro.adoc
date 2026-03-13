@@ -26,4 +26,5 @@ Das Ziel dieser Dokumentation besteht darin, schrittweise Prozesse, Verfahren un
 
 Um mehr über die Lösung und den Anwendungsfall zu erfahren, sehen Sie sich das folgende Übersichtsvideo an:
 
-link:https://www.netapp.tv/insight/details/30000?playlist_id=275&mcid=04891225598830484314259903524057913910["Modernisieren Sie Ihre Oracle-Datenbank mit Hybrid Cloud in AWS und FSx ONTAP, Teil 1 – Anwendungsfall und Lösungsarchitektur"^]
+.Modernisieren Sie Ihre Oracle-Datenbank mit Hybrid Cloud in AWS und FSx ONTAP, Teil 1 – Anwendungsfall und Lösungsarchitektur
+video::b1a7bb05-caea-44a0-bd9a-b01200f372e9[panopto,width=360]
