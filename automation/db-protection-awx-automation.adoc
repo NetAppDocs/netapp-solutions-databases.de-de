@@ -18,10 +18,12 @@ Auf dieser Seite wird der automatisierte Datenschutz von Oracle19c auf NetApp ON
 
 
 
+[[awxtower-oracle-data-protection]]
 == AWX/Tower Oracle-Datenschutz
 
 
 
+[[create-the-inventory-group-hosts-and-credentials-for-your-environment]]
 === Erstellen Sie das Inventar, die Gruppe, die Hosts und die Anmeldeinformationen für Ihre Umgebung
 
 In diesem Abschnitt wird die Einrichtung von Inventar, Gruppen, Hosts und Zugangsdaten in AWX/Ansible Tower beschrieben, die die Umgebung für die Nutzung automatisierter NetApp -Lösungen vorbereiten.
@@ -217,6 +219,7 @@ extra_vars:
 ====
 
 
+[[create-a-project]]
 === Erstellen eines Projekts
 
 . Gehen Sie zu Ressourcen → Projekte und klicken Sie auf Hinzufügen.
@@ -232,6 +235,7 @@ extra_vars:
 
 
 
+[[configure-global-variables]]
 === Konfigurieren globaler Variablen
 
 Die in diesem Abschnitt definierten Variablen gelten für alle Oracle-Hosts, Datenbanken und den ONTAP Cluster.
@@ -556,6 +560,7 @@ control_files:
 ====
 
 
+[[automation-playbooks]]
 === Automatisierungs-Playbooks
 
 Es müssen vier separate Playbooks ausgeführt werden.
@@ -687,6 +692,7 @@ NOTE: Dieses Playbook wird erst ausgeführt, wenn Sie bereit sind, Ihre Datenban
 ====
 
 
+[[recovering-oracle-database]]
 === Wiederherstellen der Oracle-Datenbank
 
 . Die Datenvolumes der Oracle-Produktionsdatenbanken vor Ort werden durch die NetApp SnapMirror -Replikation entweder auf einem redundanten ONTAP -Cluster im sekundären Rechenzentrum oder auf Cloud Volume ONTAP in der öffentlichen Cloud geschützt.  In einer vollständig konfigurierten Notfallwiederherstellungsumgebung stehen Wiederherstellungs-Compute-Instanzen im sekundären Rechenzentrum oder in der öffentlichen Cloud bereit, um im Katastrophenfall die Produktionsdatenbank wiederherzustellen.  Die Standby-Compute-Instanzen werden mit den lokalen Instanzen synchronisiert, indem parallele Updates für OS-Kernel-Patches oder Upgrades im Gleichschritt ausgeführt werden.

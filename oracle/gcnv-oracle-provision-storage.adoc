@@ -15,6 +15,8 @@ Bereitstellung von Google Cloud NetApp Volumes iSCSI-Blockspeicher für die Hoch
 
 
 
+[[step-1-create-gcnv-iscsi-pools]]
+[[provision-gcnv-iscsi-volumes]]
 == Schritt 1: GCNV iSCSI Pools erstellen
 
 Zwei Flex Unified Speicherpools werden erstellt, jeweils einer in jeder Datenbankzone, um iSCSI-Volumes für den primären und den Standby-Host bereitzustellen. Jeder Datenbank-Host verwendet Volumes aus dem Pool seiner lokalen Zone.
@@ -53,6 +55,8 @@ Zwei Flex Unified Speicherpools werden erstellt, jeweils einer in jeder Datenban
 
 
 
+[[step-2-create-host-groups]]
+[[create-host-groups]]
 == Schritt 2: Hostgruppen erstellen
 
 Erstellen Sie für jeden Datenbank-Host eine eigene Hostgruppe, sodass jede VM nur ihre eigenen Volumes sieht. Die primären und Standby-Hosts dürfen keine GCNV iSCSI-Volumes gemeinsam nutzen, um unabhängigen Speicher beizubehalten.
@@ -76,6 +80,8 @@ Erstellen Sie für jeden Datenbank-Host eine eigene Hostgruppe, sodass jede VM n
 
 
 
+[[step-3-create-gcnv-iscsi-volumes]]
+[[create-gcnv-iscsi-volumes]]
 == Schritt 3: GCNV iSCSI-Volumes erstellen
 
 Fünf GCNV iSCSI-Volumes sind für jeden Datenbank-Host zu erstellen: eines für  `/u01` und vier für ASM-Backing-Devices. Die Volumes jedes Hosts müssen im Storage-Pool der lokalen Zone mit der entsprechenden Hostgruppe erstellt werden.
@@ -120,6 +126,8 @@ Volume-Namen: Nur Buchstaben, Zahlen und Unterstriche (keine Bindestriche).
 
 
 
+[[step-4-configure-iscsi-and-multipath]]
+[[configure-iscsi-and-multipath]]
 == Schritt 4: iSCSI und Multipath konfigurieren
 
 iSCSI und device-mapper-multipath sind auf jedem Datenbankhost zu konfigurieren, um über beide Storage-Portal-IPs auf die GCNV Volumes zuzugreifen. Diese Schritte sind auf  `oracdb1` mit den Portal-IPs des primären Pools auszuführen und anschließend auf  `oracdb2` mit den Portal-IPs des Standby-Pools zu wiederholen. Ist der ausgehende Datenverkehr des Hosts eingeschränkt, ist TCP/3260 von jeder Datenbank-VM zu ihren GCNV iSCSI-Portal-IPs zuzulassen (zusätzlich zu TCP/1521 zwischen den VMs xref:gcnv-oracle-provision-compute.adoc#vpc-firewall-allow-1521[Schritt 2: VPC-Firewall – TCP/1521 in allen drei Zonen auf die Allowlist setzen]).
@@ -206,6 +214,8 @@ ls -l /dev/mapper/ora_$(hostname -s)_*
 
 
 
+[[step-5-partition-asm-devices]]
+[[partition-asm-backing-devices]]
 == Schritt 5: ASM-Geräte partitionieren
 
 Die vier ASM-Backing-Devices (außer  `u01`) jeweils mit einer GPT-Partition für die Nutzung durch ASM partitionieren und anschließend udev-Regeln für den Besitz durch Grid konfigurieren. Diese Schritte sind auf jedem Datenbank-Host auszuführen.
@@ -248,6 +258,8 @@ ls -lL /dev/mapper/ora_${HOST}_*p1    # grid:asmadmin 0660
 
 
 
+[[step-6-format-and-mount-u01]]
+[[format-and-mount-u01]]
 == Schritt 6: Formatieren und Einbinden `/u01`
 
 Das  `ora_<host>_u01`GCNV Volume wird mit XFS formatiert und unter Verwendung der UUID dauerhaft in  `/etc/fstab` eingebunden. Das  `/u01`Dateisystem enthält Grid home, Oracle home und Staging-Dateien.
@@ -288,6 +300,7 @@ Starten Sie das System einmal neu und bestätigen Sie  `/u01`die Mounts, bevor x
 
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um die Binärdateien für Oracle Grid Infrastructure und Database auf den vorbereiteten Hosts zu installieren, zu xref:gcnv-oracle-install-software.adoc[Die Oracle Grid Infrastructure und die Oracle Database Software installieren] auf beiden Hosts wechseln.

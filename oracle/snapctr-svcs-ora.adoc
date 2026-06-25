@@ -20,6 +20,7 @@ Allen Cao, Niyaz Mohamed, NetApp
 
 
 
+[[purpose]]
 == Zweck
 
 SnapCenter Services ist die SaaS-Version des klassischen SnapCenter -Datenbankverwaltungs-UI-Tools, das über die NetApp BlueXP -Cloud-Verwaltungskonsole verfügbar ist.  Es ist ein integraler Bestandteil des NetApp Cloud-Backup- und Datenschutzangebots für Datenbanken wie Oracle und HANA, die auf NetApp Cloud-Speicher ausgeführt werden.  Dieser SaaS-basierte Dienst vereinfacht die herkömmliche Bereitstellung eigenständiger SnapCenter -Server, für die im Allgemeinen ein Windows-Server erforderlich ist, der in einer Windows-Domänenumgebung ausgeführt wird.
@@ -35,6 +36,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für die folgenden Zielgruppen gedacht:
@@ -47,12 +49,14 @@ Diese Lösung ist für die folgenden Zielgruppen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Das Testen und Validieren dieser Lösung wurde in einer AWS FSx- und EC2-Umgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
 
 
 
+[[architecture]]
 === Architektur
 
 image:snapctr-svcs-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery für Anwendungen innerhalb der BlueXP Konsole, einschließlich der Benutzeroberfläche, des Connectors und der verwalteten Ressourcen."]
@@ -61,6 +65,7 @@ Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery 
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 *Hardware*
@@ -96,6 +101,7 @@ Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery 
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *Connector muss im selben VPC wie Datenbank und FSx bereitgestellt werden.*  Wenn möglich, sollte der Connector im selben AWS VPC bereitgestellt werden, wodurch die Verbindung zum FSx-Speicher und der EC2-Recheninstanz ermöglicht wird.
@@ -107,6 +113,7 @@ Dieses Bild bietet eine detaillierte Darstellung der BlueXP backup and recovery 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Es gibt eine umfassende NetApp -Dokumentation mit einem breiteren Anwendungsbereich, die Ihnen beim Schutz Ihrer Cloud-nativen Anwendungsdaten hilft.  Das Ziel dieser Dokumentation besteht darin, schrittweise Verfahren bereitzustellen, die die Bereitstellung des SnapCenter -Dienstes mit der BlueXP Konsole abdecken, um Ihre auf Amazon FSx ONTAP und einer EC2-Recheninstanz bereitgestellte Oracle-Datenbank zu schützen.  Dieses Dokument ergänzt bestimmte Details, die in allgemeineren Anweisungen möglicherweise fehlen.
@@ -121,6 +128,7 @@ Führen Sie zunächst die folgenden Schritte aus:
 video::4b0fd212-7641-46b8-9e55-b01200f9383a[panopto]
 
 
+[[prerequisites-for-snapcenter-service-deployment]]
 === Voraussetzungen für die Bereitstellung des SnapCenter -Dienstes
 
 [%collapsible%open]
@@ -136,6 +144,7 @@ Für die Bereitstellung sind die folgenden Voraussetzungen erforderlich.
 ====
 
 
+[[onboarding-to-bluexp-preparation]]
 === Onboarding zur BlueXP -Vorbereitung
 
 [%collapsible%open]
@@ -154,6 +163,7 @@ Die Richtlinie sollte mit einer JSON-Zeichenfolge konfiguriert werden, die in de
 ====
 
 
+[[deploy-a-connector-for-snapcenter-services]]
 === Bereitstellen eines Connectors für SnapCenter -Dienste
 
 [%collapsible%open]
@@ -202,6 +212,7 @@ image:snapctr-svcs-connector-010-review.png["Screenshot, der diesen Schritt in d
 ====
 
 
+[[define-a-credential-in-bluexp-for-aws-resources-access]]
 === Definieren Sie in BlueXP eine Anmeldeinformation für den Zugriff auf AWS-Ressourcen
 
 [%collapsible%open]
@@ -240,6 +251,7 @@ image:snapctr-svcs-credential-007-aws.png["Screenshot, der diesen Schritt in der
 ====
 
 
+[[snapcenter-services-setup]]
 === Einrichtung der SnapCenter -Dienste
 
 [%collapsible%open]
@@ -323,6 +335,7 @@ Damit ist die Ersteinrichtung der SnapCenter -Dienste für Oracle abgeschlossen.
 ====
 
 
+[[oracle-database-backup]]
 === Oracle-Datenbanksicherung
 
 [%collapsible%open]
@@ -365,6 +378,7 @@ image:snapctr-svcs-bkup-007.png["Screenshot, der diesen Schritt in der GUI zeigt
 ====
 
 
+[[oracle-database-restore-and-recovery]]
 === Wiederherstellung und Wiederherstellung von Oracle-Datenbanken
 
 [%collapsible%open]
@@ -394,6 +408,7 @@ image:snapctr-svcs-restore-004.png["Screenshot, der diesen Schritt in der GUI ze
 ====
 
 
+[[oracle-database-clone]]
 === Oracle-Datenbankklon
 
 [%collapsible%open]
@@ -435,6 +450,7 @@ image:snapctr-svcs-clone-008-db.png["Abbildung, die einen Eingabe-/Ausgabedialog
 ====
 
 
+[[additional-information]]
 == Weitere Informationen
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

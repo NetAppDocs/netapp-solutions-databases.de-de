@@ -18,24 +18,28 @@ Dieser Best Practice-Leitfaden enthält Details zu einer Lösung zum Bereitstell
 
 
 
+[[overview]]
 == Überblick
 
 Viele unternehmenskritische Oracle-Unternehmensdatenbanken werden immer noch vor Ort gehostet und viele Unternehmen möchten diese Oracle-Datenbanken in eine öffentliche Cloud migrieren.  Diese Oracle-Datenbanken sind häufig anwendungszentriert und erfordern daher benutzerspezifische Konfigurationen, eine Funktion, die bei vielen Public-Cloud-Angeboten mit Datenbanken als Service fehlt.  Daher erfordert die aktuelle Datenbanklandschaft eine Oracle-Datenbanklösung auf Basis der öffentlichen Cloud, die auf einem leistungsstarken, skalierbaren Rechen- und Speicherdienst basiert, der einzigartige Anforderungen erfüllen kann.  Azure Virtual Machine Compute Instances und der Azure NetApp Files -Speicherdienst könnten die fehlenden Teile dieses Puzzles sein, die Sie zum Erstellen und Migrieren Ihrer unternehmenskritischen Oracle-Datenbank-Workloads in eine öffentliche Cloud nutzen können.
 
 
 
+[[azure-virtual-machine]]
 == Virtuelle Azure-Maschine
 
 Virtuelle Azure-Computer sind eine von mehreren Arten bedarfsgesteuerter, skalierbarer Computerressourcen, die Azure anbietet.  Normalerweise entscheiden Sie sich für eine virtuelle Maschine, wenn Sie mehr Kontrolle über die Computerumgebung benötigen, als die anderen Optionen bieten.  Azure-Virtual Machines bieten eine schnelle und einfache Möglichkeit, einen Computer mit spezifischen Konfigurationen zu erstellen, die zum Ausführen Ihrer Oracle-Datenbank erforderlich sind, unabhängig davon, ob es sich um rechen- oder speicherintensive Workloads handelt.  Virtuelle Maschinen in einem virtuellen Azure-Netzwerk können problemlos mit dem Netzwerk Ihrer Organisation verbunden werden, beispielsweise über einen gesicherten VPN-Tunnel.
 
 
 
+[[azure-netapp-files-anf]]
 == Azure NetApp Files (ANF)
 
 Azure NetApp Files ist ein vollständig verwalteter Microsoft-Dienst, der Ihre Datenbank-Workload schneller und sicherer als je zuvor in die Cloud bringt.  Es wurde entwickelt, um die Kernanforderungen für die Ausführung von Hochleistungs-Workloads wie Oracle-Datenbanken in der Cloud zu erfüllen, und bietet Leistungsstufen, die die realen IOPS-Anforderungen, geringe Latenz, hohe Verfügbarkeit, hohe Haltbarkeit, Verwaltbarkeit im großen Maßstab sowie schnelles und effizientes Sichern, Wiederherstellen und Klonen widerspiegeln.  Diese Funktionen sind möglich, weil Azure NetApp Files auf physischen All-Flash NetApp ONTAP -Systemen basiert, die in der Azure-Rechenzentrumsumgebung ausgeführt werden.  Azure NetApp Files ist vollständig in die Azure DCs und das Portal integriert und Kunden können zum Erstellen und Verwalten freigegebener Dateien dieselbe komfortable grafische Benutzeroberfläche und APIs verwenden wie bei jedem anderen Azure-Objekt.  Mit Azure NetApp File können Sie die gesamten Funktionen von Azure ohne zusätzliches Risiko, Kosten oder Zeit nutzen und dem einzigen nativen Azure-Dateidienst für Unternehmen vertrauen.
 
 
 
+[[conclusion]]
 == Abschluss
 
 In dieser Dokumentation wird ausführlich beschrieben, wie Sie eine Oracle-Datenbank mit einer virtuellen Azure-Maschine und dem Azure NetApp Files -Speicherdienst bereitstellen, konfigurieren und migrieren, der eine Leistung und Haltbarkeit bietet, die mit einem lokalen System vergleichbar ist.  Best-Practice-Anleitungen finden Sie unter TR-4780link:https://www.netapp.com/media/17105-tr4780.pdf["Oracle-Datenbanken auf Microsoft Azure"^] .  Noch wichtiger ist, NetApp auch Automatisierungs-Toolkits bereitstellt, die die meisten Aufgaben automatisieren, die für die Bereitstellung, Konfiguration, Datensicherung, Migration und Verwaltung Ihrer Oracle-Datenbank-Workload in der öffentlichen Azure-Cloud erforderlich sind.  Die Automatisierungs-Toolkits stehen auf der öffentlichen GitHub-Site von NetApp zum Download bereit:link:https://github.com/NetApp-Automation/["NetApp-Automatisierung"^] .

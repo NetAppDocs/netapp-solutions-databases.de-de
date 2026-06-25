@@ -15,6 +15,8 @@ Die physische Oracle Standby-Datenbank wird mithilfe von Google Cloud NetApp Vol
 
 
 
+[[step-1-configure-listener-and-data-guard-parameters]]
+[[primary-sys-password-and-dg-params]]
 == Schritt 1: Listener und Data Guard Parameter konfigurieren
 
 Der Listener wird auf beiden Datenbankhosts so konfiguriert, dass Data Guard-Verbindungen unterstützt werden, einschließlich des für den Broker erforderlichen  `_DGMGRL` Dienstes. Die Kennwortdatei wird eingerichtet und die Archivprotokollparameter auf der primären Datenbank konfiguriert.
@@ -61,6 +63,8 @@ $GRID_HOME/bin/lsnrctl status
 
 
 
+[[step-2-prepare-standby-pfile-and-nomount]]
+[[standby-init-ora-and-nomount]]
 == Schritt 2: Standby-pfile vorbereiten und NOMOUNT
 
 Die Standby-Datenbankinstanz wird vorbereitet, indem die Passwortdatei von der primären Datenbank kopiert, eine minimale init.ora-pfile mit Data Guard-Parametern erstellt und die Instanz im NOMOUNT-Modus gestartet wird.
@@ -140,6 +144,8 @@ Die Standby-Instanz befindet sich nun im NOMOUNT-Modus und enthält keine Datend
 
 
 
+[[step-3-initialize-standby-storage-with-gcnv]]
+[[gcnv-standby-initialization]]
 == Schritt 3: Standby-Speicher mit GCNV initialisieren
 
 Die Standby-Volumes werden in  `oracle-pool-b` initialisiert, an  `oracdb2` angehängt, ASM-Disk-Gruppen eingebunden und die Standby-Instanz im MOUNT-Status finalisiert.
@@ -148,6 +154,7 @@ GCNV-Replikation eignet sich für das Seeding in der Produktion, während Snapsh
 
 
 
+[[choose-the-seeding-path]]
 === Wählen Sie den Startpfad
 
 Die Standby-Seeding-Methode wird entsprechend der Umgebung und den Wiederherstellungsanforderungen ausgewählt.
@@ -160,6 +167,8 @@ Alle Pfade treffen sich wieder bei <<standby-iscsi-and-asm-before-rman,Standby-A
 
 
 
+[[check-prerequisites]]
+[[gcnv-seed-prereqs]]
 === Voraussetzungen prüfen
 
 Die folgenden Voraussetzungen sollten vor der Initialisierung von Standby-Volumes bestätigt werden.
@@ -190,6 +199,8 @@ gcloud netapp storage-pools create oracle-pool-b \
 
 
 
+[[create-and-sync-replications]]
+[[create-volume-replications]]
 === Replikationen erstellen und synchronisieren
 
 Replikationsbeziehungen von primären Volumes zu Standby-Volumes werden erstellt, anschließend wird auf den Abschluss der anfänglichen Synchronisierung gewartet.
@@ -212,6 +223,8 @@ Warten Sie, bis  `mirrorState` ist  `MIRRORED` und die initiale Synchronisierung
 
 
 
+[[cut-over-and-attach-standby-volumes]]
+[[cutover-quiesce-stop-repl-attach]]
 === Umschalten und Standby-Volumes anschließen
 
 Den primären Host in den Ruhezustand versetzen, die Replikation nach der finalen Synchronisierung stoppen und die Zielvolumes an die Standby-Hostgruppe anhängen.
@@ -252,6 +265,8 @@ ALTER DATABASE END BACKUP;
 ----
 
 
+[[seed-from-snapshot]]
+[[snapshot-seed]]
 === Seed aus Snapshot
 
 Dieser Pfad wird für einmaliges Lab-Seeding verwendet, wenn keine kontinuierliche Replizierung erforderlich ist.
@@ -260,6 +275,8 @@ Für eine einmalige Testumgebung einen Quell-Snapshot erstellen und daraus Stand
 
 
 
+[[mount-standby-asm-disk-groups]]
+[[standby-iscsi-and-asm-before-rman]]
 === Standby-ASM-Diskgruppen einbinden
 
 Auf dem Standby-Host werden die angeschlossenen Speicherpfade erkannt und die ASM-Festplattengruppen vor dem Datenbank-Recovery eingebunden.
@@ -274,6 +291,8 @@ ALTER DISKGROUP FRA MOUNT FORCE;
 ----
 
 
+[[finalize-the-standby-instance]]
+[[oracle-finalize]]
 === Die Standby-Instanz finalisieren
 
 Die Standby-Kontrolldatei wird wiederhergestellt, eine Wiederherstellung auf das erfasste SCN durchgeführt, in einen physischen Standby konvertiert und die verwaltete Wiederherstellung gestartet.
@@ -299,6 +318,8 @@ An diesem Punkt sollte der Standby aktiviert  `PHYSICAL STANDBY` und  `MOUNTED` 
 
 
 
+[[step-4-register-standby-with-oracle-restart]]
+[[register-standby-with-oracle-restart]]
 == Schritt 4: Standby bei Oracle Restart registrieren
 
 Die Standby-Datenbank wird bei Oracle Restart registriert, sodass Neustarts automatisch ASM-Festplattengruppen wiederherstellen, die Standby-Datenbank einbinden und die verwaltete Wiederherstellung neu starten. Der Anwendungsdienst wird außerdem zu beiden Datenbank-Ressourcen hinzugefügt.
@@ -379,6 +400,7 @@ srvctl status database -db orcls
 
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 *Tierspezifisch:*

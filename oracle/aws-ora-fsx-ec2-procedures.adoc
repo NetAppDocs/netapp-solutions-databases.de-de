@@ -18,12 +18,14 @@ In diesem Abschnitt werden die Bereitstellungsverfahren für die Bereitstellung 
 
 
 
+[[deploy-an-ec2-linux-instance-for-oracle-via-ec2-console]]
 == Stellen Sie eine EC2-Linux-Instance für Oracle über die EC2-Konsole bereit
 
 Wenn Sie neu bei AWS sind, müssen Sie zunächst eine AWS-Umgebung einrichten.  Die Registerkarte „Dokumentation“ auf der Zielseite der AWS-Website bietet Links zu EC2-Anweisungen zum Bereitstellen einer Linux EC2-Instanz, die zum Hosten Ihrer Oracle-Datenbank über die AWS EC2-Konsole verwendet werden kann.  Der folgende Abschnitt ist eine Zusammenfassung dieser Schritte.  Einzelheiten finden Sie in der verlinkten AWS EC2-spezifischen Dokumentation.
 
 
 
+[[setting-up-your-aws-ec2-environment]]
 === Einrichten Ihrer AWS EC2-Umgebung
 
 Sie müssen ein AWS-Konto erstellen, um die erforderlichen Ressourcen zum Ausführen Ihrer Oracle-Umgebung auf dem EC2- und FSx-Dienst bereitzustellen.  Die folgende AWS-Dokumentation liefert die notwendigen Details:
@@ -40,6 +42,7 @@ Schlüsselthemen:
 
 
 
+[[enabling-multiple-availability-zones-in-aws-account-attributes]]
 === Aktivieren mehrerer Verfügbarkeitszonen in AWS-Kontoattributen
 
 Für eine Oracle-Hochverfügbarkeitskonfiguration, wie im Architekturdiagramm dargestellt, müssen Sie mindestens vier Verfügbarkeitszonen in einer Region aktivieren.  Die mehreren Verfügbarkeitszonen können auch in verschiedenen Regionen liegen, um die erforderlichen Entfernungen für die Notfallwiederherstellung einzuhalten.
@@ -48,6 +51,7 @@ image:aws-ora-fsx-ec2-inst-001.png["Abbildung, die einen Eingabe-/Ausgabedialog 
 
 
 
+[[creating-and-connecting-to-an-ec2-instance-for-hosting-oracle-database]]
 === Erstellen und Verbinden mit einer EC2-Instance zum Hosten einer Oracle-Datenbank
 
 Sehen Sie sich das Tutorial anlink:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html["Erste Schritte mit Amazon EC2 Linux-Instances"^] für schrittweise Bereitstellungsverfahren und Best Practices.
@@ -107,12 +111,14 @@ Sie müssen zwei EC2-Instanzen als primäre und Standby-Oracle-Server in ihrer v
 
 
 
+[[provision-fsx-ontap-file-systems-for-oracle-database-storage]]
 == Bereitstellen von FSx ONTAP -Dateisystemen für Oracle-Datenbankspeicher
 
 Bei der Bereitstellung einer EC2-Instanz wird ein EBS-Stammvolume für das Betriebssystem zugewiesen.  FSx ONTAP Dateisysteme bieten Oracle-Datenbankspeichervolumes, einschließlich der Oracle-Binär-, Daten- und Protokollvolumes.  Die FSx-Speicher-NFS-Volumes können entweder über die AWS FSx-Konsole oder über die Oracle-Installation bereitgestellt werden. Außerdem gibt es eine Konfigurationsautomatisierung, die die Volumes gemäß der Konfiguration des Benutzers in einer Automatisierungsparameterdatei zuweist.
 
 
 
+[[creating-fsx-ontap-file-systems]]
 === Erstellen von FSx ONTAP Dateisystemen
 
 Auf diese Dokumentation verwiesen https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-file-systems.html["Verwalten von FSx ONTAP Dateisystemen"^] zum Erstellen von FSx ONTAP Dateisystemen.
@@ -168,6 +174,7 @@ image:aws-ora-fsx-ec2-stor-008.png["Abbildung, die einen Eingabe-/Ausgabedialog 
 
 
 
+[[provisioning-of-database-volumes-for-oracle-database]]
 === Bereitstellung von Datenbankvolumes für Oracle-Datenbanken
 
 Sehenlink:https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-volumes.html["Verwalten von FSx ONTAP -Volumes – Erstellen eines Volumes"^] für Details.
@@ -193,18 +200,21 @@ NOTE: Das Erstellen von iSCSI-LUNs wird derzeit von der FSx-Konsole nicht unters
 
 
 
+[[install-and-configure-oracle-on-an-ec2-instance-with-fsx-database-volumes]]
 == Installieren und konfigurieren Sie Oracle auf einer EC2-Instance mit FSx-Datenbankvolumes
 
 Das NetApp Automatisierungsteam stellt ein Automatisierungskit bereit, um die Oracle-Installation und -Konfiguration auf EC2-Instanzen gemäß Best Practices auszuführen.  Die aktuelle Version des Automatisierungskits unterstützt Oracle 19c auf NFS mit dem Standard-RU-Patch 19.8.  Das Automatisierungskit kann bei Bedarf problemlos für andere RU-Patches angepasst werden.
 
 
 
+[[prepare-a-ansible-controller-to-run-automation]]
 === Bereiten Sie einen Ansible-Controller zum Ausführen der Automatisierung vor
 
 Folgen Sie den Anweisungen im Abschnitt "<<Erstellen und Verbinden mit einer EC2-Instance zum Hosten einer Oracle-Datenbank>> ", um eine kleine EC2-Linux-Instanz bereitzustellen, um den Ansible-Controller auszuführen.  Anstatt RedHat zu verwenden, sollte Amazon Linux t2.large mit 2vCPU und 8G RAM ausreichen.
 
 
 
+[[retrieve-netapp-oracle-deployment-automation-toolkit]]
 === Abrufen des NetApp Oracle Deployment Automation Toolkits
 
 Melden Sie sich bei der in Schritt 1 bereitgestellten EC2 Ansible-Controller-Instanz als ec2-user an und führen Sie im Stammverzeichnis von ec2-user den folgenden Befehl aus: `git clone` Befehl zum Klonen einer Kopie des Automatisierungscodes.
@@ -219,6 +229,7 @@ git clone https://github.com/NetApp-Automation/na_rds_fsx_oranfs_config.git
 ----
 
 
+[[execute-automated-oracle-19c-deployment-using-automation-toolkit]]
 === Führen Sie eine automatisierte Oracle 19c-Bereitstellung mit dem Automatisierungs-Toolkit durch
 
 Sehen Sie sich diese detaillierten Anweisungen anlink:../automation/cli-automation.html["CLI-Bereitstellung Oracle 19c-Datenbank"^] um Oracle 19c mit CLI-Automatisierung bereitzustellen.  Es gibt eine kleine Änderung in der Befehlssyntax für die Playbook-Ausführung, da Sie für die Host-Zugriffsauthentifizierung ein SSH-Schlüsselpaar anstelle eines Kennworts verwenden.  Die folgende Liste ist eine Zusammenfassung auf hoher Ebene:
@@ -262,6 +273,7 @@ ansible-playbook -i hosts all_playbook.yml -u ec2-user --private-key accesststke
 
 
 
+[[setting-up-snapmirror-between-primary-and-standby-fsx-ha-cluster]]
 == Einrichten von SnapMirror zwischen primärem und Standby-FSx-HA-Cluster
 
 Für hohe Verfügbarkeit und Notfallwiederherstellung können Sie die SnapMirror Replikation zwischen dem primären und dem Standby-FSx-Speichercluster einrichten.  Im Gegensatz zu anderen Cloud-Speicherdiensten ermöglicht FSx einem Benutzer, die Speicherreplikation mit der gewünschten Frequenz und dem gewünschten Replikationsdurchsatz zu steuern und zu verwalten.  Darüber hinaus können Benutzer HA/DR testen, ohne dass dies Auswirkungen auf die Verfügbarkeit hat.
@@ -401,16 +413,19 @@ NOTE: Das Replizieren der Oracle-Binärdatei vom primären auf einen Standby-Clu
 
 
 
+[[snapcenter-deployment]]
 == SnapCenter -Bereitstellung
 
 
 
+[[snapcenter-installation]]
 === SnapCenter -Installation
 
 Folgenlink:https://docs.netapp.com/ocsc-41/index.jsp?topic=%2Fcom.netapp.doc.ocsc-isg%2FGUID-D3F2FBA8-8EE7-4820-A445-BC1E5C0AF374.html["Installieren des SnapCenter -Servers"^] um den SnapCenter -Server zu installieren.  In dieser Dokumentation wird die Installation eines eigenständigen SnapCenter -Servers beschrieben.  Eine SaaS-Version von SnapCenter befindet sich im Beta-Test und könnte in Kürze verfügbar sein.  Erkundigen Sie sich bei Bedarf bei Ihrem NetApp -Vertreter nach der Verfügbarkeit.
 
 
 
+[[configure-snapcenter-plugin-for-ec2-oracle-host]]
 === Konfigurieren Sie das SnapCenter -Plugin für den EC2 Oracle-Host
 
 . Melden Sie sich nach der automatisierten SnapCenter -Installation als Administratorbenutzer bei SnapCenter für den Windows-Host an, auf dem der SnapCenter -Server installiert ist.
@@ -474,6 +489,7 @@ image:aws-rds-custom-deploy-snp-008.png["Abbildung, die einen Eingabe-/Ausgabedi
 
 
 
+[[configure-backup-policy-for-oracle-database]]
 === Konfigurieren der Sicherungsrichtlinie für die Oracle-Datenbank
 
 Siehe diesen Abschnittlink:../dbops/hybrid-dbops-sc-gs-onprem.html#7-setup-database-backup-policy-in-snapcenter["Richten Sie die Datenbanksicherungsrichtlinie in SnapCenter ein"^] Einzelheiten zum Konfigurieren der Oracle-Datenbank-Sicherungsrichtlinie.
@@ -485,6 +501,7 @@ NOTE: Sie können die Bereinigung des Oracle-Archivprotokolls in der Sicherungsr
 
 
 
+[[configure-oracle-database-backup-and-scheduling]]
 === Konfigurieren der Sicherung und Planung von Oracle-Datenbanken
 
 Die Datenbanksicherung in SnapCenter ist benutzerkonfigurierbar und kann entweder einzeln oder als Gruppe in einer Ressourcengruppe eingerichtet werden.  Das Sicherungsintervall hängt von den RTO- und RPO-Zielen ab.  NetApp empfiehlt, alle paar Stunden eine vollständige Datenbanksicherung durchzuführen und die Protokollsicherung für eine schnelle Wiederherstellung häufiger, beispielsweise alle 10–15 Minuten, zu archivieren.

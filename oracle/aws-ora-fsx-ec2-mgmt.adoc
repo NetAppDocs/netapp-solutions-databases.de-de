@@ -31,12 +31,14 @@ Beim Datenbankklonen wird eine Replik einer primären Datenbank auf einem separa
 
 
 
+[[taking-a-snapshot]]
 == Einen Schnappschuss machen
 
 Eine EC2/FSx Oracle-Datenbank wird regelmäßig in vom Benutzer konfigurierten Intervallen gesichert.  Ein Benutzer kann außerdem jederzeit eine einmalige Snapshot-Sicherung durchführen.  Dies gilt sowohl für Snapshot-Sicherungen der gesamten Datenbank als auch für Snapshot-Sicherungen nur des Archivprotokolls.
 
 
 
+[[taking-a-full-database-snapshot]]
 === Erstellen eines vollständigen Datenbank-Snapshots
 
 Ein vollständiger Datenbank-Snapshot umfasst alle Oracle-Dateien, einschließlich Datendateien, Steuerdateien und Archivprotokolldateien.
@@ -63,6 +65,7 @@ image:aws-rds-custom-deploy-snp-013.png["Abbildung, die einen Eingabe-/Ausgabedi
 
 
 
+[[taking-an-archive-log-snapshot]]
 === Erstellen eines Archivprotokoll-Snapshots
 
 Ein Archivprotokoll-Snapshot wird nur für das Oracle-Archivprotokollvolume erstellt.
@@ -89,6 +92,7 @@ image:aws-rds-custom-deploy-snp-016.png["Abbildung, die einen Eingabe-/Ausgabedi
 
 
 
+[[restoring-to-a-point-in-time]]
 == Wiederherstellen zu einem bestimmten Zeitpunkt
 
 Die SnapCenter-basierte Wiederherstellung zu einem bestimmten Zeitpunkt wird auf demselben EC2-Instance-Host ausgeführt.  Führen Sie die folgenden Schritte aus, um die Wiederherstellung durchzuführen:
@@ -160,6 +164,7 @@ image:aws-rds-custom-deploy-snp-029-b.png["Abbildung, die einen Eingabe-/Ausgabe
 
 
 
+[[creating-a-database-clone]]
 == Erstellen eines Datenbankklons
 
 Der folgende Abschnitt zeigt, wie Sie mit dem SnapCenter -Klon-Workflow einen Datenbankklon von einer primären Datenbank zu einer Standby-EC2-Instance erstellen.
@@ -247,6 +252,7 @@ NOTE: Anstelle primärer Oracle-Sicherungskopien kann mit denselben Verfahren au
 
 
 
+[[ha-failover-to-standby-and-resync]]
 == HA-Failover zum Standby und erneute Synchronisierung
 
 Der Oracle HA-Standby-Cluster bietet hohe Verfügbarkeit im Falle eines Ausfalls am primären Standort, entweder in der Rechenschicht oder in der Speicherschicht.  Ein wesentlicher Vorteil der Lösung besteht darin, dass ein Benutzer die Infrastruktur jederzeit und in beliebiger Häufigkeit testen und validieren kann.  Das Failover kann vom Benutzer simuliert oder durch einen tatsächlichen Fehler ausgelöst werden.  Die Failover-Prozesse sind identisch und können für eine schnelle Anwendungswiederherstellung automatisiert werden.

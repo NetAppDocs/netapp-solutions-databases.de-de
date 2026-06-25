@@ -24,6 +24,7 @@ Die meisten IT-Organisationen verfolgen einen Cloud-First-Ansatz.  Kunden in ein
 
 
 
+[[use-case]]
 == Anwendungsfall
 
 Durch die Verlagerung des SQL Server-Bestands nach Azure und die Integration von SQL Server in die große Palette der Platform-as-a-Service-Funktionen (PaaS) von Azure wie Azure Data Factory, Azure IoT Hub und Azure Machine Learning wird ein enormer Geschäftswert zur Unterstützung der digitalen Transformation geschaffen.  Durch die Einführung der Cloud kann sich die jeweilige Geschäftseinheit außerdem auf die Produktivität konzentrieren und neue Funktionen und Verbesserungen schneller bereitstellen (Anwendungsfall DevTest), als wenn sie sich auf das CAPEX-Modell oder herkömmliche private Cloud-Modelle verlässt.  Dieses Dokument behandelt eine Echtzeitbereitstellung der SQL Server Always On-Verfügbarkeitsgruppe (AOAG) auf Azure NetApp Files unter Nutzung von Azure Virtual Machines.

@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur automatisierten Oracle-Ber
 
 
 
+[[purpose]]
 == Zweck
 
 Die NetApp SnapCenter software ist eine benutzerfreundliche Unternehmensplattform zur sicheren Koordination und Verwaltung des Datenschutzes über Anwendungen, Datenbanken und Dateisysteme hinweg.  Es vereinfacht die Lebenszyklusverwaltung für Sicherung, Wiederherstellung und Klonen, indem diese Aufgaben an die Anwendungseigentümer ausgelagert werden, ohne dass die Möglichkeit zur Überwachung und Regulierung der Aktivitäten auf den Speichersystemen verloren geht.  Durch die Nutzung speicherbasierter Datenverwaltung werden eine höhere Leistung und Verfügbarkeit sowie kürzere Test- und Entwicklungszeiten ermöglicht.
@@ -34,6 +35,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -46,18 +48,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Die Tests und Validierungen dieser Lösung wurden in einer Laborumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht.  Siehe den Abschnitt<<Wichtige Faktoren für die Bereitstellungsüberlegungen>> für weitere Informationen.
 
 
 
+[[architecture]]
 === Architektur
 
 image:automation-ora-anf-nfs-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der Oracle-Bereitstellungskonfiguration in der öffentlichen AWS-Cloud mit iSCSI und ASM."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -104,6 +109,7 @@ image:automation-ora-anf-nfs-architecture.png["Dieses Bild bietet eine detaillie
 |===
 
 
+[[oracle-database-configuration-in-the-lab-environment]]
 === Oracle-Datenbankkonfiguration in der Laborumgebung
 
 [cols="33%, 33%, 33%"]
@@ -123,6 +129,7 @@ image:automation-ora-anf-nfs-architecture.png["Dieses Bild bietet eine detaillie
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * * SnapCenter -Bereitstellung.*  SnapCenter kann in einer Windows-Domäne oder Arbeitsgruppenumgebung bereitgestellt werden.  Bei einer domänenbasierten Bereitstellung muss das Domänenbenutzerkonto ein Domänenadministratorkonto sein oder der Domänenbenutzer muss zur lokalen Administratorgruppe auf dem SnapCenter -Hostingserver gehören.
@@ -134,12 +141,14 @@ image:automation-ora-anf-nfs-architecture.png["Dieses Bild bietet eine detaillie
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Die folgenden Abschnitte enthalten schrittweise Anleitungen für die Bereitstellung, Konfiguration und Sicherung, Wiederherstellung und das Klonen von Oracle-Datenbanken auf Azure NetApp Files in der Azure-Cloud von SnapCenter .
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -194,6 +203,7 @@ video::960fb370-c6e0-4406-b6d5-b110014130e8[panopto,width=360]
 ====
 
 
+[[snapcenter-installation-and-setup]]
 === Installation und Einrichtung von SnapCenter
 
 [%collapsible%open]
@@ -247,6 +257,7 @@ image:snapctr-ora-azure-anf-setup-005.png["Dieses Bild bietet Einstellungen-Rich
 ====
 
 
+[[database-backup]]
 === Datenbanksicherung
 
 [%collapsible%open]
@@ -306,6 +317,7 @@ image:snapctr-ora-azure-anf-bkup-013.png["Dieses Image bietet eine Datenbanksich
 ====
 
 
+[[database-recovery]]
 === Datenbankwiederherstellung
 
 [%collapsible%open]
@@ -349,6 +361,7 @@ image:snapctr-ora-azure-anf-restore-008.png["Dieses Image ermöglicht die Datenb
 ====
 
 
+[[database-clone]]
 === Datenbankklon
 
 [%collapsible%open]
@@ -516,6 +529,7 @@ SQL> alter pluggable database all open;
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

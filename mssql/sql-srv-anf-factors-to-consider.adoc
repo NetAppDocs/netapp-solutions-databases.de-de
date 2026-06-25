@@ -18,6 +18,7 @@ In diesem Abschnitt werden die verschiedenen Aspekte beschrieben, die Sie bei de
 
 
 
+[[vm-performance]]
 == VM-Leistung
 
 Die Auswahl der richtigen VM-Größe ist für die optimale Leistung einer relationalen Datenbank in einer öffentlichen Cloud wichtig.  Microsoft empfiehlt, dass Sie weiterhin dieselben Optionen zur Datenbankleistungsoptimierung verwenden, die für SQL Server in lokalen Serverumgebungen gelten.  Verwenden https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-memory["speicheroptimiert"^] VM-Größen für die beste Leistung von SQL Server-Workloads.  Erfassen Sie die Leistungsdaten der vorhandenen Bereitstellung, um die RAM- und CPU-Auslastung zu ermitteln und gleichzeitig die richtigen Instanzen auszuwählen.  Bei den meisten Bereitstellungen wird zwischen der D-, E- oder M-Serie gewählt.
@@ -30,18 +31,21 @@ Die Auswahl der richtigen VM-Größe ist für die optimale Leistung einer relati
 
 
 
+[[vm-redundancy]]
 == VM-Redundanz
 
 Um Redundanz und Hochverfügbarkeit zu erhöhen, sollten SQL Server-VMs entweder im selben https://docs.microsoft.com/en-us/azure/virtual-machines/availability-set-overview["Verfügbarkeitssatz"^] oder anders https://docs.microsoft.com/en-us/azure/availability-zones/az-overview["Verfügbarkeitszonen"^] .  Beim Erstellen von Azure-VMs müssen Sie zwischen der Konfiguration von Verfügbarkeitsgruppen und Verfügbarkeitszonen wählen. Eine Azure-VM kann nicht an beiden teilnehmen.
 
 
 
+[[high-availability]]
 == Hochverfügbarkeit
 
 Für hohe Verfügbarkeit ist die Konfiguration von SQL Server AOAG oder Always On Failover Cluster Instance (FCI) die beste Option.  Bei AOAG handelt es sich dabei um mehrere Instanzen von SQL Server auf Azure Virtual Machines in einem virtuellen Netzwerk.  Wenn auf Datenbankebene eine hohe Verfügbarkeit erforderlich ist, sollten Sie die Konfiguration von SQL Server-Verfügbarkeitsgruppen in Betracht ziehen.
 
 
 
+[[storage-configuration]]
 == Storage-Konfiguration
 
 Microsoft SQL Server kann mit einer SMB-Dateifreigabe als Speicheroption bereitgestellt werden.  Ab SQL Server 2012 können Systemdatenbanken (Master, Model, MSDB oder TempDB) und Benutzerdatenbanken mit dem Server Message Block (SMB)-Dateiserver als Speicheroption installiert werden.  Dies gilt sowohl für SQL Server Standalone als auch für SQL Server FCI.
@@ -53,6 +57,7 @@ Azure NetApp Files bietet leistungsstarken Dateispeicher, der jeder anspruchsvol
 
 
 
+[[benefits]]
 === Vorteile
 
 Die Verwendung von Azure NetApp Files für SQL Server bietet unter anderem folgende Vorteile:
@@ -72,6 +77,7 @@ Die Verwendung von Azure NetApp Files für SQL Server bietet unter anderem folge
 
 
 
+[[create-continuously-available-shares]]
 == Erstellen Sie ständig verfügbare Freigaben
 
 Erstellen Sie kontinuierlich verfügbare Freigaben mit dem Azure-Portal oder der Azure CLI.  Wählen Sie im Portal die Eigenschaftsoption „Kontinuierliche Verfügbarkeit aktivieren“ aus. Geben Sie für die Azure CLI die Freigabe als kontinuierlich verfügbare Freigabe an, indem Sie das `az netappfiles volume create with the smb-continuously-avl` Option eingestellt auf `$True` .  Weitere Informationen zum Erstellen eines neuen Volumes mit kontinuierlicher Verfügbarkeit finden Sie unter https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-create-volumes-smb["Erstellen einer dauerhaft verfügbaren Freigabe"^] .
@@ -88,6 +94,7 @@ image:sql-srv-anf-001.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt ode
 
 
 
+[[performance]]
 == Performance
 
 Azure NetApp Files unterstützt drei Servicelevel: Standard (16 MBit/s pro Terabyte), Premium (64 MBit/s pro Terabyte) und Ultra (128 MBit/s pro Terabyte).  Für eine optimale Leistung der Datenbank-Workload ist die Bereitstellung der richtigen Volume-Größe wichtig.  Bei Azure NetApp Files basieren die Volumeleistung und das Durchsatzlimit auf einer Kombination der folgenden Faktoren:
@@ -103,6 +110,7 @@ image:sql-srv-anf-002.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt ode
 
 
 
+[[performance-validation]]
 == Leistungsvalidierung
 
 Wie bei jeder Bereitstellung ist das Testen der VM und des Speichers von entscheidender Bedeutung.  Zur Speichervalidierung sollten Tools wie HammerDB, Apploader oder ein beliebiges benutzerdefiniertes Skript oder FIO mit der entsprechenden Lese-/Schreibmischung verwendet werden.  Bedenken Sie jedoch, dass die meisten SQL Server-Workloads, selbst stark ausgelastete OLTP-Workloads, eher bei 80–90 % Lese- und 10–20 % Schreibvorgängen liegen.
@@ -121,6 +129,7 @@ image:sql-srv-anf-004.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt ode
 
 
 
+[[cost-optimization]]
 == Kostenoptimierung
 
 Azure NetApp Files ermöglicht eine unterbrechungsfreie, transparente Größenänderung von Volumes und die Möglichkeit, die Service-Levels ohne Ausfallzeiten und ohne Auswirkungen auf Anwendungen zu ändern.  Dies ist eine einzigartige Funktion, die ein dynamisches Kostenmanagement ermöglicht und die Notwendigkeit einer Datenbankdimensionierung mit Spitzenmetriken vermeidet.  Stattdessen können Sie stabile Arbeitslasten verwenden, wodurch Vorlaufkosten vermieden werden.  Durch die Neugestaltung des Volumes und die dynamische Änderung des Servicelevels können Sie die Bandbreite und das Servicelevel von Azure NetApp Files Volumes bei Bedarf nahezu augenblicklich anpassen, ohne die E/A anzuhalten, während der Datenzugriff erhalten bleibt.

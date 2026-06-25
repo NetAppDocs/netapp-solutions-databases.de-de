@@ -18,6 +18,7 @@ Die Agilität der öffentlichen Cloud, die schnelle Wertschöpfung und die Koste
 
 
 
+[[clone-an-oracle-database-for-devtest-from-a-replicated-snapshot-backup]]
 == Klonen Sie eine Oracle-Datenbank für Entwicklung/Test aus einer replizierten Snapshot-Sicherung
 
 . Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für Oracle an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die von SnapCenter geschützten Oracle-Datenbanken angezeigt werden.
@@ -86,6 +87,7 @@ image:snapctr-ora-clone-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zei
 
 
 
+[[clone-a-sql-database-for-devtest-from-a-replicated-snapshot-backup]]
 == Klonen Sie eine SQL-Datenbank für Entwicklung/Test aus einer replizierten Snapshot-Sicherung
 
 . Melden Sie sich bei SnapCenter mit einer Datenbankverwaltungs-Benutzer-ID für SQL Server an.  Navigieren Sie zur Registerkarte „Ressourcen“, auf der die von SnapCenter geschützten SQL Server-Benutzerdatenbanken und eine Ziel-Standby-SQL-Instanz in der öffentlichen Cloud angezeigt werden.
@@ -135,6 +137,7 @@ image:snapctr-sql-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zei
 
 
 
+[[post-clone-configuration]]
 == Konfiguration nach dem Klonen
 
 . Eine lokale Oracle-Produktionsdatenbank wird normalerweise im Protokollarchivmodus ausgeführt.  Dieser Modus ist für eine Entwicklungs- oder Testdatenbank nicht erforderlich.  Um den Protokollarchivierungsmodus zu deaktivieren, melden Sie sich als sysdba bei der Oracle-Datenbank an, führen Sie einen Befehl zum Ändern des Protokollmodus aus und starten Sie die Datenbank für den Zugriff.
@@ -144,6 +147,7 @@ image:snapctr-sql-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zei
 
 
 
+[[refresh-clone-database]]
 == Klondatenbank aktualisieren
 
 . Löschen Sie geklonte Datenbanken und bereinigen Sie die Cloud-DB-Serverumgebung.  Befolgen Sie dann die vorherigen Verfahren, um eine neue Datenbank mit neuen Daten zu klonen.  Das Klonen einer neuen Datenbank dauert nur wenige Minuten.
@@ -152,6 +156,7 @@ image:snapctr-sql-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zei
 
 
 
+[[where-to-go-for-help]]
 == Wo bekomme ich Hilfe?
 
 Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

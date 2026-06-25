@@ -20,6 +20,7 @@ Diese Lösung bietet eine Übersicht und Details zum Aktivieren der Oracle-Hochv
 
 
 
+[[purpose]]
 == Zweck
 
 Viele Kunden, die Oracle in der öffentlichen Cloud selbst verwalten und ausführen möchten, müssen einige Herausforderungen bewältigen.  Eine dieser Herausforderungen besteht darin, eine hohe Verfügbarkeit für die Oracle-Datenbank zu gewährleisten.  Traditionell verlassen sich Oracle-Kunden auf eine Oracle-Datenbankfunktion namens „Real Application Cluster“ oder RAC für die Unterstützung von Aktiv-Aktiv-Transaktionen auf mehreren Clusterknoten.  Ein ausgefallener Knoten würde die Anwendungsverarbeitung nicht blockieren.  Leider ist die Oracle RAC-Implementierung in vielen gängigen öffentlichen Clouds wie AWS EC2 nicht ohne Weiteres verfügbar oder wird nicht unterstützt.  Durch die Nutzung des integrierten Pacemaker-Clusterings (PCS) in RHEL und Amazon FSx ONTAP erhalten Kunden ohne Oracle RAC-Lizenzkosten eine praktikable Alternative für Aktiv-Passiv-Clustering sowohl auf der Datenverarbeitung als auch auf der Speicherung, um unternehmenskritische Oracle-Datenbank-Workloads in der AWS-Cloud zu unterstützen.
@@ -34,6 +35,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -46,18 +48,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Die Tests und Validierungen dieser Lösung wurden in einer Laborumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht.  Siehe den Abschnitt<<Wichtige Faktoren für die Bereitstellungsüberlegungen>> für weitere Informationen.
 
 
 
+[[architecture]]
 === Architektur
 
 image:aws-ora-fsx-ec2-pcs-architecture.png["Dieses Bild bietet eine detaillierte Darstellung von Oracle HA in AWS EC2 mit Pacemaker Clustering und FSx ONTAP."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -98,6 +103,7 @@ image:aws-ora-fsx-ec2-pcs-architecture.png["Dieses Bild bietet eine detaillierte
 |===
 
 
+[[oracle-database-activepassive-configuration-in-the-aws-ec2fsx-lab-environment]]
 === Aktiv/Passiv-Konfiguration der Oracle-Datenbank in der AWS EC2/FSx-Laborumgebung
 
 [cols="33%, 33%, 33%"]
@@ -117,6 +123,7 @@ image:aws-ora-fsx-ec2-pcs-architecture.png["Dieses Bild bietet eine detaillierte
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * * Amazon FSx ONTAP HA.*  Amazon FSx ONTAP wird standardmäßig in einem HA-Paar von Speichercontrollern in einer oder mehreren Verfügbarkeitszonen bereitgestellt.  Es bietet Speicherredundanz auf aktive/passive Weise für unternehmenskritische Datenbank-Workloads.  Das Speicher-Failover ist für den Endbenutzer transparent.  Im Falle eines Speicher-Failovers ist kein Benutzereingriff erforderlich.
@@ -131,12 +138,14 @@ image:aws-ora-fsx-ec2-pcs-architecture.png["Dieses Bild bietet eine detaillierte
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Die folgenden Abschnitte enthalten schrittweise Anleitungen zur Bereitstellung und Konfiguration von Oracle Database HA in AWS EC2 mit Pacemaker-Clustering und Amazon FSx ONTAP zum Schutz der Datenbankspeicherung.
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -155,6 +164,7 @@ Aktivieren Sie die SSH-Authentifizierung mit öffentlichem/privatem Schlüssel z
 ====
 
 
+[[provision-ec2-instances-and-amazon-fsx-ontap-storage-cluster]]
 === Bereitstellung von EC2-Instances und Amazon FSx ONTAP Speicherclustern
 
 [%collapsible%open]
@@ -251,6 +261,7 @@ Damit sind die EC2-Instanzen und die FSx ONTAP -Bereitstellung für Oracle abges
 ====
 
 
+[[pacemaker-cluster-setup]]
 === Pacemaker-Cluster-Setup
 
 [%collapsible%open]
@@ -484,6 +495,7 @@ Damit ist die Einrichtung und Erstkonfiguration des Pacemaker-Clusters abgeschlo
 ====
 
 
+[[pacemaker-cluster-fencing-configuration]]
 === Pacemaker-Cluster-Fencing-Konfiguration
 
 [%collapsible%open]
@@ -597,6 +609,7 @@ NOTE: Ausführen `pcs stonith refresh` Befehl zum Aktualisieren des gestoppten S
 ====
 
 
+[[deploy-oracle-database-in-pcs-cluster]]
 === Bereitstellen einer Oracle-Datenbank im PCS-Cluster
 
 [%collapsible%open]
@@ -1024,6 +1037,7 @@ The command completed successfully
 ====
 
 
+[[configure-oracle-resources-for-pcs-management]]
 === Konfigurieren von Oracle-Ressourcen für die PCS-Verwaltung
 
 [%collapsible%open]
@@ -1380,6 +1394,7 @@ Daemon Status:
 ====
 
 
+[[post-deployment-ha-validation]]
 === HA-Validierung nach der Bereitstellung
 
 [%collapsible%open]
@@ -1814,6 +1829,7 @@ Damit ist die Oracle HA-Validierung und Lösungsdemonstration in AWS EC2 mit Pac
 ====
 
 
+[[oracle-backup-restore-and-clone-with-snapcenter]]
 === Oracle-Backup, -Wiederherstellung und -Klonen mit SnapCenter
 
 [%collapsible%open]
@@ -1823,6 +1839,7 @@ NetApp empfiehlt das SnapCenter UI-Tool zur Verwaltung von Oracle-Datenbanken, d
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

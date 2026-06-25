@@ -18,6 +18,7 @@ Vor der Ausführung von Hybrid-Cloud-Datenbank-Workloads müssen bestimmte Vorau
 
 
 
+[[on-premises]]
 == Vor Ort
 
 * Installation und Konfiguration von SnapCenter
@@ -29,6 +30,7 @@ Vor der Ausführung von Hybrid-Cloud-Datenbank-Workloads müssen bestimmte Vorau
 
 
 
+[[public-cloud]]
 == Öffentliche Cloud
 
 * Ein NetApp Cloud Central-Login

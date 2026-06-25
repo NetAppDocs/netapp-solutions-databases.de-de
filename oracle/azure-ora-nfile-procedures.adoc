@@ -18,12 +18,14 @@ In diesem Abschnitt werden die Bereitstellungsverfahren für die Bereitstellung 
 
 
 
+[[deploy-an-azure-vm-with-anf-for-oracle-via-azure-portal-console]]
 == Bereitstellen einer Azure-VM mit ANF für Oracle über die Azure-Portalkonsole
 
 Wenn Sie neu bei Azure sind, müssen Sie zunächst eine Azure-Kontoumgebung einrichten.  Dazu gehört die Anmeldung Ihrer Organisation zur Verwendung von Azure Active Directory.  Der folgende Abschnitt ist eine Zusammenfassung dieser Schritte.  Einzelheiten finden Sie in der verlinkten Azure-spezifischen Dokumentation.
 
 
 
+[[create-and-consume-azure-resources]]
 === Erstellen und Verwenden von Azure-Ressourcen
 
 Nachdem Ihre Azure-Umgebung eingerichtet und ein Konto erstellt und mit einem Abonnement verknüpft wurde, können Sie sich mit dem Konto beim Azure-Portal anmelden, um die erforderlichen Ressourcen zum Ausführen von Oracle zu erstellen.
@@ -118,18 +120,21 @@ image:db-ora-azure-anf-vols-005.png["Überprüfen und Erstellen der Phase des Vo
 
 
 
+[[install-and-configure-oracle-on-azure-vm-with-anf]]
 == Installieren und Konfigurieren von Oracle auf Azure-VM mit ANF
 
 Das NetApp -Lösungsteam hat viele Ansible-basierte Automatisierungs-Toolkits erstellt, die Ihnen bei der reibungslosen Bereitstellung von Oracle in Azure helfen.  Führen Sie die folgenden Schritte aus, um Oracle auf einer Azure-VM bereitzustellen.
 
 
 
+[[set-up-an-ansible-controller]]
 === Einrichten eines Ansible-Controllers
 
 Wenn Sie keinen Ansible-Controller eingerichtet haben, lesen Sielink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^] , das detaillierte Anweisungen zum Einrichten eines Ansible-Controllers enthält.
 
 
 
+[[obtain-oracle-deployment-automation-toolkit]]
 === Holen Sie sich das Oracle Deployment Automation Toolkit
 
 Klonen Sie eine Kopie des Oracle Deployment Toolkits in Ihrem Home-Verzeichnis unter der Benutzer-ID, die Sie zum Anmelden beim Ansible-Controller verwenden.
@@ -140,6 +145,7 @@ git clone https://github.com/NetApp-Automation/na_oracle19c_deploy.git
 ----
 
 
+[[execute-the-toolkit-with-your-configuration]]
 === Führen Sie das Toolkit mit Ihrer Konfiguration aus
 
 Siehe dielink:../automation/cli-automation.html#cli-deployment-oracle-19c-database["CLI-Bereitstellung Oracle 19c-Datenbank"^] um das Playbook mit der CLI auszuführen.  Sie können den ONTAP Teil der Variablenkonfiguration in der globalen VARS-Datei ignorieren, wenn Sie Datenbankvolumes über die Azure-Konsole statt über die CLI erstellen.
@@ -149,12 +155,14 @@ NOTE: Das Toolkit stellt standardmäßig Oracle 19c mit RU 19.8 bereit.  Es kann
 
 
 
+[[set-up-azacsnap-backup-tool-for-app-consistent-snapshots-for-oracle]]
 == Einrichten des AzAcSnap-Sicherungstools für anwendungskonsistente Snapshots für Oracle
 
 Das Azure Application-Consistent Snapshot-Tool (AzAcSnap) ist ein Befehlszeilentool, das Datenschutz für Datenbanken von Drittanbietern ermöglicht, indem es die gesamte Orchestrierung übernimmt, die erforderlich ist, um sie in einen anwendungskonsistenten Zustand zu versetzen, bevor ein Speicher-Snapshot erstellt wird.  Anschließend werden diese Datenbanken wieder in einen betriebsbereiten Zustand versetzt.  NetApp empfiehlt, das Tool auf dem Datenbankserver-Host zu installieren.  Beachten Sie die folgenden Installations- und Konfigurationsverfahren.
 
 
 
+[[install-azacsnap-tool]]
 === Installieren des AzAcSnap-Tools
 
 . Holen Sie sich die neueste Version derlink:https://aka.ms/azacsnapinstaller["das AzArcSnap-Installationsprogramm"^] .
@@ -169,6 +177,7 @@ Das Azure Application-Consistent Snapshot-Tool (AzAcSnap) ist ein Befehlszeilent
 
 
 
+[[configure-oracle-connectivity]]
 === Konfigurieren der Oracle-Konnektivität
 
 Die Snapshot-Tools kommunizieren mit der Oracle-Datenbank und benötigen einen Datenbankbenutzer mit entsprechenden Berechtigungen, um den Backup-Modus zu aktivieren oder zu deaktivieren.
@@ -296,6 +305,7 @@ SQL>
 
 
 
+[[configure-anf-connectivity]]
 === Konfigurieren der ANF-Konnektivität
 
 In diesem Abschnitt wird erläutert, wie Sie die Kommunikation mit Azure NetApp Files (mit einer VM) aktivieren.
@@ -345,6 +355,7 @@ NOTE: Stellen Sie sicher, dass das Format der JSON-Datei genau dem oben beschrie
 
 
 
+[[complete-the-setup-of-azacsnap-tool]]
 === Schließen Sie die Einrichtung des AzAcSnap-Tools ab
 
 Befolgen Sie diese Schritte, um die Snapshot-Tools zu konfigurieren und zu testen.  Nach erfolgreichem Test können Sie den ersten datenbankkonsistenten Speicher-Snapshot durchführen.

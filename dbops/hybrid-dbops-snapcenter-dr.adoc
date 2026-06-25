@@ -18,6 +18,7 @@ Unternehmen haben die öffentliche Cloud als praktikable Ressource und Ziel für
 
 
 
+[[clone-an-on-premises-oracle-production-db-to-cloud-for-dr]]
 == Klonen Sie eine lokale Oracle-Produktionsdatenbank für die Notfallwiederherstellung in die Cloud
 
 . Um zu überprüfen, ob die Klonwiederherstellung über das letzte verfügbare Protokoll läuft, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt.  Die Testdaten würden nach einer vollständigen Wiederherstellung des letzten verfügbaren Protokolls wiederhergestellt.
@@ -97,6 +98,7 @@ image:snapctr-ora-dr-016-a.png["Abbildung, die einen Eingabe-/Ausgabedialog zeig
 
 
 
+[[post-dr-clone-validation-and-configuration-for-oracle]]
 == Validierung und Konfiguration des Post-DR-Klons für Oracle
 
 . Validieren Sie die letzte Testtransaktion, die am DR-Standort in der Cloud gelöscht, repliziert und wiederhergestellt wurde.
@@ -117,6 +119,7 @@ NOTE: Durch die Klonaufteilung kann es zu einer deutlich höheren temporären Sp
 
 
 
+[[clone-an-on-premises-sql-production-db-to-cloud-for-dr]]
 == Klonen Sie eine lokale SQL-Produktionsdatenbank zur Notfallwiederherstellung in die Cloud.
 
 . Um zu überprüfen, ob die SQL-Klonwiederherstellung das letzte verfügbare Protokoll durchlaufen hat, haben wir eine kleine Testtabelle erstellt und eine Zeile eingefügt.  Die Testdaten würden nach einer vollständigen Wiederherstellung bis zum letzten verfügbaren Protokoll wiederhergestellt.
@@ -162,6 +165,7 @@ image:snapctr-sql-dr-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt 
 
 
 
+[[post-dr-clone-validation-and-configuration-for-sql]]
 == Validierung und Konfiguration des Post-DR-Klons für SQL
 
 . Überwachen Sie den Status des Klonauftrags.
@@ -179,6 +183,7 @@ image:snapctr-sql-dr-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt 
 
 
 
+[[where-to-go-for-help]]
 == Wo bekomme ich Hilfe?
 
 Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie bitte demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

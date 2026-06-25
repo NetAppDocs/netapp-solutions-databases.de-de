@@ -20,6 +20,7 @@ In den folgenden Abschnitten werden die wichtigsten Überlegungen beim Bereitste
 
 
 
+[[vm-performance]]
 == VM-Leistung
 
 Die Auswahl der richtigen VM-Größe ist für die optimale Leistung einer relationalen Datenbank in einer öffentlichen Cloud wichtig.  Für eine bessere Leistung empfiehlt NetApp die Verwendung einer Instanz der EC2 M5-Serie für die Oracle-Bereitstellung, die für Datenbank-Workloads optimiert ist.  Derselbe Instanztyp wird auch verwendet, um eine RDS-Instanz für Oracle von AWS zu betreiben.
@@ -30,6 +31,7 @@ Die Auswahl der richtigen VM-Größe ist für die optimale Leistung einer relati
 
 
 
+[[storage-layout-and-settings]]
 == Speicherlayout und -einstellungen
 
 NetApp empfiehlt das folgende Speicherlayout:
@@ -54,6 +56,7 @@ image:aws-ora-fsx-ec2-stor-013.png["Abbildung, die einen Eingabe-/Ausgabedialog 
 
 
 
+[[nfs-configuration]]
 == NFS-Konfiguration
 
 Linux, das am weitesten verbreitete Betriebssystem, verfügt über native NFS-Funktionen.  Oracle bietet den Direct NFS (dNFS)-Client an, der nativ in Oracle integriert ist.  Oracle unterstützt NFSv3 seit über 20 Jahren. dNFS wird mit NFSv3 in allen Versionen von Oracle unterstützt.  NFSv4 wird von allen Betriebssystemen unterstützt, die dem NFSv4-Standard folgen. dNFS-Unterstützung für NFSv4 erfordert Oracle 12.1.0.2 oder höher.  NFSv4.1 erfordert spezielle Betriebssystemunterstützung.  Informationen zu unterstützten Betriebssystemen finden Sie im NetApp Interoperability Matrix Tool (IMT). dNFS-Unterstützung für NFSv4.1 erfordert Oracle Version 19.3.0.0 oder höher.
@@ -82,6 +85,7 @@ NOTE: Überprüfen Sie vor der Verwendung von dNFS, ob die im Oracle-Dokument 14
 
 
 
+[[high-availability]]
 == Hochverfügbarkeit
 
 Wie in der Lösungsarchitektur angegeben, basiert HA auf der Replikation auf Speicherebene.  Daher hängen der Start und die Verfügbarkeit von Oracle davon ab, wie schnell die Rechen- und Speicherkapazität hochgefahren und wiederhergestellt werden kann.  Beachten Sie die folgenden Schlüsselfaktoren:

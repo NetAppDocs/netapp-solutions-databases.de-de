@@ -20,6 +20,7 @@ Dieses reale Anwendungsbeispiel eines Kunden veranschaulicht die Herausforderung
 
 
 
+[[the-challenge]]
 == Die Herausforderung
 
 * Der Kunde hatte SQL Server-Workloads in einem privaten Rechenzentrum ausgeführt, das von einem Drittanbieter gehostet wurde.  Die steigenden Hosting-Kosten waren zu einem Problem geworden.
@@ -33,6 +34,7 @@ image:customer-usecase-mssql-fsx1-before.png["Dieses Bild bietet ein detailliert
 
 
 
+[[the-solution]]
 == Die Lösung
 
 * Migration von einer vor Ort gehosteten Dell Unity SAN- und AppSync-Umgebung zu AWS Amazon FSx ONTAP mit NetApp SnapCenter.
@@ -46,6 +48,7 @@ image:customer-usecase-mssql-fsx1-after.png["Dieses Bild bietet ein detaillierte
 
 
 
+[[the-outcome]]
 == Das Ergebnis
 
 * 40 % Kostensenkung im Vergleich zum weiteren Hosting in einem privaten Rechenzentrum.
@@ -58,6 +61,7 @@ image:customer-usecase-mssql-fsx1-after.png["Dieses Bild bietet ein detaillierte
 
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den Enterprise-Datenbanklösungen von NetApp finden Sie auf der folgenden Websitelink:https://docs.netapp.com/us-en/netapp-solutions/databases/index.html["NetApp Enterprise-Datenbanklösungen"^]

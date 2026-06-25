@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur Bereitstellung von Postgre
 
 
 
+[[purpose]]
 == Zweck
 
 PostgreSQL ist eine weit verbreitete Open-Source-Datenbank, die auf Platz vier der zehn beliebtesten Datenbank-Engines steht.link:https://db-engines.com/en/ranking["DB-Motoren"^] .  Einerseits verdankt PostgreSQL seine Popularität seinem lizenzfreien Open-Source-Modell, das dennoch über anspruchsvolle Funktionen verfügt.  Andererseits gibt es aufgrund der Open Source-Lösung keinen detaillierten Leitfaden zur produktionsreifen Datenbankbereitstellung im Bereich Hochverfügbarkeit und Notfallwiederherstellung (HA/DR), insbesondere in der öffentlichen Cloud.  Im Allgemeinen kann es schwierig sein, ein typisches PostgreSQL HA/DR-System mit Hot- und Warm-Standby, Streaming-Replikation usw. einzurichten.  Das Testen der HA/DR-Umgebung durch Hochstufen der Standby-Site und anschließendes Zurückschalten auf die primäre Site kann die Produktion stören.  Es gibt gut dokumentierte Leistungsprobleme auf dem Primärrechner, wenn Lese-Workloads auf Streaming-Hot-Standby bereitgestellt werden.
@@ -37,6 +38,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -49,18 +51,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Das Testen und Validieren dieser Lösung wurde in einer AWS FSx- und EC2-Umgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
 
 
 
+[[architecture]]
 === Architektur
 
 image:aws-postgres-fsx-ec2-architecture.png["Dieses Bild bietet ein detailliertes Bild der Organisation der PostgreSQL-Hybrid-Cloud-Lösung, einschließlich der lokalen Seite und der AWS-Site."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -95,6 +100,7 @@ image:aws-postgres-fsx-ec2-architecture.png["Dieses Bild bietet ein detaillierte
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *Sicherung, Wiederherstellung und Wiederherstellung der PostgreSQL-Datenbank.*  Eine PostgreSQL-Datenbank unterstützt eine Reihe von Sicherungsmethoden, z. B. eine logische Sicherung mit pg_dump, eine physische Online-Sicherung mit pg_basebackup oder einem Betriebssystem-Sicherungsbefehl auf niedrigerer Ebene sowie speicherebenenkonsistente Snapshots.  Diese Lösung verwendet Snapshots von NetApp -Konsistenzgruppen für die Sicherung, Wiederherstellung und Wiederherstellung von PostgreSQL-Datenbankdaten und WAL-Volumes am Standby-Standort.  Die Volume-Snapshots der NetApp -Konsistenzgruppe sequenzieren die E/A-Vorgänge beim Schreiben in den Speicher und schützen die Integrität der Datenbankdatendateien.
@@ -108,6 +114,7 @@ image:aws-postgres-fsx-ec2-architecture.png["Dieses Bild bietet ein detaillierte
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Die Bereitstellung dieser Lösung kann mithilfe des auf NetApp Ansible basierenden Automatisierungs-Toolkits automatisch abgeschlossen werden, indem Sie die unten aufgeführten detaillierten Anweisungen befolgen.
@@ -123,6 +130,7 @@ video::e479b91f-eacd-46bf-bfa1-b01200f0015a[panopto]
 
 
 
+[[prerequisites-for-automated-deployment]]
 === Voraussetzungen für die automatisierte Bereitstellung
 
 Für die Bereitstellung sind die folgenden Voraussetzungen erforderlich.
@@ -155,6 +163,7 @@ ansible-galaxy collection install -r collections/requirements.yml --force --forc
 
 
 
+[[configure-the-hosts-file]]
 === Konfigurieren der Hosts-Datei
 
 Geben Sie die primäre FSx ONTAP Clusterverwaltungs-IP und die Hostnamen der EC2-Instanzen in die Hosts-Datei ein.
@@ -180,6 +189,7 @@ psql_01s ansible_ssh_private_key_file=psql_01s.pem
 ....
 
 
+[[configure-the-hostname-yml-file-in-the-hostvars-folder]]
 === Konfigurieren Sie die Datei host_name.yml im Ordner host_vars
 
 [source, shell]
@@ -204,6 +214,7 @@ client_address: "172.30.15.0/24"
 ----
 
 
+[[configure-the-global-fsxvars-yml-file-in-the-vars-folder]]
 === Konfigurieren Sie die globale Datei fsx_vars.yml im Ordner „vars“.
 
 [source, shell]
@@ -291,6 +302,7 @@ redhat_sub_password: "xxxxx"
 ----
 
 
+[[postgresql-deployment-and-hadr-setup]]
 === PostgreSQL-Bereitstellung und HA/DR-Setup
 
 Die folgenden Aufgaben stellen den PostgreSQL-DB-Serverdienst bereit und initialisieren die Datenbank am primären Standort auf dem primären EC2-DB-Serverhost.  Anschließend wird am Standby-Standort ein primärer EC2-DB-Server-Host als Standby eingerichtet.  Schließlich wird die DB-Volume-Replikation vom FSx-Cluster des primären Standorts zum FSx-Cluster des Standby-Standorts für die Notfallwiederherstellung eingerichtet.
@@ -336,6 +348,7 @@ ansible-playbook -i hosts postgresql_standby_setup.yml -u ec2-user --private-key
 ----
 
 
+[[postgresql-database-snapshot-backup-and-replication-to-standby-site]]
 === Sicherung und Replikation von PostgreSQL-Datenbank-Snapshots auf Standby-Site
 
 Die Sicherung und Replikation von Snapshots der PostgreSQL-Datenbank auf die Standby-Site kann auf dem Ansible-Controller in einem benutzerdefinierten Intervall gesteuert und ausgeführt werden.  Wir haben bestätigt, dass das Intervall nur 5 Minuten betragen kann.  Daher besteht im Falle eines Fehlers am primären Standort ein potenzieller Datenverlust von 5 Minuten, wenn der Fehler direkt vor der nächsten geplanten Snapshot-Sicherung auftritt.
@@ -346,6 +359,7 @@ Die Sicherung und Replikation von Snapshots der PostgreSQL-Datenbank auf die Sta
 ----
 
 
+[[failover-to-standby-site-for-dr]]
 === Failover zum Standby-Standort für DR
 
 Um das PostgreSQL HA/DR-System als DR-Übung zu testen, führen Sie ein Failover und eine PostgreSQL-Datenbankwiederherstellung auf der primären Standby-EC2-DB-Instance auf der Standby-Site aus, indem Sie das folgende Playbook ausführen.  Führen Sie in einem tatsächlichen DR-Szenario dasselbe für ein tatsächliches Failover zur DR-Site aus.
@@ -356,6 +370,7 @@ ansible-playbook -i hosts postgresql_failover.yml -u ec2-user --private-key psql
 ----
 
 
+[[resync-replicated-db-volumes-after-failover-test]]
 === Resynchronisieren Sie replizierte DB-Volumes nach dem Failover-Test
 
 Führen Sie nach dem Failover-Test eine erneute Synchronisierung aus, um die SnapMirror -Replikation des Datenbank-Volumes wiederherzustellen.
@@ -366,12 +381,14 @@ ansible-playbook -i hosts postgresql_standby_resync.yml -u ec2-user --private-ke
 ----
 
 
+[[failover-from-primary-ec2-db-server-to-standby-ec2-db-server-due-to-ec2-compute-instance-failure]]
 === Failover vom primären EC2-DB-Server zum Standby-EC2-DB-Server aufgrund eines Fehlers der EC2-Compute-Instanz
 
 NetApp empfiehlt die Ausführung eines manuellen Failovers oder die Verwendung etablierter OS-Clusterware, für die möglicherweise eine Lizenz erforderlich ist.
 
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

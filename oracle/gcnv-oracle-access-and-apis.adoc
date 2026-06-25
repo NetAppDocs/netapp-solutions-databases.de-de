@@ -15,6 +15,7 @@ Vor der Bereitstellung von GCNV iSCSI-Speicher für die Hochverfügbarkeit von O
 
 
 
+[[access-and-apis]]
 == Zugriff und APIs
 
 Diese Checkliste dient zur Überprüfung der Berechtigungen und der Plattformbereitschaft vor Beginn der Bereitstellung von Host und Speicher.
@@ -53,6 +54,7 @@ timedatectl
 |===
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um die Oracle Host-Infrastruktur für Hochverfügbarkeit bereitzustellen, wird mit xref:gcnv-oracle-provision-compute.adoc[Google Compute Engine Instanzen für Oracle Database 26ai bereitstellen] fortgefahren.

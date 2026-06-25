@@ -15,6 +15,7 @@ Google Cloud NetApp Volumes unterstützt Oracle Database 26ai auf verschiedenen 
 
 
 
+[[deployment-requirements]]
 == Bereitstellungsanforderungen
 
 Stellen Sie sicher, dass die folgenden Elemente vorhanden sind, bevor Sie Google Cloud NetApp Volumes für die Hochverfügbarkeit von Oracle Database 26ai bereitstellen:
@@ -62,6 +63,8 @@ timedatectl
 
 
 
+[[example-deployment-configuration]]
+[[example-configuration]]
 == Beispiel für Bereitstellungskonfiguration
 
 Diese Lösung verwendet die folgende Bereitstellungskonfiguration:
@@ -83,6 +86,7 @@ Alle Beispielwerte in den Befehlen sind durch Werte aus Ihrer Umgebung zu ersetz
 
 
 
+[[deployment-options]]
 == Bereitstellungsoptionen
 
 Die folgende Tabelle vergleicht HA- und DR-Bereitstellungsmuster und hebt hervor, wo die Automatisierung den größten betrieblichen Nutzen bietet.
@@ -111,6 +115,7 @@ Die folgende Tabelle vergleicht HA- und DR-Bereitstellungsmuster und hebt hervor
 
 
 
+[[deployment-tasks-by-ha-tier]]
 == Bereitstellungsaufgaben nach HA-Ebene
 
 Das xref:gcnv-oracle-deployment.html[Bereitstellungs-Workflow] bietet eine nummerierte Schrittfolge für alle Bereitstellungsstufen. Alle Stufen führen die unten aufgeführten grundlegenden Bereitstellungsaufgaben aus, dann werden stufenspezifische Aufgaben für die Hochverfügbarkeit in der Produktion hinzugefügt.
@@ -144,6 +149,7 @@ Das xref:gcnv-oracle-deployment.html[Bereitstellungs-Workflow] bietet eine numme
 |===
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um Ihre Umgebung vor der Bereitstellung vorzubereiten, fahren Sie mit xref:gcnv-oracle-access-and-apis.html[Zugriff und APIs für Oracle Database 26ai auf Google Cloud NetApp Volumes] fort.

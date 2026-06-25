@@ -20,6 +20,7 @@ Diese Lösung bietet ein nützliches Toolkit zum Bemessen der Rechen- und Speich
 
 
 
+[[purpose]]
 == Zweck
 
 Beim Verschieben vorhandener Oracle-Workloads von einer Plattform auf eine andere, beispielsweise von vor Ort in die öffentliche Cloud, müssen die Rechenleistung und der Speicher auf der Zielplattform so dimensioniert werden, dass die Leistungs- und Servicelevelanforderungen erfüllt werden.  Diese Dokumentation zeigt ein einfaches Toolkit zum Erreichen dieses Ziels.
@@ -34,6 +35,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -45,6 +47,7 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[license]]
 == Lizenz
 
 Durch den Zugriff, das Herunterladen, die Installation oder die Nutzung des Inhalts dieses Toolkit-Repositorys stimmen Sie den Bedingungen der Lizenz zu, die inlink:https://netapp.sharepoint.com/sites/CIEBuilt-OnsTeam-DatabasesandApps/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FCIEBuilt%2DOnsTeam%2DDatabasesandApps%2FShared%20Documents%2FDatabases%20and%20Apps%2FDatabase%20Solutions%2FDB%20Sizing%20Toolkits%2FOracle%20Sizing%20Guidance%20for%20ANF%2FLICENSE%2ETXT&parent=%2Fsites%2FCIEBuilt%2DOnsTeam%2DDatabasesandApps%2FShared%20Documents%2FDatabases%20and%20Apps%2FDatabase%20Solutions%2FDB%20Sizing%20Toolkits%2FOracle%20Sizing%20Guidance%20for%20ANF["Lizenzdatei"^] .
@@ -54,10 +57,12 @@ NOTE: Es gelten bestimmte Einschränkungen hinsichtlich der Erstellung und/oder 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -71,6 +76,7 @@ Für die Bereitstellung sind die folgenden Voraussetzungen erforderlich.
 ====
 
 
+[[download-the-toolkit]]
 === Laden Sie das Toolkit herunter
 
 [%collapsible%open]
@@ -80,6 +86,7 @@ Rufen Sie das Toolkit aus dem Repository ablink:https://netapp.sharepoint.com/si
 ====
 
 
+[[how-to-use-the-toolkit]]
 === Wie verwende ich das Toolkit?
 
 [%collapsible%open]
@@ -95,6 +102,7 @@ Das Toolkit besteht aus einem webbasierten HTML-Parser und zwei SQL-Skripten zum
 ====
 
 
+[[toolkit-usage-demonstration]]
 === Demonstration der Toolkit-Nutzung
 
 [%collapsible%open]

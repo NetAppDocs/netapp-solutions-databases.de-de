@@ -18,6 +18,7 @@ Diese Lösung wurde für die Ausführung in einer AWX/Tower-Umgebung oder per CL
 
 
 
+[[awxtower]]
 == AWX/Turm
 
 Für AWX/Tower-Umgebungen werden Sie durch die Erstellung eines Inventars Ihres ONTAP Clustermanagements und Oracle-Servers (IPs und Hostnamen), das Erstellen von Anmeldeinformationen, das Konfigurieren eines Projekts, das den Ansible-Code von NetApp Automation Github abruft, und der Jobvorlage geführt, die die Automatisierung startet.
@@ -29,6 +30,7 @@ Für AWX/Tower-Umgebungen werden Sie durch die Erstellung eines Inventars Ihres 
 
 
 
+[[cli-via-the-ansible-control-host]]
 == CLI über den Ansible-Steuerungshost
 
 . So konfigurieren Sie den Linux-Host, sodass er als Ansible-Steuerungshost verwendet werden kannlink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/getting-started.html["Klicken Sie hier für detaillierte Anweisungen"^]
@@ -41,6 +43,7 @@ Für AWX/Tower-Umgebungen werden Sie durch die Erstellung eines Inventars Ihres 
 
 
 
+[[requirements]]
 == Anforderungen
 
 [cols="3, 9"]
@@ -82,6 +85,7 @@ Für AWX/Tower-Umgebungen werden Sie durch die Erstellung eines Inventars Ihres 
 |===
 
 
+[[automation-details]]
 == Automatisierungsdetails
 
 Diese automatisierte Bereitstellung wird mit einem einzigen Ansible-Playbook entwickelt, das aus drei separaten Rollen besteht.  Die Rollen gelten für ONTAP, Linux- und Oracle-Konfigurationen.  In der folgenden Tabelle wird beschrieben, welche Aufgaben automatisiert werden.
@@ -158,12 +162,14 @@ Diese automatisierte Bereitstellung wird mit einem einzigen Ansible-Playbook ent
 |===
 
 
+[[default-parameters]]
 == Standardparameter
 
 Um die Automatisierung zu vereinfachen, haben wir viele erforderliche Oracle-Bereitstellungsparameter mit Standardwerten voreingestellt.  Für die meisten Bereitstellungen ist es im Allgemeinen nicht erforderlich, die Standardparameter zu ändern.  Ein erfahrener Benutzer kann mit Vorsicht Änderungen an den Standardparametern vornehmen.  Die Standardparameter befinden sich in jedem Rollenordner im Verzeichnis „Defaults“.
 
 
 
+[[deployment-instructions]]
 == Bereitstellungsanweisungen
 
 Laden Sie vor dem Start die folgenden Oracle-Installations- und Patchdateien herunter und legen Sie sie im `/tmp/archive` Verzeichnis mit Lese-, Schreib- und Ausführungszugriff für alle Benutzer auf jedem bereitzustellenden DB-Server.  Die Automatisierungsaufgaben suchen in diesem bestimmten Verzeichnis nach den benannten Installationsdateien für die Oracle-Installation und -Konfiguration.
@@ -176,6 +182,7 @@ p6880880_190000_Linux-x86-64.zip -- opatch version 12.2.0.1.23
 ----
 
 
+[[license]]
 == Lizenz
 
 Sie sollten die Lizenzinformationen im Github-Repository lesen.  Indem Sie auf die Inhalte dieses Repositorys zugreifen, sie herunterladen, installieren oder verwenden, stimmen Sie den Bedingungen der Lizenz zu.link:https://github.com/NetApp-Automation/na_oracle19c_deploy/blob/master/LICENSE.TXT["hier,"^] .

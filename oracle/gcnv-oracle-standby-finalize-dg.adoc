@@ -17,6 +17,8 @@ Die Standby-Datenbank für Oracle Data Guard auf Google Cloud NetApp Volumes wir
 
 
 
+[[step-1-create-standby-redo-log-files]]
+[[standby-redo-log-files]]
 == Schritt 1: Erstellen von Standby Wiederherstellungsprotokoll-Logdateien
 
 Standby-Wiederherstellungsprotokolldateien auf beiden Datenbankhosts erstellen, um Fast-Start Failover zu unterstützen. Die Größe muss größer oder gleich dem größten primären Online-Wiederherstellungsprotokoll sein, und die Anzahl sollte (Online-Gruppen pro Thread) + 1 entsprechen. Nach dem GCNV-Seeding die Standby-Wiederherstellungsprotokolle auf dem Standby-Host löschen und neu erstellen, um replizierte Pfade zu korrigieren.
@@ -46,6 +48,8 @@ ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE DISCONNECT
 
 
 
+[[step-2-enable-flashback-and-start-recovery]]
+[[enable-flashback-on-standby]]
 == Schritt 2: Flashback aktivieren und Recovery starten
 
 Die Flashback Datenbank auf dem Standby-System wird aktiviert, um die automatische Wiederherstellung nach einem Failover zu unterstützen, anschließend wird die verwaltete Wiederherstellung mit Echtzeit gestartet. Flashback muss vor dem Start der verwalteten Wiederherstellung aktiviert sein, da dies bei aktivem MRP nicht möglich ist.
@@ -85,6 +89,8 @@ SQL'
 
 
 
+[[step-3-enable-redo-shipping]]
+[[enable-redo-shipping-on-primary]]
 == Schritt 3: Wiederherstellungsprotokoll-Versand aktivieren
 
 Aktivieren des Transports des Wiederherstellungsprotokolls von der Primärdatenbank zur Standby-Datenbank durch Aktivieren von `LOG_ARCHIVE_DEST_STATE_2`, was in xref:gcnv-oracle-standby-database.adoc#standby-init-ora-and-nomount[Schritt 2] des Standby-Initialisierungsverfahrens bewusst auf `DEFER` gesetzt wurde, um  `ORA-12154` Fehler während der Standby-Erstellung zu unterdrücken.
@@ -121,6 +127,8 @@ Falls  `dest_2`  `ORA-12154` angezeigt wird, den Primary neu starten. Nach xref:
 
 
 
+[[step-4-verify-data-guard-state]]
+[[verify-target-dg-state]]
 == Schritt 4: Data Guard Status überprüfen
 
 Es sollte sichergestellt sein, dass sich die primäre Datenbank im READ WRITE-Modus befindet und die Standby-Datenbank mit verwaltetem Recovery eingebunden ist, wobei Wiederherstellungsprotokolle angewendet werden.
@@ -175,6 +183,7 @@ SQL'
 
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um die automatisierte Rollenverwaltung und den Ausfallschutz zu aktivieren, mit xref:gcnv-oracle-data-guard.adoc[Konfigurieren Sie Oracle Data Guard Broker, Fast-Start Failover und den Observer] fortfahren.

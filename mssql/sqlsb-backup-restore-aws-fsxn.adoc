@@ -25,6 +25,7 @@ Dieses Dokument behandelt die notwendigen Schritte zum Durchführen von Backup u
 
 
 
+[[snapcenter-configuration]]
 == SnapCenter -Konfiguration
 
 Für die SnapCenter -Konfiguration und den Schutz der Microsoft SQL Server-Ressourcen müssen die folgenden Schritte ausgeführt werden.  Jeder der folgenden Schritte wird in den folgenden Abschnitten ausführlich beschrieben.
@@ -38,6 +39,7 @@ Für die SnapCenter -Konfiguration und den Schutz der Microsoft SQL Server-Resso
 
 
 
+[[snapcenter-newly-installed-user-interface]]
 == SnapCenter neu installierte Benutzeroberfläche
 
 Konfigurieren Sie die Anmeldeinformationen für die SQL Server-Sicherung und stellen Sie den Benutzer mit Systemadministratorrechten wieder her.
@@ -144,6 +146,7 @@ image:sqlsb-aws-015.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 ====
 
 
+[[configure-a-backup-policy]]
 == Konfigurieren einer Sicherungsrichtlinie
 
 Eine Sicherungsrichtlinie ist ein Satz von Regeln, der die Verwaltung, Planung und Aufbewahrung von Sicherungen regelt.  Es hilft bei der Auswahl des Sicherungstyps und der Häufigkeit basierend auf dem SLA Ihres Unternehmens.
@@ -196,6 +199,7 @@ image:sqlsb-aws-024.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 ====
 
 
+[[configure-and-protect-mssql-server-database]]
 == Konfigurieren und Schützen der MSSQL Server-Datenbank
 
 . Richten Sie das Start- und Ablaufdatum der Sicherungsrichtlinie ein.
@@ -223,6 +227,7 @@ image:sqlsb-aws-029.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[snapcenter-backup-operations]]
 == SnapCenter -Sicherungsvorgänge
 
 Führen Sie die folgenden Schritte aus, um SQL Server-Sicherungen auf Abruf zu erstellen:
@@ -243,6 +248,7 @@ image:sqlsb-aws-032.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[monitor-backup-job]]
 == Sicherungsauftrag überwachen
 
 . Klicken Sie auf der Registerkarte *Überwachen* auf den Job und wählen Sie rechts *Details* aus, um die Jobs anzuzeigen.
@@ -258,6 +264,7 @@ Wenn die Sicherung abgeschlossen ist, wird in der Topologieansicht ein neuer Ein
 
 
 
+[[backup-operation-for-multiple-databases]]
 == Sicherungsvorgang für mehrere Datenbanken
 
 Um eine Sicherungsrichtlinie für mehrere SQL Server-Datenbanken zu konfigurieren, erstellen Sie Ressourcengruppenrichtlinien, indem Sie die folgenden Schritte ausführen:
@@ -326,6 +333,7 @@ image:sqlsb-aws-047.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[configure-and-protect-multiple-sql-server-databases]]
 == Konfigurieren und schützen Sie mehrere SQL Server-Datenbanken
 
 . Klicken Sie auf das Zeichen (+*), um das Startdatum und das Ablaufdatum zu konfigurieren.
@@ -355,6 +363,7 @@ image:sqlsb-aws-053.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[trigger-on-demand-backup-for-multiple-sql-server-databases]]
 == Auslösen einer On-Demand-Sicherung für mehrere SQL Server-Datenbanken
 
 . Wählen Sie auf der Registerkarte *Ressource* die Option „Anzeigen“ aus.  Wählen Sie im Dropdownmenü *Ressourcengruppe* aus.
@@ -378,6 +387,7 @@ image:sqlsb-aws-057.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[monitor-multiple-database-backup-jobs]]
 == Überwachen mehrerer Datenbanksicherungsaufträge
 
 Klicken Sie in der linken Navigationsleiste auf *Überwachen*, wählen Sie den Sicherungsauftrag aus und klicken Sie auf *Details*, um den Auftragsfortschritt anzuzeigen.
@@ -390,6 +400,7 @@ image:sqlsb-aws-059.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[transaction-log-backup-for-multiple-database-backup]]
 == Transaktionsprotokollsicherung für die Sicherung mehrerer Datenbanken
 
 SnapCenter unterstützt die vollständigen, protokollierten und einfachen Wiederherstellungsmodelle.  Der einfache Wiederherstellungsmodus unterstützt keine Transaktionsprotokollsicherung.
@@ -446,6 +457,7 @@ image:sqlsb-aws-069.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[configure-and-protect-multiple-mssql-server-databases]]
 == Konfigurieren und schützen Sie mehrere MSSQL Server-Datenbanken
 
 . Klicken Sie auf die neu erstellte Sicherungsrichtlinie für Transaktionsprotokolle.
@@ -477,6 +489,7 @@ image:sqlsb-aws-075.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[triggering-an-on-demand-transaction-log-backup-for-mutiple-sql-server-databases]]
 == Auslösen einer On-Demand-Transaktionsprotokollsicherung für mehrere SQL Server-Datenbanken
 
 Um eine On-Demand-Sicherung des Transaktionsprotokolls für mehrere SQL Server-Datenbanken auszulösen, führen Sie die folgenden Schritte aus:
@@ -498,6 +511,7 @@ image:sqlsb-aws-078.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[monitoring]]
 == Überwachung
 
 Wechseln Sie zur Registerkarte *Überwachung* und überwachen Sie den Fortschritt des Sicherungsauftrags.
@@ -506,6 +520,7 @@ image:sqlsb-aws-079.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[restore-and-recovery]]
 == Wiederherstellung und Wiederherstellung
 
 Beachten Sie die folgenden Voraussetzungen für die Wiederherstellung einer SQL Server-Datenbank in SnapCenter.
@@ -519,6 +534,7 @@ Beachten Sie die folgenden Voraussetzungen für die Wiederherstellung einer SQL 
 
 
 
+[[restoring-deleted-tables-on-a-sql-server-database-to-a-point-in-time]]
 == Wiederherstellen gelöschter Tabellen in einer SQL Server-Datenbank zu einem bestimmten Zeitpunkt
 
 Führen Sie die folgenden Schritte aus, um eine SQL Server-Datenbank auf einen bestimmten Zeitpunkt wiederherzustellen:
@@ -582,6 +598,7 @@ image:sqlsb-aws-090.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[monitoring-the-restore-progress]]
 == Überwachen des Wiederherstellungsfortschritts
 
 . Klicken Sie auf der Registerkarte *Überwachung* auf die Details des Wiederherstellungsauftrags, um den Fortschritt des Wiederherstellungsauftrags anzuzeigen.
@@ -600,6 +617,7 @@ image:sqlsb-aws-093.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

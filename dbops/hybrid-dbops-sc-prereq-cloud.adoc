@@ -18,6 +18,7 @@ Bevor wir den Cloud Manager-Connector und Cloud Volumes ONTAP installieren und S
 
 
 
+[[cloud-manager-and-cloud-volumes-ontap-deployment-prerequisites-checklist]]
 == Checkliste für die Bereitstellungsvoraussetzungen für Cloud Manager und Cloud Volumes ONTAP
 
 * Ein NetApp Cloud Central-Login
@@ -31,10 +32,12 @@ Weitere Informationen zu den Voraussetzungen für den Einstieg finden Sie auf un
 
 
 
+[[considerations]]
 == Überlegungen
 
 
 
+[[1-what-is-a-cloud-manager-connector]]
 === 1. Was ist ein Cloud Manager-Connector?
 
 In den meisten Fällen muss ein Cloud Central-Kontoadministrator einen Connector in Ihrer Cloud oder Ihrem lokalen Netzwerk bereitstellen.  Der Connector ermöglicht Cloud Manager die Verwaltung von Ressourcen und Prozessen innerhalb Ihrer öffentlichen Cloud-Umgebung.
@@ -43,6 +46,7 @@ Weitere Informationen zu Connectors finden Sie auf unserer https://docs.netapp.c
 
 
 
+[[2-cloud-volumes-ontap-sizing-and-architecture]]
 === 2. Dimensionierung und Architektur von Cloud Volumes ONTAP
 
 Beim Bereitstellen von Cloud Volumes ONTAP haben Sie die Wahl zwischen einem vordefinierten Paket oder der Erstellung einer eigenen Konfiguration.  Obwohl viele dieser Werte später ohne Unterbrechung geändert werden können, müssen vor der Bereitstellung einige wichtige Entscheidungen basierend auf den in der Cloud bereitzustellenden Workloads getroffen werden.
@@ -60,6 +64,7 @@ Wenn Sie weitere Informationen wünschen, lesen Sie die Dokumentation zur richti
 
 
 
+[[3-single-node-or-high-availability]]
 === 3. Einzelknoten oder Hochverfügbarkeit?
 
 In allen Clouds besteht die Möglichkeit, CVO entweder in einem einzelnen Knoten oder in einem Cluster-Hochverfügbarkeitspaar mit zwei Knoten bereitzustellen.  Je nach Anwendungsfall möchten Sie möglicherweise einen einzelnen Knoten bereitstellen, um Kosten zu sparen, oder ein HA-Paar, um zusätzliche Verfügbarkeit und Redundanz zu gewährleisten.

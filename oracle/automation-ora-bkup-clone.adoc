@@ -20,6 +20,7 @@ Die Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit zum Einr
 
 
 
+[[purpose]]
 == Zweck
 
 Die Nutzung der Quick-Clone-Funktion (Minuten) von NetApp ONTAP -Volumes für Oracle VLDB aus einer serverinternen Datenbank-Image-Sicherungskopie in der öffentlichen Cloud dient mehreren Zwecken.  Es bietet eine nahezu in Echtzeit verfügbare Produktionsdatenbank in voller Größe für Berichts-, Entwicklungs- oder UAT-Anwendungsfälle.  Dies spart Speicherkosten, insbesondere wenn ein Thin Cloning der primären Datenbank-Backup-Volumes eine Option ist.  Mit diesem auf Ansible basierenden Automatisierungs-Toolkit können Benutzer geklonte Oracle-Datenbanken nach benutzerdefinierten Zeitplänen einrichten, klonen und aktualisieren, um ein optimiertes Lebenszyklusmanagement zu erreichen.  Das Toolkit ist für den Anwendungsfall von Oracle VLDB vorgesehen, das in der öffentlichen Cloud von Google bereitgestellt wird, und verwendet GCNV als serverinternen Datenbank-Backup-Speicher.
@@ -32,6 +33,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -43,6 +45,7 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[license]]
 == Lizenz
 
 Indem Sie auf den Inhalt dieses GitHub-Repositorys zugreifen, ihn herunterladen, installieren oder verwenden, stimmen Sie den Bedingungen der Lizenz zu, die inlink:https://github.com/NetApp/na_ora_hadr_failover_resync/blob/master/LICENSE.TXT["Lizenzdatei"^] .
@@ -52,10 +55,12 @@ NOTE: Es gelten bestimmte Einschränkungen hinsichtlich der Erstellung und/oder 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -83,6 +88,7 @@ NOTE: Der Einfachheit halber sollte der Oracle-Zielserver des Klons identisch zu
 ====
 
 
+[[download-the-toolkit]]
 === Laden Sie das Toolkit herunter
 
 [%collapsible%open]
@@ -97,6 +103,7 @@ NOTE: Auf das Toolkit kann derzeit nur von internen NetApp Benutzern mit Bitbuck
 ====
 
 
+[[ansible-source-and-target-hosts-file-configuration]]
 === Konfiguration der Ansible-Quell- und Zielhostdateien
 
 [%collapsible%open]
@@ -119,6 +126,7 @@ localhost ansible_connection=local
 ====
 
 
+[[global-variables-configuration]]
 === Konfiguration globaler Variablen
 
 [%collapsible%open]
@@ -186,6 +194,7 @@ NOTE: Für eine sicherere Automatisierungsbereitstellung kann Ansible Vault zum 
 ====
 
 
+[[host-variables-configuration]]
 === Konfiguration der Hostvariablen
 
 [%collapsible%open]
@@ -205,6 +214,7 @@ sga_size: 4096M
 ====
 
 
+[[additional-clone-target-oracle-server-configuration]]
 === Zusätzliche Oracle-Serverkonfiguration für Klonziele
 
 [%collapsible%open]
@@ -216,6 +226,7 @@ Wenn die primäre Datenbank mit ASM konfiguriert ist, kann die primäre Gruppe d
 ====
 
 
+[[playbook-execution]]
 === Playbook-Ausführung
 
 [%collapsible%open]
@@ -249,6 +260,7 @@ NOTE: Die Ausführung des Toolkits wird in verschiedenen Phasen angehalten, um d
 ====
 
 
+[[playbook-execution-details]]
 === Details zur Playbook-Ausführung
 
 [%collapsible%open]
@@ -640,6 +652,7 @@ End Oracle DB clone or refresh at 2025-0627-084452
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zur Automatisierung der NetApp -Lösung finden Sie auf der folgenden Websitelink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^]

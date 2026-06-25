@@ -18,6 +18,7 @@ Dieser Abschnitt enthält eine Zusammenfassung der Aufgaben, die abgeschlossen w
 
 
 
+[[on-premises]]
 == Vor Ort
 
 * Richten Sie den Datenbankadministratorbenutzer in SnapCenter ein
@@ -33,6 +34,7 @@ Dieser Abschnitt enthält eine Zusammenfassung der Aufgaben, die abgeschlossen w
 
 
 
+[[aws-public-cloud]]
 == Öffentliche AWS-Cloud
 
 * Vorflugkontrolle

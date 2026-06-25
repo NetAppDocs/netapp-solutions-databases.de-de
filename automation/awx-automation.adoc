@@ -18,10 +18,12 @@ Auf dieser Seite wird die automatisierte Methode zum Bereitstellen von Oracle19c
 
 
 
+[[awxtower-deployment-oracle-19c-database]]
 == AWX/Tower-Bereitstellung Oracle 19c-Datenbank
 
 
 
+[[1-create-the-inventory-group-hosts-and-credentials-for-your-environment]]
 === 1. Erstellen Sie das Inventar, die Gruppe, die Hosts und die Anmeldeinformationen für Ihre Umgebung
 
 In diesem Abschnitt wird die Einrichtung von Inventar, Gruppen, Hosts und Zugangsdaten in AWX/Ansible Tower beschrieben, die die Umgebung für die Nutzung automatisierter NetApp -Lösungen vorbereiten.
@@ -91,6 +93,7 @@ extra_vars:
 
 
 
+[[2-create-a-project]]
 === 2. Erstellen eines Projekts
 
 . Gehen Sie zu Ressourcen → Projekte und klicken Sie auf Hinzufügen.
@@ -106,6 +109,7 @@ extra_vars:
 
 
 
+[[3-configure-oracle-hostvars]]
 === 3. Konfigurieren Sie Oracle host_vars
 
 Die in diesem Abschnitt definierten Variablen werden auf jeden einzelnen Oracle-Server und jede einzelne Oracle-Datenbank angewendet.
@@ -118,6 +122,7 @@ NOTE: Die blauen Elemente müssen geändert werden, damit sie zu Ihrer Umgebung 
 
 
 
+[[host-vars-config]]
 === Host-VARS-Konfiguration
 
 [source, shell]
@@ -164,6 +169,7 @@ host_datastores_nfs:
 
 
 
+[[4-configure-global-variables]]
 === 4. Konfigurieren globaler Variablen
 
 Die in diesem Abschnitt definierten Variablen gelten für alle Oracle-Hosts, Datenbanken und den ONTAP Cluster.
@@ -274,6 +280,7 @@ initial_pwd_all: "netapp123"
 
 
 
+[[5-configure-and-launch-the-job-template]]
 === 5. Konfigurieren und starten Sie die Jobvorlage.
 
 . Erstellen Sie die Jobvorlage.
@@ -321,6 +328,7 @@ NOTE: requirements_config stellt sicher, dass Sie über die richtigen Bibliothek
 
 
 
+[[6-deploy-additional-database-on-same-oracle-host]]
 === 6. Bereitstellen einer zusätzlichen Datenbank auf demselben Oracle-Host
 
 Der Oracle-Teil des Playbooks erstellt pro Ausführung eine einzelne Oracle-Containerdatenbank auf einem Oracle-Server.  Führen Sie die folgenden Schritte aus, um zusätzliche Containerdatenbanken auf demselben Server zu erstellen.
@@ -424,6 +432,7 @@ Dies bestätigt, dass der Oracle-Listener ordnungsgemäß funktioniert.
 
 
 
+[[where-to-go-for-help]]
 === Wo bekomme ich Hilfe?
 
 Wenn Sie Hilfe mit dem Toolkit benötigen, treten Sie bitte dem beilink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Community-Support von NetApp Solution Automation"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

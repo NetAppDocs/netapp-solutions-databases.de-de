@@ -13,6 +13,7 @@ summary: Die primäre Oracle Datenbank auf Google Cloud NetApp Volumes iSCSI-Spe
 [role="lead"]
 Die primäre Oracle Datenbank auf Google Cloud NetApp Volumes iSCSI-Speicher wird mithilfe des Oracle Database Configuration Assistant im Silent-Modus erstellt. Dieses Verfahren umfasst das Ausführen von  `dbca` zur Erstellung der Container-Datenbank und der Pluggable Database auf GCNV-gestützten ASM-Festplattengruppen, die Konfiguration der Archivprotokollziele sowie das Hinzufügen eines rollenbasierten Anwendungsdienstes für transparentes Failover nach der Aktivierung von Data Guard.
 
+[[create-primary-database]]
 .Schritte
 Die Oracle container database und die pluggable database werden auf `oracdb1` unter Verwendung von `dbca` im Silent-Modus erstellt, die Archive-Log-Ziele konfiguriert, die Oracle Restart-Registrierung überprüft und ein rollenbasierter Anwendungsdienst für transparentes Client-Failover hinzugefügt.
 
@@ -92,6 +93,7 @@ Nach der Aktivierung des Data Guard Broker `orclapp` läuft nur auf dem PRIMARY.
 
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um Standby-Schutz und Failover-Bereitschaft einzurichten, gehen Sie zu xref:gcnv-oracle-standby-database.adoc[Die Oracle Standby-Datenbank erstellen] auf  `oracdb2`.

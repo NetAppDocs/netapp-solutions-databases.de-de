@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur automatisierten Oracle-Ber
 
 
 
+[[purpose]]
 == Zweck
 
 Die NetApp AFF C-Serie ist ein kapazitätsstarker Flash-Speicher, der All-Flash für Unified Storage zugänglicher und erschwinglicher macht.  Die Leistung reicht für viele Oracle-Datenbank-Workloads der Stufe 1 oder 2 aus.  Die Systeme der AFF C-Serie basieren auf der Datenmanagementsoftware NetApp ONTAP und bieten branchenführende Effizienz, überragende Flexibilität, erstklassige Datendienste und Cloud-Integration, damit Sie Ihre IT-Infrastruktur skalieren, Ihr Datenmanagement vereinfachen und Speicherkosten sowie Stromverbrauch senken können.
@@ -34,6 +35,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -46,18 +48,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Die Tests und Validierungen dieser Lösung wurden in einer Laborumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht.  Siehe den Abschnitt<<Wichtige Faktoren für die Bereitstellungsüberlegungen>> für weitere Informationen.
 
 
 
+[[architecture]]
 === Architektur
 
 image:automation-ora-c-series-nfs-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der Oracle-Bereitstellungskonfiguration in der öffentlichen AWS-Cloud mit iSCSI und ASM."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -104,6 +109,7 @@ image:automation-ora-c-series-nfs-architecture.png["Dieses Bild bietet eine deta
 |===
 
 
+[[oracle-database-configuration-in-the-lab-environment]]
 === Oracle-Datenbankkonfiguration in der Laborumgebung
 
 [cols="33%, 33%, 33%"]
@@ -123,6 +129,7 @@ image:automation-ora-c-series-nfs-architecture.png["Dieses Bild bietet eine deta
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *Oracle-Datenbankspeicherlayout.*  Bei dieser automatisierten Oracle-Bereitstellung stellen wir für jede Datenbank drei Datenbankvolumes bereit, um standardmäßig Oracle-Binärdateien, Daten und Protokolle zu hosten.  Die Volumes werden auf dem Oracle DB-Server als /u01 – Binärdateien, /u02 – Daten, /u03 – Protokolle über NFS gemountet.  Aus Redundanzgründen sind auf den Einhängepunkten /u02 und /u03 doppelte Steuerdateien konfiguriert.
@@ -134,12 +141,14 @@ image:automation-ora-c-series-nfs-architecture.png["Dieses Bild bietet eine deta
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Die folgenden Abschnitte enthalten schrittweise Anleitungen zur automatisierten Bereitstellung von Oracle 19c sowie Informationen zum Schutz und Klonen von Oracle-Datenbanken nach der Bereitstellung.
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -174,6 +183,7 @@ installer_archives:
 ====
 
 
+[[configure-networking-and-svm-on-c-series-for-oracle]]
 === Konfigurieren Sie Netzwerk und SVM auf der C-Serie für Oracle
 
 [%collapsible%open]
@@ -274,6 +284,7 @@ Damit ist die Konfiguration des C-Serie-Controllers für Oracle abgeschlossen.
 ====
 
 
+[[automation-parameter-files]]
 === Automatisierungsparameterdateien
 
 [%collapsible%open]
@@ -290,6 +301,7 @@ Zusätzlich zu diesen benutzerdefinierten Variablendateien gibt es mehrere Stand
 ====
 
 
+[[parameter-files-configuration]]
 === Konfiguration der Parameterdateien
 
 [%collapsible%open]
@@ -368,6 +380,7 @@ nfs_lif: 172.30.136.68
 ====
 
 
+[[playbook-execution]]
 === Playbook-Ausführung
 
 [%collapsible%open]
@@ -432,6 +445,7 @@ ansible-playbook -i hosts 5-destroy.yml -u admin -e @vars/vars.yml
 ====
 
 
+[[post-execution-validation]]
 === Validierung nach der Ausführung
 
 [%collapsible%open]
@@ -664,6 +678,7 @@ image:automation-ora-c-series-nfs-em-001.png["Dieses Bild zeigt den Anmeldebilds
 ====
 
 
+[[oracle-backup-restore-and-clone-with-snapcenter]]
 === Oracle-Backup, -Wiederherstellung und -Klonen mit SnapCenter
 
 [%collapsible%open]
@@ -673,6 +688,7 @@ NetApp empfiehlt das SnapCenter -UI-Tool zur Verwaltung der in der C-Serie berei
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

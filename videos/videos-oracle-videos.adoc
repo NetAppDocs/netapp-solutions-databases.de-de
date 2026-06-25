@@ -18,6 +18,7 @@ Entdecken Sie die umfassende Videobibliothek von NetApp mit Datenbanklösungen f
 
 
 
+[[deployment-and-automation]]
 == Bereitstellung und Automatisierung
 
 .Vereinfachte und automatisierte Oracle-Bereitstellung auf Azure NetApp Files mit NFS
@@ -32,6 +33,7 @@ video::74062c18-b120-45b7-9bf9-b2db00f73675[panopto,width=360]
 video::VcQMJIRzhoY[youtube,width=360]
 
 
+[[backup-recovery-and-cloning]]
 == Backup, Wiederherstellung und Klonen
 
 .Sicherung, Wiederherstellung und Klonen von Oracle-Datenbanken auf ANF mit SnapCenter
@@ -46,6 +48,7 @@ video::4b0fd212-7641-46b8-9e55-b01200f9383a[panopto,width=360]
 video::krzMWjrrMb0[youtube,width=360]
 
 
+[[modernization-and-migration]]
 == Modernisierung und Migration
 
 .Teil 1 – Oracle-Modernisierung mit Hybrid Cloud in AWS und FSx ONTAP
@@ -56,6 +59,7 @@ video::bb088a3e-bbfb-4927-bf44-b01200f38b17[panopto,width=360]
 video::c0df32f8-d6d3-4b79-b0bd-b01200f3a2e8[panopto,width=360]
 
 
+[[high-availability-disaster-recovery-and-replication]]
 == Hohe Verfügbarkeit, Notfallwiederherstellung und Replikation
 
 .Teil 3 – Automatisierte Einrichtung, Failover und Resynchronisierung der Datenbank-HA/DR-Replikation

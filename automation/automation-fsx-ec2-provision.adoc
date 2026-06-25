@@ -20,6 +20,7 @@ Diese Lösung bietet ein auf Terraform basierendes Automatisierungs-Toolkit für
 
 
 
+[[purpose]]
 == Zweck
 
 Dieses Toolkit automatisiert die Aufgaben der Bereitstellung eines AWS FSx ONTAP Speicherclusters und einer EC2-Recheninstanz, die anschließend für die Datenbankbereitstellung verwendet werden können.
@@ -32,6 +33,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -44,6 +46,7 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[license]]
 == Lizenz
 
 Indem Sie auf den Inhalt dieses GitHub-Repositorys zugreifen, ihn herunterladen, installieren oder verwenden, stimmen Sie den Bedingungen der Lizenz zu, die inlink:https://github.com/NetApp/na_ora_hadr_failover_resync/blob/master/LICENSE.TXT["Lizenzdatei"^] .
@@ -53,10 +56,12 @@ NOTE: Es gelten bestimmte Einschränkungen hinsichtlich der Erstellung und/oder 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -84,6 +89,7 @@ Network configuration
 ====
 
 
+[[download-the-toolkit]]
 === Laden Sie das Toolkit herunter
 
 [%collapsible%open]
@@ -95,6 +101,7 @@ git clone https://github.com/NetApp/na_aws_fsx_ec2_deploy.git
 ====
 
 
+[[connectivity-and-authentication]]
 === Konnektivität und Authentifizierung
 
 [%collapsible%open]
@@ -104,6 +111,7 @@ Das Toolkit soll von einer AWS-Cloud-Shell ausgeführt werden.  AWS Cloud Shell 
 ====
 
 
+[[terraform-provider-tf-and-main-tf-files-configuration]]
 === Konfiguration der Terraform-Dateien provider.tf und main.tf
 
 [%collapsible%open]
@@ -141,6 +149,7 @@ main.tf:
 ====
 
 
+[[terraform-variables-tf-and-terraform-tfvars-configuration]]
 === Terraform variables.tf und terraform.tfvars-Konfiguration
 
 [%collapsible%open]
@@ -180,6 +189,7 @@ root_volume_size        = 30
 ====
 
 
+[[step-by-step-procedures-executed-in-sequence]]
 === Schritt-für-Schritt-Verfahren – nacheinander ausgeführt
 
 [%collapsible%open]
@@ -245,6 +255,7 @@ terraform destroy
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zur Automatisierung der NetApp -Lösung finden Sie auf der folgenden Websitelink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^]

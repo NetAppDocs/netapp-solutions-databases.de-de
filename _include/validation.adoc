@@ -91,6 +91,7 @@ Dies bestätigt, dass der Oracle-Listener ordnungsgemäß funktioniert.
 
 
 
+[[where-to-go-for-help]]
 === Wo bekomme ich Hilfe?
 
 Wenn Sie Hilfe mit dem Toolkit benötigen, treten Sie bitte dem beilink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Community-Support von NetApp Solution Automation"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

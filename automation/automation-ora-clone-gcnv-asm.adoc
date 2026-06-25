@@ -20,6 +20,7 @@ Die Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit zum Einr
 
 
 
+[[purpose]]
 == Zweck
 
 Die Nutzung der schnellen Klone der physischen Standby-Oracle-Datenbank in der Oracle Data Guard-Konfiguration für andere Anwendungsfälle dient mehreren Zwecken.  Es bietet eine nahezu Echtzeit-Berichtsdatenbank und außerdem eine beschreibbare Kopie der Produktionsdatenbank für Entwicklungs- oder UAT-Zwecke.  Auf diese Weise können teure Lizenzkosten für Active Data Guard vermieden werden, wenn eine kurze Verzögerung (10–15 Minuten) bei der Berichterstattung akzeptabel ist.  Dies spart Speicherkosten, insbesondere wenn ein Thin Clone primärer Datenvolumes möglich ist.  Mit diesem auf Ansible basierenden Automatisierungs-Toolkit können Benutzer geklonte Oracle-Datenbanken nach Benutzerzeitplänen einrichten, klonen und aktualisieren, um das Lebenszyklusmanagement zu optimieren.  Das Toolkit gilt für Oracle-Datenbanken, die in der öffentlichen Google-Cloud mithilfe von Google Cloud NetApp Volumes (GCNV)-Speicher und Oracle-Datenbank-Setup in einer Data Guard-Konfiguration bereitgestellt werden.
@@ -32,6 +33,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -43,6 +45,7 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[license]]
 == Lizenz
 
 Indem Sie auf den Inhalt dieses GitHub-Repositorys zugreifen, ihn herunterladen, installieren oder verwenden, stimmen Sie den Bedingungen der Lizenz zu, die inlink:https://github.com/NetApp/na_ora_hadr_failover_resync/blob/master/LICENSE.TXT["Lizenzdatei"^] .
@@ -52,10 +55,12 @@ NOTE: Es gelten bestimmte Einschränkungen hinsichtlich der Erstellung und/oder 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -83,6 +88,7 @@ NOTE: Der Einfachheit halber sollte der Oracle-Zielserver für den Klon identisc
 ====
 
 
+[[download-the-toolkit]]
 === Laden Sie das Toolkit herunter
 
 [%collapsible%open]
@@ -97,6 +103,7 @@ NOTE: Auf das Toolkit kann derzeit nur von internen NetApp Benutzern mit Bitbuck
 ====
 
 
+[[ansible-source-and-target-hosts-file-configuration]]
 === Konfiguration der Ansible-Quell- und Zielhostdateien
 
 [%collapsible%open]
@@ -118,6 +125,7 @@ localhost ansible_connection=local
 ====
 
 
+[[global-variables-configuration]]
 === Konfiguration globaler Variablen
 
 [%collapsible%open]
@@ -203,6 +211,7 @@ NOTE: Für eine sicherere Automatisierungsbereitstellung kann Ansible Vault zum 
 ====
 
 
+[[host-variables-configuration]]
 === Konfiguration der Hostvariablen
 
 [%collapsible%open]
@@ -226,6 +235,7 @@ asm_sid: +ASM
 ====
 
 
+[[additional-clone-target-oracle-server-configuration]]
 === Zusätzliche Oracle-Serverkonfiguration für Klonziele
 
 [%collapsible%open]
@@ -252,6 +262,7 @@ NOTE: Stellen Sie sicher, dass der Konfigurationsparameter asm_diskstring auf de
 ====
 
 
+[[playbook-execution]]
 === Playbook-Ausführung
 
 [%collapsible%open]
@@ -285,6 +296,7 @@ NOTE: Die Ausführung des Toolkits wird in verschiedenen Phasen angehalten, um d
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zur Automatisierung der NetApp -Lösung finden Sie auf der folgenden Websitelink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^]

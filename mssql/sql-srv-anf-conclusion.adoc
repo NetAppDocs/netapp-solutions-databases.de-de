@@ -20,6 +20,7 @@ Dieses Dokument enthält Empfehlungen zum Planen, Entwerfen, Optimieren und Skal
 
 
 
+[[takeaways]]
 == Imbiss
 
 Zu den wichtigsten Punkten dieses Dokuments gehören:

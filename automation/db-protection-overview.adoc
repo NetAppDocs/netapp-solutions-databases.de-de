@@ -18,6 +18,7 @@ Auf dieser Seite wird die automatisierte Methode zum Bereitstellen von Oracle19c
 
 
 
+[[automated-data-protection-for-oracle-databases]]
 == Automatisierter Datenschutz für Oracle-Datenbanken
 
 Organisationen automatisieren ihre Umgebungen, um die Effizienz zu steigern, Bereitstellungen zu beschleunigen und den manuellen Aufwand zu reduzieren.  Konfigurationsmanagement-Tools wie Ansible werden verwendet, um den Datenbankbetrieb in Unternehmen zu optimieren.  In dieser Lösung zeigen wir, wie Sie mit Ansible den Datenschutz von Oracle mit NetApp ONTAP automatisieren können.  Indem Sie Speicheradministratoren, Systemadministratoren und DBAs die Möglichkeit geben, die Datenreplikation in einem externen Rechenzentrum oder in der öffentlichen Cloud konsistent und schnell einzurichten, erzielen Sie die folgenden Vorteile:
@@ -32,6 +33,7 @@ NetApp stellt Kunden validierte Ansible-Module und -Rollen zur Verfügung, um di
 
 
 
+[[on-prem-to-on-prem-replication]]
 === On-Prem-zu-On-Prem-Replikation
 
 * Erstellen Sie Intercluster-LIFS an Quelle und Ziel
@@ -43,6 +45,7 @@ NetApp stellt Kunden validierte Ansible-Module und -Rollen zur Verfügung, um di
 
 
 
+[[on-prem-to-cvo-in-aws]]
 === On Prem zum CVO in AWS
 
 * AWS-Connector erstellen

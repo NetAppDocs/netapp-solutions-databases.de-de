@@ -18,10 +18,12 @@ Das NetApp SnapCenter -Tool verwendet eine rollenbasierte Zugriffskontrolle (RBA
 
 
 
+[[on-premises]]
 == Vor Ort
 
 
 
+[[1-setup-database-admin-user-in-snapcenter]]
 === 1. Richten Sie den Datenbankadministratorbenutzer in SnapCenter ein
 
 Es ist sinnvoll, für jede von SnapCenter unterstützte Datenbankplattform eine dedizierte Administrator-Benutzer-ID für die Datenbanksicherung, -wiederherstellung und/oder -notfallwiederherstellung zu haben.  Sie können auch eine einzige ID verwenden, um alle Datenbanken zu verwalten.  In unseren Testfällen und Demonstrationen haben wir jeweils einen dedizierten Administratorbenutzer für Oracle und SQL Server erstellt.
@@ -39,6 +41,7 @@ image:snapctr-admin-users.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt
 
 
 
+[[2-snapcenter-plugin-installation-prerequisites]]
 === 2. Voraussetzungen für die Installation des SnapCenter -Plugins
 
 SnapCenter führt Backup-, Wiederherstellungs-, Klon- und andere Funktionen mithilfe eines Plugin-Agenten durch, der auf den DB-Hosts ausgeführt wird.  Es stellt über die auf der Registerkarte „Einstellungen und Anmeldeinformationen“ konfigurierten Anmeldeinformationen eine Verbindung zum Datenbankhost und zur Datenbank für die Plug-in-Installation und andere Verwaltungsfunktionen her.  Es gibt spezifische Berechtigungsanforderungen, die auf dem Zielhosttyp (z. B. Linux oder Windows) sowie dem Datenbanktyp basieren.
@@ -70,6 +73,7 @@ Unix-Host für Oracle:
 
 
 
+[[3-snapcenter-host-plugin-installation]]
 === 3. Installation des SnapCenter Host-Plugins
 
 
@@ -161,6 +165,7 @@ image:snapctr-add-linux-host-006.png["Abbildung, die einen Eingabe-/Ausgabedialo
 
 
 
+[[4-database-resource-discovery]]
 === 4. Datenbankressourcenerkennung
 
 Bei erfolgreicher Plugin-Installation können die Datenbankressourcen auf dem Host sofort erkannt werden.  Klicken Sie im linken Menü auf die Registerkarte „Ressourcen“.  Je nach Art der Datenbankplattform stehen verschiedene Ansichten zur Verfügung, beispielsweise die Datenbank, die Ressourcengruppe usw.  Möglicherweise müssen Sie auf die Registerkarte „Ressourcen aktualisieren“ klicken, wenn die Ressourcen auf dem Host nicht erkannt und angezeigt werden.
@@ -185,6 +190,7 @@ image:snapctr-add-windows-host-011.png["Abbildung, die einen Eingabe-/Ausgabedia
 
 
 
+[[5-setup-storage-cluster-peering-and-db-volumes-replication]]
 === 5. Einrichten von Storage-Cluster-Peering und DB-Volume-Replikation
 
 Um Ihre lokalen Datenbankdaten mit einer öffentlichen Cloud als Ziel zu schützen, werden lokale ONTAP Cluster-Datenbankvolumes mithilfe der NetApp SnapMirror -Technologie in das Cloud-CVO repliziert.  Die replizierten Zielvolumes können dann für DEV/OPS oder Disaster Recovery geklont werden.  Mit den folgenden allgemeinen Schritten können Sie Cluster-Peering und die Replikation von DB-Volumes einrichten.
@@ -226,6 +232,7 @@ image:snapctr-vol-snapmirror-003.png["Abbildung, die einen Eingabe-/Ausgabedialo
 
 
 
+[[6-add-cvo-database-storage-svm-to-snapcenter]]
 === 6. Fügen Sie SnapCenter CVO-Datenbankspeicher-SVM hinzu
 
 . Melden Sie sich bei SnapCenter mit einer Benutzer-ID mit SnapCenterAdmin-Berechtigungen an.
@@ -245,6 +252,7 @@ image:snapctr-add-cvo-svm-003.png["Abbildung, die einen Eingabe-/Ausgabedialog z
 
 
 
+[[7-setup-database-backup-policy-in-snapcenter]]
 === 7. Richten Sie die Datenbanksicherungsrichtlinie in SnapCenter ein
 
 Die folgenden Verfahren veranschaulichen, wie Sie eine vollständige Sicherungsrichtlinie für Datenbanken oder Protokolldateien erstellen.  Die Richtlinie kann dann zum Schutz der Datenbankressourcen implementiert werden.  Das Recovery Point Objective (RPO) oder Recovery Time Objective (RTO) bestimmt die Häufigkeit von Datenbank- und/oder Protokollsicherungen.
@@ -392,6 +400,7 @@ image:snapctr-sql-policy-log-006.png["Abbildung, die einen Eingabe-/Ausgabedialo
 
 
 
+[[8-implement-backup-policy-to-protect-database]]
 === 8. Implementieren Sie eine Sicherungsrichtlinie zum Schutz der Datenbank
 
 SnapCenter verwendet eine Ressourcengruppe, um eine Datenbank in einer logischen Gruppierung von Datenbankressourcen zu sichern, z. B. mehrere auf einem Server gehostete Datenbanken, eine Datenbank, die dieselben Speichervolumes gemeinsam nutzt, mehrere Datenbanken, die eine Geschäftsanwendung unterstützen usw.  Durch den Schutz einer einzelnen Datenbank wird eine eigene Ressourcengruppe erstellt.  Die folgenden Verfahren zeigen, wie Sie eine in Abschnitt 7 erstellte Sicherungsrichtlinie zum Schutz von Oracle- und SQL Server-Datenbanken implementieren.
@@ -542,6 +551,7 @@ image:snapctr-sql-rgroup-log-007.png["Abbildung, die einen Eingabe-/Ausgabedialo
 
 
 
+[[9-validate-backup]]
 === 9. Sicherung validieren
 
 Nachdem zum Schutz der Datenbankressourcen Ressourcengruppen für die Datenbanksicherung erstellt wurden, werden die Sicherungsaufträge gemäß dem vordefinierten Zeitplan ausgeführt.  Überprüfen Sie den Status der Auftragsausführung auf der Registerkarte „Überwachen“.

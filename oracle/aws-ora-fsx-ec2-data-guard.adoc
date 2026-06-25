@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur Konfiguration von Oracle D
 
 
 
+[[purpose]]
 == Zweck
 
 Oracle Data Guard gewährleistet hohe Verfügbarkeit, Datenschutz und Notfallwiederherstellung für Unternehmensdaten in einer primären Datenbank- und Standby-Datenbankreplikationskonfiguration.  Oracle Active Data Guard ermöglicht Benutzern den Zugriff auf Standby-Datenbanken, während die Datenreplikation von der primären Datenbank zu den Standby-Datenbanken aktiv ist.  Data Guard ist eine Funktion der Oracle Database Enterprise Edition.  Es ist keine separate Lizenzierung erforderlich.  Andererseits ist Active Data Guard eine Option der Oracle Database Enterprise Edition und erfordert daher eine separate Lizenzierung.  Mehrere Standby-Datenbanken können im Active Data Guard-Setup Datenreplikationen von einer primären Datenbank empfangen.  Allerdings erfordert jede zusätzliche Standby-Datenbank eine Active Data Guard-Lizenz und zusätzlichen Speicherplatz in der Größe der primären Datenbank.  Die Betriebskosten summieren sich schnell.
@@ -34,6 +35,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -46,18 +48,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Das Testen und Validieren dieser Lösung wurde in einer AWS FSx ONTAP und EC2-Laborumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
 
 
 
+[[architecture]]
 === Architektur
 
 image:aws-ora-fsx-data-guard-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der Oracle Data Guard-Implementierung in AWS mit FSx ONTAP."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -89,6 +94,7 @@ image:aws-ora-fsx-data-guard-architecture.png["Dieses Bild bietet eine detaillie
 |===
 
 
+[[oracle-data-guard-configuration-with-hypothetical-ny-to-la-dr-setup]]
 === Oracle Data Guard-Konfiguration mit hypothetischem DR-Setup von NY nach LA
 
 [cols="33%, 33%, 33%"]
@@ -108,6 +114,7 @@ image:aws-ora-fsx-data-guard-architecture.png["Dieses Bild bietet eine detaillie
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *So funktioniert die Oracle Standby-Datenbank FlexClone .*  AWS FSx ONTAP FlexClone bietet gemeinsam genutzte Kopien derselben Standby-Datenbank-Volumes, die beschreibbar sind.  Bei den Kopien der Datenträger handelt es sich tatsächlich um Zeiger, die auf die ursprünglichen Datenblöcke verweisen, bis ein neuer Schreibvorgang auf dem Klon beginnt.  ONTAP weist dann neue Speicherblöcke für die neuen Schreibvorgänge zu.  Alle Lese-E/As werden von Originaldatenblöcken unter aktiver Replikation bedient.  Daher sind die Klone sehr speichereffizient und können für viele andere Anwendungsfälle mit minimaler und inkrementeller neuer Speicherzuweisung für neue Schreib-E/As verwendet werden.  Dies ermöglicht enorme Speicherkosteneinsparungen durch eine deutliche Reduzierung des Active Data Guard-Speicherbedarfs.  NetApp empfiehlt, die FlexClone -Aktivitäten im Falle einer Datenbankumschaltung vom Primärspeicher auf den Standby-FSx-Speicher zu minimieren, um die Oracle-Leistung auf einem hohen Niveau zu halten.
@@ -122,6 +129,7 @@ image:aws-ora-fsx-data-guard-architecture.png["Dieses Bild bietet eine detaillie
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Es wird davon ausgegangen, dass Sie Ihre primäre Oracle-Datenbank bereits in einer AWS EC2-Umgebung innerhalb einer VPC als Ausgangspunkt für die Einrichtung von Data Guard bereitgestellt haben.  Die primäre Datenbank wird mit Oracle ASM zur Speicherverwaltung bereitgestellt.  Für Oracle-Datendateien, Protokolldateien und Steuerdateien usw. werden zwei ASM-Datenträgergruppen erstellt – +DATA und +LOGS. Weitere Informationen zur Oracle-Bereitstellung in AWS mit ASM finden Sie in den folgenden technischen Berichten.
@@ -135,6 +143,7 @@ Ihre primäre Oracle-Datenbank kann entweder auf einem FSx ONTAP oder einem ande
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -158,6 +167,7 @@ NOTE: Stellen Sie sicher, dass Sie im Stammvolume der EC2-Instanz mindestens 50 
 ====
 
 
+[[prepare-the-primary-database-for-data-guard]]
 === Vorbereiten der primären Datenbank für Data Guard
 
 [%collapsible%open]
@@ -402,6 +412,7 @@ Damit ist die Einrichtung der primären Datenbank für Data Guard abgeschlossen.
 ====
 
 
+[[prepare-standby-database-and-activate-data-guard]]
 === Standby-Datenbank vorbereiten und Data Guard aktivieren
 
 [%collapsible%open]
@@ -702,6 +713,7 @@ Damit ist die Einrichtung des Data Guard-Schutzes für db1 vom Primär- zum Stan
 ====
 
 
+[[setup-data-guard-broker]]
 === Data Guard Broker einrichten
 
 [%collapsible%open]
@@ -797,6 +809,7 @@ Im Falle eines Fehlers kann Data Guard Broker verwendet werden, um ein sofortige
 ====
 
 
+[[clone-standby-database-for-other-use-cases]]
 === Klonen Sie die Standby-Datenbank für andere Anwendungsfälle
 
 [%collapsible%open]
@@ -986,6 +999,7 @@ Damit ist das Klonen und die Validierung einer neuen Oracle-Datenbank aus der St
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

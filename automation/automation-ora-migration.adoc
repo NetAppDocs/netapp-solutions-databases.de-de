@@ -20,6 +20,7 @@ Diese Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit für d
 
 
 
+[[purpose]]
 == Zweck
 
 Dieses Toolkit automatisiert die Migration von Oracle-Datenbanken vor Ort in die AWS-Cloud mit FSx ONTAP Speicher und EC2-Recheninstanz als Zielinfrastruktur.  Es wird davon ausgegangen, dass der Kunde bereits über eine lokale Oracle-Datenbank verfügt, die im CDB/PDB-Modell bereitgestellt wird.  Das Toolkit ermöglicht dem Kunden, eine benannte PDB aus einer Containerdatenbank auf einem Oracle-Host zu verschieben, indem er das Oracle PDB-Verschiebungsprozedur mit einer Option für maximale Verfügbarkeit verwendet.  Das bedeutet, dass die Quell-PDB auf jedem lokalen Speicherarray mit minimaler Dienstunterbrechung in eine neue Containerdatenbank verschoben wird.  Das Oracle-Verschiebungsprozedur verschiebt die Oracle-Datendateien, während die Datenbank online ist.  Anschließend werden Benutzersitzungen zum Zeitpunkt der Umstellung, wenn alle Datendateien in die AWS-Cloud verschoben werden, von lokalen Standorten zu den verlagerten Datenbankdiensten umgeleitet.  Bei der unterstrichenen Technologie handelt es sich um eine bewährte Hot-Clone-Methode von Oracle PDB.
@@ -35,6 +36,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -47,6 +49,7 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[license]]
 == Lizenz
 
 Indem Sie auf den Inhalt dieses GitHub-Repositorys zugreifen, ihn herunterladen, installieren oder verwenden, stimmen Sie den Bedingungen der Lizenz zu, die inlink:https://github.com/NetApp/na_ora_hadr_failover_resync/blob/master/LICENSE.TXT["Lizenzdatei"^] .
@@ -56,10 +59,12 @@ NOTE: Es gelten bestimmte Einschränkungen hinsichtlich der Erstellung und/oder 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -89,6 +94,7 @@ Network connectivity
 ====
 
 
+[[download-the-toolkit]]
 === Laden Sie das Toolkit herunter
 
 [%collapsible%open]
@@ -100,6 +106,7 @@ git clone https://github.com/NetApp/na_ora_aws_migration.git
 ====
 
 
+[[host-variables-configuration]]
 === Konfiguration der Hostvariablen
 
 [%collapsible%open]
@@ -129,6 +136,7 @@ Target Oracle CDB - define host specific variables for the target CDB including 
 ====
 
 
+[[db-server-host-file-configuration]]
 === Konfiguration der DB-Server-Hostdatei
 
 [%collapsible%open]
@@ -144,6 +152,7 @@ AWS EC2-Instanzen verwenden standardmäßig die IP-Adresse zur Hostbenennung.  W
 ====
 
 
+[[playbook-execution-executed-in-sequence]]
 === Playbook-Ausführung – nacheinander ausgeführt
 
 [%collapsible%open]
@@ -176,6 +185,7 @@ ansible-playbook -i hosts ora_pdb_relocate.yml -u ec2-user --private-key db1.pem
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zur Automatisierung der NetApp -Lösung finden Sie auf der folgenden Websitelink:https://docs.netapp.com/us-en/netapp-solutions-dataops/automation/automation-introduction.html["Automatisierung der NetApp -Lösung^"^]

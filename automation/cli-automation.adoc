@@ -18,12 +18,14 @@ Dieses Dokument beschreibt die Bereitstellung von Oracle 19c mithilfe der Automa
 
 
 
+[[cli-deployment-oracle-19c-database]]
 == CLI-Bereitstellung Oracle 19c-Datenbank
 
 In diesem Abschnitt werden die erforderlichen Schritte zum Vorbereiten und Bereitstellen der Oracle19c-Datenbank mit der CLI beschrieben.  Stellen Sie sicher, dass Sie dielink:getting-started-requirements.html["Abschnitt „Erste Schritte und Anforderungen“"] und Ihre Umgebung entsprechend vorbereitet.
 
 
 
+[[download-oracle19c-repo]]
 === Laden Sie das Oracle19c-Repository herunter
 
 . Führen Sie von Ihrem Ansible-Controller aus den folgenden Befehl aus:
@@ -37,6 +39,7 @@ git clone https://github.com/NetApp-Automation/na_oracle19c_deploy.git
 
 
 
+[[edit-the-hosts-file]]
 === Bearbeiten Sie die Hosts-Datei
 
 Führen Sie vor der Bereitstellung die folgenden Schritte aus:
@@ -72,6 +75,7 @@ NOTE: Das Playbook wird unabhängig von der Anzahl der bereitgestellten Oracle-H
 
 
 
+[[edit-the-hostname-yml-file-under-hostvars]]
 === Bearbeiten Sie die Datei host_name.yml unter host_vars
 
 Jeder Oracle-Host verfügt über eine Hostvariablendatei, die durch seinen Hostnamen identifiziert wird und hostspezifische Variablen enthält.  Sie können für Ihren Host einen beliebigen Namen angeben.  Bearbeiten und kopieren Sie die `host_vars` aus dem Abschnitt Host VARS Config und fügen Sie es in Ihr gewünschtes `host_name.yml` Datei.
@@ -81,6 +85,7 @@ NOTE: Die blauen Elemente müssen geändert werden, damit sie zu Ihrer Umgebung 
 
 
 
+[[host-vars-config]]
 === Host-VARS-Konfiguration
 
 [source, shell]
@@ -119,6 +124,7 @@ host_datastores_nfs:
 ----
 
 
+[[edit-the-vars-yml-file]]
 === Bearbeiten Sie die Datei vars.yml
 
 Der `vars.yml` Die Datei konsolidiert alle umgebungsspezifischen Variablen (ONTAP, Linux oder Oracle) für die Oracle-Bereitstellung.
@@ -222,6 +228,7 @@ initial_pwd_all: "netapp123"
 ----
 
 
+[[run-the-playbook]]
 === Ausführen des Playbooks
 
 Nachdem Sie die erforderlichen Umgebungsvoraussetzungen erfüllt und die Variablen in `vars.yml` Und `your_host.yml` , Sie sind jetzt bereit, die Playbooks bereitzustellen.
@@ -251,6 +258,7 @@ ansible-playbook -i hosts all_playbook.yml -u username -k -K -t oracle_config -e
 
 
 
+[[deploy-additional-database-on-same-oracle-host]]
 === Bereitstellen einer zusätzlichen Datenbank auf demselben Oracle-Host
 
 Der Oracle-Teil des Playbooks erstellt pro Ausführung eine einzelne Oracle-Containerdatenbank auf einem Oracle-Server.  Führen Sie die folgenden Schritte aus, um eine zusätzliche Containerdatenbank auf demselben Server zu erstellen:
@@ -269,6 +277,7 @@ Der Oracle-Teil des Playbooks erstellt pro Ausführung eine einzelne Oracle-Cont
 
 
 
+[[validate-oracle-installation]]
 === Überprüfen der Oracle-Installation
 
 . Melden Sie sich als Oracle-Benutzer beim Oracle-Server an und führen Sie die folgenden Befehle aus:
@@ -360,6 +369,7 @@ Dies bestätigt, dass der Oracle-Listener ordnungsgemäß funktioniert.
 
 
 
+[[where-to-go-for-help]]
 === Wo bekomme ich Hilfe?
 
 Wenn Sie Hilfe mit dem Toolkit benötigen, treten Sie bitte dem beilink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Community-Support von NetApp Solution Automation"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.

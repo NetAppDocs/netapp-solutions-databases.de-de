@@ -18,6 +18,7 @@ Diese Lösung umfasst die Bereitstellung von SQL Server auf AWS EC2 unter Verwen
 
 
 
+[[introduction]]
 == Einführung
 
 Viele Unternehmen, die Anwendungen von lokalen Speichersystemen in die Cloud migrieren möchten, stellen fest, dass dies durch die unterschiedlichen Funktionen lokaler Speichersysteme und Cloud-Speicherdienste erschwert wird.  Diese Lücke hat die Migration von Unternehmensanwendungen wie Microsoft SQL Server deutlich problematischer gemacht.  Insbesondere Lücken bei den Diensten, die zum Ausführen einer Unternehmensanwendung erforderlich sind, wie etwa robuste Snapshots, Speichereffizienzfunktionen, hohe Verfügbarkeit, Zuverlässigkeit und konstante Leistung, haben Kunden gezwungen, Kompromisse beim Design einzugehen oder auf eine Anwendungsmigration zu verzichten.  Mit FSx ONTAP müssen Kunden keine Kompromisse mehr eingehen.  FSx ONTAP ist ein nativer (1st-Party-)AWS-Dienst, der von AWS verkauft, unterstützt, in Rechnung gestellt und vollständig verwaltet wird.  Es nutzt die Leistungsfähigkeit von NetApp ONTAP , um dieselben Speicher- und Datenverwaltungsfunktionen der Enterprise-Klasse bereitzustellen, die NetApp seit drei Jahrzehnten vor Ort in AWS als Managed Service bereitstellt.
@@ -26,6 +27,7 @@ Mit SQL Server auf EC2-Instanzen können Datenbankadministratoren auf ihre Daten
 
 
 
+[[benefits-of-using-amazon-fsx-ontap-with-sql-server]]
 == Vorteile der Verwendung von Amazon FSx ONTAP mit SQL Server
 
 Amazon FSx ONTAP ist der ideale Dateispeicher für SQL Server-Bereitstellungen in AWS.  Zu den Vorteilen gehören:
@@ -47,12 +49,14 @@ Die Bereitstellung von SQL Server-Datenbanken auf FSx ONTAP mit dem iSCSI-Protok
 
 
 
+[[before-you-begin]]
 == Bevor Sie beginnen
 
 Die Kombination aus Amazon FSx ONTAP und SQL Server auf einer EC2-Instance ermöglicht die Erstellung von Datenbankspeicherdesigns auf Unternehmensebene, die den anspruchsvollsten Anwendungsanforderungen von heute gerecht werden.  Um beide Technologien zu optimieren, ist es wichtig, die E/A-Muster und -Eigenschaften von SQL Server zu verstehen.  Ein gut konzipiertes Speicherlayout für eine SQL Server-Datenbank unterstützt die Leistung von SQL Server und die Verwaltung der SQL Server-Infrastruktur.  Ein gutes Speicherlayout ermöglicht außerdem eine erfolgreiche Erstbereitstellung und ein reibungsloses Wachstum der Umgebung im Laufe der Zeit, wenn Ihr Unternehmen wächst.
 
 
 
+[[prerequisites]]
 === Voraussetzungen
 
 Bevor Sie die Schritte in diesem Dokument ausführen, sollten Sie über die folgenden Voraussetzungen verfügen:
@@ -133,6 +137,7 @@ NOTE: Bei unternehmenskritischen Anwendungen wie SQL Servern, bei denen selbst m
 ====
 
 
+[[configure-storage-for-sql-server-and-deploy-snapcenter-for-backup-restore-and-clone-operations]]
 == Konfigurieren Sie den Speicher für SQL Server und stellen Sie Snapcenter für Sicherungs-, Wiederherstellungs- und Klonvorgänge bereit
 
 Um SQL-Server-Operationen mit SnapCenter durchzuführen, müssen Sie zunächst Volumes und LUNs für den SQL-Server erstellen.
@@ -565,6 +570,7 @@ Um mehr über diesen Vorgang zu erfahren, sehen Sie sich das folgende Video an:
 video::27f28284-433d-4273-8748-b01200fb3cd7[panopto]
 
 
+[[appendices]]
 == Anhänge
 
 .Anhang A: YAML-Datei zur Verwendung in der Cloud Formation-Vorlage
@@ -701,6 +707,7 @@ Führen Sie die Datei aus `EnableMPIO.ps1` Das erste und das zweite Skript werde
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 * Amazon FSx ONTAP

@@ -20,6 +20,7 @@ In den folgenden Abschnitten werden die wichtigsten Überlegungen beim Bereitste
 
 
 
+[[vm-type-and-sizing]]
 == VM-Typ und -Größe
 
 Die Auswahl des richtigen VM-Typs und der richtigen VM-Größe ist für die optimale Leistung einer relationalen Datenbank in einer öffentlichen Cloud wichtig.  Eine virtuelle Azure-Maschine bietet eine Vielzahl von Compute-Instanzen, die zum Hosten von Oracle-Datenbank-Workloads verwendet werden können.  Siehe die Microsoft-Dokumentationlink:https://docs.microsoft.com/en-us/azure/virtual-machines/sizes["Größen für virtuelle Maschinen in Azure"^] für verschiedene Arten von virtuellen Azure-Maschinen und deren Dimensionierung.  Im Allgemeinen empfiehlt NetApp die Verwendung einer universellen virtuellen Azure-Maschine für die Bereitstellung kleiner und mittelgroßer Oracle-Datenbanken.  Für die Bereitstellung größerer Oracle-Datenbanken eignet sich eine speicheroptimierte Azure-VM.  Mit mehr verfügbarem RAM kann ein größerer Oracle SGA oder Smart Flash Cache konfiguriert werden, um den physischen E/A-Vorgang zu reduzieren, was wiederum die Datenbankleistung verbessert.
@@ -34,6 +35,7 @@ Zu den weiteren zu berücksichtigenden Faktoren gehören die folgenden:
 
 
 
+[[azure-netapp-files-performance]]
 == Azure NetApp Files Leistung
 
 Azure NetApp Files Volumes werden aus einem Kapazitätspool zugewiesen, den der Kunde in seinem Azure NetApp Files -Speicherkonto bereitstellen muss.  Jeder Kapazitätspool wird wie folgt zugewiesen:
@@ -46,6 +48,7 @@ Das Servicelevel und die anfänglich bereitgestellte Speicherkapazität bestimme
 
 
 
+[[1-service-levels-for-azure-netapp-files]]
 === 1. Servicelevel für Azure NetApp Files
 
 Azure NetApp Files unterstützt drei Servicelevel: Ultra, Premium und Standard.
@@ -57,6 +60,7 @@ Azure NetApp Files unterstützt drei Servicelevel: Ultra, Premium und Standard.
 
 
 
+[[2-capacity-pool-and-quality-of-service]]
 === 2. Kapazitätspool und Servicequalität
 
 Jede der gewünschten Servicestufen ist mit Kosten für die bereitgestellte Kapazität verbunden und umfasst eine Dienstgütestufe (QoS), die den maximalen Gesamtdurchsatz für den bereitgestellten Speicherplatz definiert.
@@ -67,6 +71,7 @@ Die Mindestgröße des Kapazitätspools beträgt 4 TiB.  Sie können die Größe
 
 
 
+[[3-calculate-the-service-level-at-a-database-volume]]
 === 3. Berechnen Sie den Servicelevel bei einem Datenbankvolumen
 
 Die Durchsatzgrenze für ein Oracle-Datenbankvolume wird durch eine Kombination der folgenden Faktoren bestimmt: Das Servicelevel des Kapazitätspools, zu dem das Volume gehört, und das dem Volume zugewiesene Kontingent.
@@ -83,6 +88,7 @@ Bitte beachten Sie, dass die Mindestgröße des Volumes 100 GiB beträgt.
 
 
 
+[[storage-layout-and-settings]]
 == Speicherlayout und -einstellungen
 
 NetApp empfiehlt das folgende Speicherlayout:
@@ -99,6 +105,7 @@ image:db-ora-azure-anf-factors-003.png["Dieses Bild zeigt zwei Datenbanken mit j
 
 
 
+[[nfs-configuration]]
 == NFS-Konfiguration
 
 Linux, das am weitesten verbreitete Betriebssystem, verfügt über native NFS-Funktionen.  Oracle bietet einen direkten NFS-Client (dNFS), der nativ in Oracle integriert ist.  Oracle dNFS umgeht den Betriebssystem-Cache und ermöglicht die parallele Verarbeitung, um die Datenbankleistung zu verbessern.  Oracle unterstützt NFSv3 seit über 20 Jahren und NFSv4 wird mit Oracle 12.1.0.2 und höher unterstützt.

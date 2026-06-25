@@ -18,6 +18,7 @@ In diesem Abschnitt wird der Prozess der Bereitstellung von Cloud Manager und Cl
 
 
 
+[[aws-public-cloud]]
 == Öffentliche AWS-Cloud
 
 
@@ -25,6 +26,7 @@ NOTE: Um die Übersichtlichkeit zu verbessern, haben wir dieses Dokument auf Gru
 
 
 
+[[1-pre-flight-check]]
 === 1. Vorflugkontrolle
 
 Stellen Sie vor der Bereitstellung sicher, dass die Infrastruktur vorhanden ist, um die Bereitstellung in der nächsten Phase zu ermöglichen.  Hierzu gehört Folgendes:
@@ -38,6 +40,7 @@ Stellen Sie vor der Bereitstellung sicher, dass die Infrastruktur vorhanden ist,
 
 
 
+[[2-steps-to-deploy-cloud-manager-and-cloud-volumes-ontap-in-aws]]
 === 2. Schritte zum Bereitstellen von Cloud Manager und Cloud Volumes ONTAP in AWS
 
 
@@ -292,6 +295,7 @@ image:cloud-central-replication-013.png["Abbildung, die einen Eingabe-/Ausgabedi
 
 
 
+[[3-deploy-ec2-compute-instance-for-database-workload]]
 === 3. EC2-Compute-Instanz für Datenbank-Workload bereitstellen
 
 AWS verfügt über vorkonfigurierte EC2-Recheninstanzen für verschiedene Workloads.  Die Wahl des Instanztyps bestimmt die Anzahl der CPU-Kerne, die Speicherkapazität, den Speichertyp und die Speicherkapazität sowie die Netzwerkleistung.  Für die Anwendungsfälle wird der Hauptspeicher zum Ausführen der Datenbank-Workload, mit Ausnahme der Betriebssystempartition, von CVO oder der FSx ONTAP -Speicher-Engine zugewiesen.  Daher sind die wichtigsten zu berücksichtigenden Faktoren die Wahl der CPU-Kerne, des Speichers und der Netzwerkleistungsstufe.  Typische AWS EC2-Instanztypen finden Sie hier: https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#InstanceTypes:["EC2-Instanztyp"] .

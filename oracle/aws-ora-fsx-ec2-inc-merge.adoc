@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur schnellen Wiederherstellun
 
 
 
+[[purpose]]
 == Zweck
 
 Die Wiederherstellung einer sehr großen Datenbank (VLDB) in Oracle mit dem Sicherungstool Oracle Recovery Manager (RMAN) kann eine äußerst anspruchsvolle Aufgabe sein.  Der Datenbankwiederherstellungsprozess von Sicherungsmedien im Falle eines Fehlers kann zeitaufwändig sein, die Datenbankwiederherstellung verzögern und möglicherweise Ihr Service Level Agreement (SLA) erheblich beeinträchtigen.  Ab Version 10g hat Oracle jedoch eine RMAN-Funktion eingeführt, mit der Benutzer stufenweise Image-Kopien der Oracle-Datenbankdatendateien auf zusätzlichem Festplattenspeicher auf dem DB-Server-Host erstellen können.  Diese Image-Kopien können täglich inkrementell mit RMAN aktualisiert werden.  Im Falle eines Fehlers kann der Datenbankadministrator (DBA) die Oracle-Datenbank schnell vom ausgefallenen Medium auf die Image-Kopie umstellen, sodass keine vollständige Wiederherstellung des Datenbankmediums erforderlich ist.  Das Ergebnis ist ein deutlich verbessertes SLA, allerdings auf Kosten einer Verdoppelung des erforderlichen Datenbankspeichers.
@@ -37,6 +38,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -49,18 +51,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Das Testen und Validieren dieser Lösung wurde in einer AWS FSx ONTAP und EC2-Umgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
 
 
 
+[[architecture]]
 === Architektur
 
 image:aws-ora-fsx-ec2-vldb-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der inkrementellen Zusammenführungsimplementierung von Oracle VLDB in der öffentlichen AWS-Cloud mit FSx ONTAP."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -92,6 +97,7 @@ image:aws-ora-fsx-ec2-vldb-architecture.png["Dieses Bild bietet eine detailliert
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *Oracle VLDB-Speicherlayout für inkrementelle RMAN-Zusammenführung.*  In unseren Tests und Validierungen wird das NFS-Volume für die inkrementelle Sicherung und Zusammenführung von Oracle von einem einzelnen FSx-Dateisystem zugewiesen, das einen Durchsatz von 4 GB/s, 160.000 rohe SSD-IOPS und eine Kapazitätsgrenze von 192 TiB aufweist.  Für die Bereitstellung über die Schwellenwerte hinaus können mehrere FSx-Dateisysteme parallel mit mehreren NFS-Mount-Punkten verkettet werden, um eine höhere Kapazität bereitzustellen.
@@ -106,6 +112,7 @@ image:aws-ora-fsx-ec2-vldb-architecture.png["Dieses Bild bietet eine detailliert
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Es wird davon ausgegangen, dass Sie Ihre Oracle VLDB bereits in einer AWS EC2-Umgebung innerhalb einer VPC bereitgestellt haben.  Wenn Sie Hilfe bei der Oracle-Bereitstellung in AWS benötigen, finden Sie Hilfe in den folgenden technischen Berichten.
@@ -119,6 +126,7 @@ Ihre Oracle VLDB kann entweder auf einem FSx ONTAP oder einem anderen Speicher I
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -141,6 +149,7 @@ NOTE: Stellen Sie sicher, dass Sie im Stammvolume der EC2-Instanz mindestens 50 
 ====
 
 
+[[provision-and-export-nfs-volume-to-be-mounted-to-ec2-db-instance-host]]
 === Bereitstellen und Exportieren des NFS-Volumes zum Mounten auf dem EC2-DB-Instance-Host
 
 [%collapsible%open]
@@ -200,6 +209,7 @@ sudo chown oracle:oinstall /nfsfsxn
 ====
 
 
+[[setup-oracle-rman-incremental-merge-to-image-copy-on-fsx]]
 === Einrichten der inkrementellen Zusammenführung von Oracle RMAN zum Kopieren von Images auf FSx
 
 [%collapsible%open]
@@ -637,6 +647,7 @@ Damit ist die Einrichtung der Sicherung und Zusammenführung von Standby-Imageko
 ====
 
 
+[[switch-oracle-db-to-image-copy-for-quick-recovery]]
 === Wechseln Sie zur schnellen Wiederherstellung zu einer Image-Kopie der Oracle-Datenbank
 
 [%collapsible%open]
@@ -920,6 +931,7 @@ SQL>
 ====
 
 
+[[oracle-db-recovery-from-image-copy-to-different-ec2-db-instance-host]]
 === Oracle DB-Wiederherstellung von einer Image-Kopie auf einen anderen EC2 DB-Instance-Host
 
 [%collapsible%open]
@@ -1661,6 +1673,7 @@ Damit ist die Wiederherstellung der Oracle VLDB-Datenbank von der Backup-Image-K
 ====
 
 
+[[clone-oracle-standby-image-copy-for-other-use-cases]]
 === Klonen Sie eine Oracle-Standby-Image-Kopie für andere Anwendungsfälle
 
 [%collapsible%open]
@@ -2464,6 +2477,7 @@ NOTE: Wenn Sie auf einen Fehler stoßen `RMAN-06571: datafile 1 does not have re
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:

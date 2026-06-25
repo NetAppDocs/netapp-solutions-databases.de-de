@@ -15,6 +15,7 @@ Google Cloud NetApp Volumes bietet hochperformanten iSCSI-Blockspeicher für Ora
 
 
 
+[[architecture-overview]]
 == Architekturübersicht
 
 Diese Architektur nutzt *Google Cloud NetApp Volumes (GCNV)* iSCSI-Blockspeicher, um eine hohe Verfügbarkeit für *Oracle Database 26ai* auf Google Cloud mit *Oracle Data Guard* bereitzustellen.
@@ -58,6 +59,7 @@ Die GCNV-Replikation reduziert die Standby-Initialisierungszeit im Vergleich zur
 |===
 
 
+[[zoning]]
 === Zoning
 
 Pro Datenbankzone einen GCNV Flex Unified Pool bereitstellen und jedem Host dedizierte Volumes zuweisen. Boot-Disks ausschließlich für das Betriebssystem verwenden.
@@ -66,6 +68,8 @@ Pro Datenbankzone einen GCNV Flex Unified Pool bereitstellen und jedem Host dedi
 
 
 
+[[architecture-reference-diagram]]
+[[reference-diagram]]
 == Referenzarchitekturdiagramm
 
 Die Lösungsarchitektur bietet drei unabhängige Datenpfade. Speicherreplikation und Data Guard Redo Transport sind separate Pfade.
@@ -80,6 +84,7 @@ image::gcnv-oracle-26ai-ha.png[GCNV Referenzarchitektur]
 
 
 
+[[platform-roles]]
 == Plattformrollen
 
 Die folgende Tabelle fasst zusammen, welche Plattformschicht Speicherdienste bereitstellt und welche Schicht die Datenbanksynchronisierung und die Failover-Steuerung übernimmt.
@@ -98,6 +103,7 @@ Die GCNV-Replikation führt zunächst eine Basiskopie durch und aktualisiert ans
 
 
 
+[[topology-and-storage]]
 == Topologie und Storage
 
 Diese Topologie ordnet primäre, Standby- und Beobachterrollen separaten Zonen zu und weist jeden Datenbank-Host dedizierten GCNV-Pools und iSCSI-Volumes zu.
@@ -133,6 +139,7 @@ Beispiel `n4-highmem-8` in dieser Lösung; OLTP Workloads verwenden typischerwei
 
 
 
+[[whats-next]]
 == Was kommt als Nächstes?
 
 Um den Bereitstellungspfad auszuwählen, der Ihren Wiederherstellungs- und Verfügbarkeitszielen entspricht, gehen Sie zu xref:gcnv-oracle-deployment-options.adoc[Informationen zu Bereitstellungsoptionen für Oracle Database 26ai auf Google Cloud NetApp Volumes].

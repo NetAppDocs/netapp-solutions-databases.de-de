@@ -20,6 +20,7 @@ Diese Lösung bietet einen Überblick und Details zur schnellen Wiederherstellun
 
 
 
+[[purpose]]
 == Zweck
 
 Die Wiederherstellung einer sehr großen Datenbank (VLDB) in Oracle mit dem Sicherungstool Oracle Recovery Manager (RMAN) kann eine äußerst anspruchsvolle Aufgabe sein.  Der Datenbankwiederherstellungsprozess von Sicherungsmedien im Falle eines Fehlers kann zeitaufwändig sein, die Datenbankwiederherstellung verzögern und möglicherweise Ihr Service Level Agreement (SLA) erheblich beeinträchtigen.  Ab Version 10g hat Oracle jedoch eine RMAN-Funktion eingeführt, mit der Benutzer stufenweise Image-Kopien der Oracle-Datenbankdatendateien auf zusätzlichem Festplattenspeicher auf dem DB-Server-Host erstellen können.  Diese Image-Kopien können täglich inkrementell mit RMAN aktualisiert werden.  Im Falle eines Fehlers kann der Datenbankadministrator (DBA) die Oracle-Datenbank schnell vom ausgefallenen Medium auf die Image-Kopie umstellen, sodass keine vollständige Wiederherstellung des Datenbankmediums erforderlich ist.  Das Ergebnis ist ein deutlich verbessertes SLA, allerdings auf Kosten einer Verdoppelung des erforderlichen Datenbankspeichers.
@@ -35,6 +36,7 @@ Diese Lösung ist für die folgenden Anwendungsfälle geeignet:
 
 
 
+[[audience]]
 == Publikum
 
 Diese Lösung ist für folgende Personen gedacht:
@@ -47,18 +49,21 @@ Diese Lösung ist für folgende Personen gedacht:
 
 
 
+[[solution-test-and-validation-environment]]
 == Test- und Validierungsumgebung für Lösungen
 
 Das Testen und Validieren dieser Lösung wurde in einer Microsoft ANF-Kapazitätspoolspeicher- und Azure VM-Rechenumgebung durchgeführt, die möglicherweise nicht der endgültigen Bereitstellungsumgebung entspricht. Weitere Informationen finden Sie im Abschnitt <<Wichtige Faktoren für die Bereitstellungsüberlegungen>> .
 
 
 
+[[architecture]]
 === Architektur
 
 image:azure-ora-anf-vldb-architecture.png["Dieses Bild bietet eine detaillierte Darstellung der inkrementellen Oracle VLDB-Zusammenführungsimplementierung in der öffentlichen Azure-Cloud mit ANF."]
 
 
 
+[[hardware-and-software-components]]
 === Hardware- und Softwarekomponenten
 
 [cols="33%, 33%, 33%"]
@@ -90,6 +95,7 @@ image:azure-ora-anf-vldb-architecture.png["Dieses Bild bietet eine detaillierte 
 |===
 
 
+[[key-factors-for-deployment-consideration]]
 === Wichtige Faktoren für die Bereitstellungsüberlegungen
 
 * *Oracle VLDB-Speicherlayout für inkrementelle RMAN-Zusammenführung.*  In unseren Tests und Validierungen wird das NFS-Volume für inkrementelle Oracle-Backups und -Zusammenführungen aus einem einzelnen ANF-Kapazitätspool zugewiesen, der 100 TiB pro Volume und ein Gesamtkapazitätslimit von 1000 TiB aufweist.  Für die Bereitstellung über die Schwellenwerte hinaus können mehrere Volumes und ANF-Kapazitätspools parallel mit mehreren NFS-Mount-Punkten verkettet werden, um eine höhere Kapazität bereitzustellen.
@@ -102,6 +108,7 @@ image:azure-ora-anf-vldb-architecture.png["Dieses Bild bietet eine detaillierte 
 
 
 
+[[solution-deployment]]
 == Lösungsbereitstellung
 
 Es wird davon ausgegangen, dass Sie Ihre Oracle VLDB bereits in einer Azure-Cloudumgebung innerhalb eines VNet bereitgestellt haben.  Wenn Sie Hilfe bei der Oracle-Bereitstellung in Azure benötigen, finden Sie weitere Informationen in den folgenden technischen Berichten.
@@ -114,6 +121,7 @@ Ihre Oracle VLDB kann entweder auf einem ANF-Speicher oder einem anderen Speiche
 
 
 
+[[prerequisites-for-deployment]]
 === Voraussetzungen für die Bereitstellung
 
 [%collapsible%open]
@@ -131,6 +139,7 @@ NOTE: Stellen Sie sicher, dass Sie im Azure-VM-Stammvolume mindestens 128 GB zug
 ====
 
 
+[[provision-and-export-nfs-volume-to-be-mounted-on-primary-oracle-vldb-server]]
 === Bereitstellen und Exportieren des NFS-Volumes zum Mounten auf dem primären Oracle VLDB-Server
 
 [%collapsible%open]
@@ -183,6 +192,7 @@ sudo chown oracle:oinstall /nfsanf
 ====
 
 
+[[setup-oracle-rman-incremental-merge-to-image-copy-on-anf]]
 === Einrichten der inkrementellen Zusammenführung von Oracle RMAN zum Kopieren von Images auf ANF
 
 [%collapsible%open]
@@ -810,6 +820,7 @@ Damit ist die Einrichtung einer Oracle VLDB-Standby-Image-Kopiesicherung und -Zu
 ====
 
 
+[[switch-oracle-vldb-to-image-copy-for-quick-recovery]]
 === Wechseln Sie zur schnellen Wiederherstellung von Oracle VLDB zu einer Image-Kopie
 
 [%collapsible%open]
@@ -1092,6 +1103,7 @@ SQL>
 ====
 
 
+[[oracle-vldb-recovery-from-image-copy-to-a-standby-db-server]]
 === Oracle VLDB-Wiederherstellung von einer Imagekopie auf einen Standby-DB-Server
 
 [%collapsible%open]
@@ -1863,6 +1875,7 @@ Damit ist die Wiederherstellung der Oracle VLDB-Datenbank von der Backup-Image-K
 ====
 
 
+[[where-to-find-additional-information]]
 == Wo Sie weitere Informationen finden
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:
