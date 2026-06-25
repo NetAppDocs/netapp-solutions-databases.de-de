@@ -1,0 +1,328 @@
+---
+sidebar: sidebar 
+permalink: oracle/gcnv-oracle-data-guard.html 
+keywords: oracle data guard, fast-start failover, fsfo, dgmgrl, observer, data guard broker, oracle 26ai, systemd, auto-login wallet 
+summary: Nur für die Prod HA Data Guard- und FSFO-Stufe sind Oracle Data Guard Broker und Fast-Start Failover mit einem dedizierten Observer für Oracle Database 26ai auf Google Cloud NetApp Volumes zu konfigurieren. Dieses Verfahren umfasst das Aktivieren des Brokers, das Erstellen der Data Guard-Konfiguration, das Aktivieren von FSFO, die Installation des Oracle Instant Client auf dem Observer-Host, das Starten des Observers als systemd-Dienst sowie das Testen von Switchover und Failover. 
+---
+= Konfiguration von Data Guard Broker und Fast-Start-Failover für Oracle Database 26ai auf Google Cloud NetApp Volumes
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Oracle Data Guard Broker und Fast-Start Failover mit einem dedizierten Observer konfigurieren, damit automatische Rollenübergänge für Oracle Database 26ai auf Google Cloud NetApp Volumes möglich sind.
+
+*Tierspezifisch:* Dieses Verfahren gilt nur für die *Prod HA (Data Guard + FSFO)* Tier.
+
+Dieses Verfahren umfasst die Aktivierung des Brokers auf beiden Datenbanken, die Erstellung der Data Guard Konfiguration, die Aktivierung von FSFO mit MaxAvailability Schutzmodus, die Installation des Oracle Instant Client auf dem Observer-Host, den Start des Observers als systemd-Dienst mit walletbasierten Anmeldeinformationen sowie das Testen von Switchover und Failover. Nach  `ENABLE CONFIGURATION` der Einrichtung erfolgt die Verwaltung von Transport und Rollen über *DGMGRL* (nicht per Ad-hoc  `LOG_ARCHIVE_DEST_*` SQL).
+
+
+
+== Schritt 1: Data Guard Broker aktivieren
+
+Der Data Guard Broker wird auf beiden Datenbankhosts aktiviert und die Brokerkonfiguration erstellt, die die primäre und die Standby-Datenbank unter einheitlicher Verwaltung verbindet.
+
+. Auf den primären und Standby Datenbankhosts  `dg_broker_start=TRUE` festlegen:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+. ~/.bash_profile
+sqlplus / as sysdba <<SQL
+ALTER SYSTEM SET dg_broker_start=TRUE SCOPE=BOTH;
+EXIT
+SQL'
+----
+. Auf dem primären Server erfolgt die Verbindung zu DGMGRL mit Betriebssystem-Authentifizierung, und die Broker-Konfiguration wird erstellt:
++
+[NOTE]
+====
+Nur auf dem Observer-Host verwenden Sie  `dgmgrl /@orcl` nachdem die Auto-Login-Wallet existiert. Geben Sie keine Passwörter in die  `dgmgrl` Befehlszeile ein.
+
+====
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+export ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+export ORACLE_SID=orcl
+export PATH=$ORACLE_HOME/bin:$PATH
+dgmgrl /
+'
+----
++
+[source]
+----
+DGMGRL> CREATE CONFIGURATION 'orcl_dg' AS
+        PRIMARY DATABASE IS 'orcl' CONNECT IDENTIFIER IS orcl;
+DGMGRL> ADD DATABASE 'orcls' AS CONNECT IDENTIFIER IS orcls;
+DGMGRL> ENABLE CONFIGURATION;
+DGMGRL> SHOW CONFIGURATION;
+-- Expect: Configuration Status: SUCCESS, both members SUCCESS.
+----
+. Die Konfiguration validieren, alle  `WARNING` oder nicht-NULL  `ERROR` vor <<configure-fsfo-properties-and-enable,Schritt 3: FSFO-Eigenschaften konfigurieren und aktivieren>> beheben:
++
+[source]
+----
+DGMGRL> VALIDATE DATABASE 'orcls';
+DGMGRL> SHOW CONFIGURATION VERBOSE;
+----
+
+
+
+
+== Schritt 2: Flashback für FSFO bestätigen
+
+Bestätigt werden muss, dass die Flashback-Datenbank auf beiden Hosts aktiviert ist. Flashback ist für die FSFO Auto-Reinstate-Funktion erforderlich, die es dem ehemaligen primären Host ermöglicht, nach einem Failover automatisch wieder als Standby der Konfiguration beizutreten.
+
+. Bestätigen `flashback_on` ist  `YES`auf beiden Datenbank-Hosts:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+. ~/.bash_profile
+sqlplus -s / as sysdba <<<"SELECT flashback_on FROM v\$database;"
+'
+# Expected on both hosts: YES
+----
+. Nur auf dem primären System, falls die Flashback-Aufbewahrung noch nicht festgelegt ist:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+. ~/.bash_profile
+export ORACLE_SID=orcl
+sqlplus / as sysdba <<SQL
+ALTER SYSTEM SET db_flashback_retention_target=1440 SCOPE=BOTH;
+EXIT
+SQL'
+----
+
+
+
+
+== Schritt 3: FSFO konfigurieren und aktivieren
+
+SYNC-Redo-Transport einrichten, MaxAvailability Schutzmodus konfigurieren, FSFO-Ziele auf jeder Datenbank definieren und Fast-Start Failover aktivieren.
+
+. Den Redo-Transportmodus auf  `SYNC` für beide Datenbanken festlegen und den Schutzmodus auf  `MaxAvailability` erhöhen:
++
+[source]
+----
+DGMGRL> EDIT DATABASE 'orcl'  SET PROPERTY LogXptMode='SYNC';
+DGMGRL> EDIT DATABASE 'orcls' SET PROPERTY LogXptMode='SYNC';
+DGMGRL> EDIT CONFIGURATION SET PROTECTION MODE AS MaxAvailability;
+----
+. Die FSFO-Ziele werden so festgelegt, dass jede Datenbank die andere als Failover-Ziel angibt, anschließend werden der Schwellenwert und das automatische Wiederherstellungsverhalten konfiguriert:
++
+[source]
+----
+-- Each side names the other
+DGMGRL> EDIT DATABASE 'orcl'  SET PROPERTY FastStartFailoverTarget = 'orcls';
+DGMGRL> EDIT DATABASE 'orcls' SET PROPERTY FastStartFailoverTarget = 'orcl';
+
+-- 30 s is the default; lower for faster RTO but more sensitive to network blips
+DGMGRL> EDIT CONFIGURATION SET PROPERTY FastStartFailoverThreshold = 30;
+DGMGRL> EDIT CONFIGURATION SET PROPERTY FastStartFailoverAutoReinstate = TRUE;
+----
+. Fast-Start-Failover aktivieren und die Konfiguration bestätigen:
++
+[source]
+----
+DGMGRL> ENABLE FAST_START FAILOVER;
+DGMGRL> SHOW FAST_START FAILOVER;
+-- Expected: Threshold 30 seconds, Target orcls, Observer not yet registered.
+----
+
+
+
+
+== Schritt 4: Instant Client auf Observer installieren
+
+Oracle Instant Client auf der dedizierten Observer-VM (`oradg-obs` installieren, einen dedizierten  `oracle` OS-Benutzer erstellen und die Oracle Net-Umgebung so konfigurieren, dass der Observer eine Verbindung zu beiden Datenbankmitgliedern über TCP/1521 herstellen kann.
+
+. Oracle Instant Client Pakete auf dem Observer-Host (`oradg-obs` installieren:
++
+[source, bash]
+----
+# Use -el8 / -el9 if the Observer is on an older OL/RHEL release
+sudo dnf install -y oracle-instantclient-release-el10
+sudo dnf install -y oracle-instantclient-basic \
+                    oracle-instantclient-sqlplus \
+                    oracle-instantclient-tools
+----
+. Einen dedizierten  `oracle`Betriebssystembenutzer erstellen, dem die Wallet und die systemd-Unit gehören:
++
+[source, bash]
+----
+sudo useradd -u 54321 -m oracle
+sudo passwd -l oracle
+----
+. Die Oracle Net-Umgebung wird konfiguriert und  `tnsnames.ora` mit Einträgen für beide Datenbank-Hosts erstellt:
++
+[source, bash]
+----
+sudo mkdir -p /etc/oracle/network/admin
+sudo chown -R oracle:oracle /etc/oracle
+
+sudo -u oracle tee /home/oracle/.bash_profile >/dev/null <<'EOF'
+export ORACLE_HOME=/usr/lib/oracle/26/client64
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib
+export PATH=$ORACLE_HOME/bin:$PATH
+export TNS_ADMIN=/etc/oracle/network/admin
+EOF
+
+# tnsnames.ora — must reach both DB hosts on TCP/1521
+sudo tee /etc/oracle/network/admin/tnsnames.ora >/dev/null <<'EOF'
+orcl =
+  (DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = oracdb1)(PORT = 1521))
+                (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = orcl)))
+orcls =
+  (DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = oracdb2)(PORT = 1521))
+                (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = orcls)))
+EOF
+sudo chown oracle:oracle /etc/oracle/network/admin/tnsnames.ora
+----
+
+
+
+
+== Schritt 5: Observer als systemd Service ausführen
+
+Eine Auto-Login-Wallet mit Anmeldeinformationen für beide Datenbankmitglieder erstellen, anschließend den Observer als systemd-Dienst konfigurieren und starten, sodass er Neustarts übersteht und sich automatisch wieder mit der Konfiguration verbindet.
+
+Anmeldeinformationen für ein dediziertes Data Guard-Administratorkonto (zum Beispiel  `SYSDG`) sollten in der Wallet statt in  `SYS` gespeichert werden. Anmeldeinformationen dürfen niemals auf einer  `dgmgrl` Befehlszeile erscheinen, wo sie für  `ps` und  `journalctl` sichtbar sind; die Verbindung sollte immer mit  `/@<tns_alias>` auf dem Observer hergestellt werden.
+
+. Die verschlüsselte Wallet wird erstellt und die Anmeldeinformationen für beide Datenbankmitglieder werden hinterlegt:
++
+[source, bash]
+----
+sudo -iu oracle bash <<'BASH'
+mkdir -p $TNS_ADMIN/wallet
+mkstore -wrl $TNS_ADMIN/wallet -create     # prompts for a wallet password — store in your secrets manager
+mkstore -wrl $TNS_ADMIN/wallet -createCredential orcl  sys ChangeMe!1
+mkstore -wrl $TNS_ADMIN/wallet -createCredential orcls sys ChangeMe!1
+BASH
+
+sudo tee /etc/oracle/network/admin/sqlnet.ora >/dev/null <<'EOF'
+WALLET_LOCATION = (SOURCE = (METHOD = FILE) (METHOD_DATA = (DIRECTORY = /etc/oracle/network/admin/wallet)))
+SQLNET.WALLET_OVERRIDE = TRUE
+EOF
+sudo chown oracle:oracle /etc/oracle/network/admin/sqlnet.ora
+sudo chmod -R 0700 /etc/oracle/network/admin/wallet
+
+sudo -iu oracle ls -l /etc/oracle/network/admin/wallet
+# Expected: cwallet.sso and ewallet.p12
+
+sudo -iu oracle bash <<'BASH'
+sqlplus -L "/@orcl as sysdba" <<'SQL'
+SELECT database_role FROM v$database;
+EXIT
+SQL
+BASH
+
+sudo -iu oracle bash <<'BASH'
+sqlplus -L "/@orcls as sysdba" <<'SQL'
+SELECT database_role FROM v$database;
+EXIT
+SQL
+BASH
+
+sudo -iu oracle dgmgrl /@orcl  'SHOW CONFIGURATION;'
+sudo -iu oracle dgmgrl /@orcls 'SHOW CONFIGURATION;'
+----
+. Die Auto-Login-Wallet  `cwallet.sso` wird generiert, damit der Observer systemd-Dienst ohne Passwortabfrage starten kann. Wenn  `cwallet.sso` nach der Ausführung von  `mkstore` fehlt, kann  `orapki` aus dem Instant Client Tools-Paket oder einem Datenbank-Home verwendet werden, um sie zu erstellen; anschließend werden die gespeicherten Anmeldeinformationen erneut hinzugefügt.
++
+[source, bash]
+----
+sudo -iu oracle orapki wallet create \
+  -wallet /etc/oracle/network/admin/wallet \
+  -auto_login
+sudo -iu oracle ls -l /etc/oracle/network/admin/wallet
+# Expected: cwallet.sso and ewallet.p12
+----
+. Die systemd-Unit wird erstellt, der Dienst aktiviert und die Verbindung des Observers überprüft:
++
+[source, ini]
+----
+sudo tee /etc/systemd/system/dgmgrl-observer.service >/dev/null <<'EOF'
+[Unit]
+Description=Oracle Data Guard Fast-Start Failover Observer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=oracle
+Group=oracle
+Environment=ORACLE_HOME=/usr/lib/oracle/26/client64
+Environment=LD_LIBRARY_PATH=/usr/lib/oracle/26/client64/lib
+Environment=TNS_ADMIN=/etc/oracle/network/admin
+Environment=PATH=/usr/lib/oracle/26/client64/bin:/usr/bin:/bin
+ExecStart=/usr/lib/oracle/26/client64/bin/dgmgrl -silent /@orcl "START OBSERVER FILE IS '/var/lib/oracle/dgmgrl-observer.dat'"
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+----
++
+[source, bash]
+----
+sudo install -d -o oracle -g oracle -m 0755 /var/lib/oracle
+sudo install -o oracle -g oracle -m 0640 /dev/null /var/log/dgmgrl-observer.log
+
+sudo tee /etc/logrotate.d/dgmgrl-observer >/dev/null <<'EOF'
+/var/log/dgmgrl-observer.log {
+    weekly
+    rotate 8
+    compress delaycompress missingok notifempty
+    create 0640 oracle oracle
+    copytruncate
+}
+EOF
+
+sudo systemctl daemon-reload && sudo systemctl enable --now dgmgrl-observer.service
+sudo systemctl status dgmgrl-observer.service
+----
++
+Der Observer muss  `CONNECTED`vom Primärsystem ablesen (ein `DISCONNECTED`Observer setzt FSFO stillschweigend aus):
+
++
+[source]
+----
+DGMGRL> SHOW FAST_START FAILOVER;
+DGMGRL> SHOW CONFIGURATION;       -- Configuration Status: SUCCESS, FSFO: ENABLED
+----
+
+
+
+
+== Schritt 6: FSFO testen
+
+Die Data Guard Konfiguration wird mit  `VALIDATE DATABASE` validiert, anschließend erfolgt ein geplanter Switchover und in einem Testfenster ein ungeplanter VM-Reset-Failover, um zu bestätigen, dass FSFO durchgängig funktioniert.
+
+. Ein geplanter Switchover kann getestet und die ursprüngliche Topologie wiederhergestellt werden:
++
+[source]
+----
+DGMGRL> VALIDATE DATABASE 'orcls';
+DGMGRL> SWITCHOVER TO 'orcls';
+DGMGRL> SHOW CONFIGURATION;
+DGMGRL> SWITCHOVER TO 'orcl';        -- restore topology
+----
+. Ein ungeplantes Failover mithilfe eines VM-Resets in einem kontrollierten Testfenster testen:
++
+Ein VM-Reset (Absturztest) kann verwendet werden; ein normaler Stopp löst möglicherweise keinen FSFO aus. Mit Tail `/var/log/dgmgrl-observer.log` auf `oradg-obs` lässt sich der Failover-Fortschritt überwachen; nach Abschluss kann die Topologie wiederhergestellt werden.
+
+
+
+
+
+== Was kommt als Nächstes?
+
+Die Konfiguration für Oracle Data Guard Broker, Fast-Start Failover und Observer ist nun für diese Bereitstellung eingerichtet.

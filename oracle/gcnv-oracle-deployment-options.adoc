@@ -1,0 +1,149 @@
+---
+sidebar: sidebar 
+permalink: oracle/gcnv-oracle-deployment-options.html 
+keywords: oracle database, google cloud netapp volumes, gcnv, deployment options, high availability, disaster recovery, data guard, fsfo 
+summary: Bereitstellungsoptionen für Google Cloud NetApp Volumes mit Oracle Database 26ai, von Entwicklung/Test bis zu hochverfügbaren Produktionsumgebungen. 
+---
+= Informationen zu den Bereitstellungsoptionen von Google Cloud NetApp Volumes für Oracle Database 26ai
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Google Cloud NetApp Volumes unterstützt Oracle Database 26ai auf verschiedenen Bereitstellungsebenen, von Entwicklung/Test-Umgebungen bis hin zu hochverfügbaren Produktionskonfigurationen mit Data Guard und Fast-Start Failover. Die Bereitstellungsanforderungen, der Vergleich der HA-Ebenen und die Identifizierung der Aufgabenreihenfolge für die gewählte Lösungsarchitektur auf Google Cloud NetApp Volumes werden dargestellt.
+
+
+
+== Bereitstellungsanforderungen
+
+Stellen Sie sicher, dass die folgenden Elemente vorhanden sind, bevor Sie Google Cloud NetApp Volumes für die Hochverfügbarkeit von Oracle Database 26ai bereitstellen:
+
+* Ein Google Cloud-Projekt mit Berechtigungen für Compute Engine, VPC-Netzwerk, Firewall-Konfiguration, IAM und NetApp Volumes
++
+[cols="1,2"]
+|===
+| Aufgabe | Erforderlicher Zugriff 
+
+
+| Compute Engine-VMs erstellen | Compute Instance Admin (oder gleichwertig) 
+
+
+| Firewall / Firewall-Richtlinien | Netzwerkadministrator oder delegierter Richtlinienadministrator 
+
+
+| GCNV-Pools und -Volumes erstellen | NetApp Volumes Admin 
+
+
+| PSA konfigurieren | Netzwerkadministrator im Host-Projekt 
+
+
+| SSH über IAP | IAP-gesicherter Tunnelbenutzer + OS-Anmeldung (falls verwendet) 
+|===
+* Die NetApp Volumes-API aktiviert
+* Eine für die Zielregion konfigurierte VPC und ein Subnetz
+* Private Services Access (PSA) konfiguriert für Google Cloud NetApp Volumes
+* Oracle Linux 10 für alle erforderlichen virtuellen Maschinen
+* DNS und Hostnamensauflösung sind für die Datenbank-Hosts und den Observer-Host konfiguriert
+* Oracle-Installationsmedien und Patch-Dateien für Oracle Database 26ai und Grid Infrastructure verfügbar
+* Kenntnisse von Oracle Data Guard, Oracle Restart und iSCSI-Speicherkonzepten
+* Die Zeitsynchronisierung ist für alle virtuellen Maschinen konfiguriert.
++
+Sie können die folgenden Befehle verwenden:
+
++
+[source, bash]
+----
+gcloud services enable netapp.googleapis.com
+chronyc tracking
+timedatectl
+----
+
+
+
+
+== Beispiel für Bereitstellungskonfiguration
+
+Diese Lösung verwendet die folgende Bereitstellungskonfiguration:
+
+* Drei virtuelle Maschinen der Google Compute Engine:
++
+** `oracdb1` für die primäre Datenbank
+** `oracdb2` für die Standby-Datenbank
+** `oradg-obs` für den Fast-Start Failover Observer
+
+
+* Ein GCNV Flex Unified-Speicherpool pro Datenbankzone
+* Fünf GCNV iSCSI-Volumes pro Datenbankhost
+* Oracle Data Guard Broker und Fast-Start Failover für automatisches Failover
+* Dedizierter Speicher pro Datenbank-Host; primäre und Standby-Hosts teilen sich keine iSCSI-Volumes
+
+
+Alle Beispielwerte in den Befehlen sind durch Werte aus Ihrer Umgebung zu ersetzen, einschließlich Hostnamen, IP-Adressen, Zonen, Projektnamen, Portal-IPs, Passwörtern und Oracle-Mediendateinamen.
+
+
+
+== Bereitstellungsoptionen
+
+Die folgende Tabelle vergleicht HA- und DR-Bereitstellungsmuster und hebt hervor, wo die Automatisierung den größten betrieblichen Nutzen bietet.
+
+[cols="1,1,1,1,1,1,1"]
+|===
+| Umfeld | Erfordernis | Empfohlene Architektur | Hochverfügbarkeit | DR | Automatisierung | Hauptvorteil 
+
+
+| Entwicklung/Test | Niedrigste Kosten | Einzelinstanz | Nein | Ja | Nein | Snapshot-Klon 
+
+
+| Prod Basic (Neustart) | Ausfallzeiten durch Abstürze reduzieren | + Oracle Restart | Nein | Ja | Nur lokal | Automatischer Neustart 
+
+
+| Prod HA (kein DG) | Manuelle DR akzeptabel | + Snapshots / RMAN | Teilweise | Ja | Teilweise | GCNV-Klonwiederherstellung 
+
+
+| Prod HA (DG + FSFO) | Echte HA (kein DBA) | Data Guard + FSFO | Ja | Ja | Voll | Echte Hochverfügbarkeit + schnelles Failover 
+|===
+.HA/DR/Automatisierung
+* Ja = erfüllt das Stufenziel
+* Nein = nicht im Geltungsbereich
+* Teilweise = nur Schritte auf Speicherebene oder manuelle Schritte
+
+
+
+
+== Bereitstellungsaufgaben nach HA-Ebene
+
+Das xref:gcnv-oracle-deployment.html[Bereitstellungs-Workflow] bietet eine nummerierte Schrittfolge für alle Bereitstellungsstufen. Alle Stufen führen die unten aufgeführten grundlegenden Bereitstellungsaufgaben aus, dann werden stufenspezifische Aufgaben für die Hochverfügbarkeit in der Produktion hinzugefügt.
+
+*Basisbereitstellung (alle Stufen):*
+
+. xref:gcnv-oracle-solution-architecture.html[Die Lösungsarchitektur im Überblick]
+. Bereitstellungsoptionen und Anforderungen (diese Seite)
+. xref:gcnv-oracle-access-and-apis.html[Zugriff und APIs verifizieren]
+. xref:gcnv-oracle-provision-compute.html[Google Compute Engine Instanzen bereitstellen]
+. xref:gcnv-oracle-provision-storage.html[GCNV iSCSI Storage bereitstellen]
+. xref:gcnv-oracle-install-software.html[Oracle Grid Infrastructure und Oracle Database 26ai installieren]
+. xref:gcnv-oracle-primary-database.html[Erstellen Sie die primäre Datenbank]
+. xref:gcnv-oracle-standby-database.html[Erstellen Sie die Standby-Datenbank]
+
+
+*Tierspezifische Aufgaben (nur Prod HA):*
+
+[cols="1,2"]
+|===
+| Stufe | Bereitstellungsschritte 
+
+
+| Dev/Test und Prod Basic (Restart) Tiers | Nur die Schritte 1 bis 7 der Basisbereitstellung sind auszuführen. Es ist keine Standby-Datenbank erforderlich. 
+
+
+| Prod HA (ohne Data Guard) | Basisbereitstellung Schritt 1 bis Schritt 8 abschließen. 
+
+
+| Prod HA (Data Guard + FSFO) | Alle grundlegenden Bereitstellungsschritte abschließen, dann hinzufügen: + Schritt 9: xref:gcnv-oracle-standby-finalize-dg.html[Standby-Datenbank für Data Guard finalisieren] + Schritt 10: xref:gcnv-oracle-data-guard.html[Data Guard Broker und Fast-Start-Failover konfigurieren] 
+|===
+
+
+== Was kommt als Nächstes?
+
+Um Ihre Umgebung vor der Bereitstellung vorzubereiten, fahren Sie mit xref:gcnv-oracle-access-and-apis.html[Zugriff und APIs für Oracle Database 26ai auf Google Cloud NetApp Volumes] fort.

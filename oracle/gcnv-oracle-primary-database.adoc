@@ -1,0 +1,97 @@
+---
+sidebar: sidebar 
+permalink: oracle/gcnv-oracle-primary-database.html 
+keywords: oracle database, dbca, asm, cdb, pdb, oracle restart, srvctl, oracle 26ai, primary database 
+summary: Die primäre Oracle Datenbank auf Google Cloud NetApp Volumes iSCSI-Speicher wird mithilfe des Oracle Database Configuration Assistant im Silent-Modus erstellt. Dieses Verfahren umfasst die Ausführung von dbca zum Erstellen der Container-Datenbank und der Pluggable-Datenbank auf GCNV-gestützten ASM-Festplattengruppen, die Konfiguration von Archivprotokollzielen sowie das Hinzufügen eines rollenbasierten Anwendungsdienstes für transparentes Failover. 
+---
+= Die primäre Oracle Datenbank auf Google Cloud NetApp Volumes erstellen
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Die primäre Oracle Datenbank auf Google Cloud NetApp Volumes iSCSI-Speicher wird mithilfe des Oracle Database Configuration Assistant im Silent-Modus erstellt. Dieses Verfahren umfasst das Ausführen von  `dbca` zur Erstellung der Container-Datenbank und der Pluggable Database auf GCNV-gestützten ASM-Festplattengruppen, die Konfiguration der Archivprotokollziele sowie das Hinzufügen eines rollenbasierten Anwendungsdienstes für transparentes Failover nach der Aktivierung von Data Guard.
+
+.Schritte
+Die Oracle container database und die pluggable database werden auf `oracdb1` unter Verwendung von `dbca` im Silent-Modus erstellt, die Archive-Log-Ziele konfiguriert, die Oracle Restart-Registrierung überprüft und ein rollenbasierter Anwendungsdienst für transparentes Client-Failover hinzugefügt.
+
+.  `dbca`Im Silent-Modus ausführen, um die CDB und PDB auf den ASM-Festplattengruppen zu erstellen:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+export ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+export PATH=$ORACLE_HOME/bin:$PATH
+
+dbca -silent -createDatabase \
+  -templateName General_Purpose.dbc \
+  -gdbname orcl -sid orcl \
+  -characterSet AL32UTF8 -nationalCharacterSet AL16UTF16 \
+  -sysPassword "ChangeMe!1" -systemPassword "ChangeMe!1" \
+  -emConfiguration NONE \
+  -datafileDestination +DATA -storageType ASM \
+  -recoveryAreaDestination +FRA -recoveryAreaSize 25000 \
+  -enableArchive true -archiveLogMode AUTO \
+  -memoryMgmtType AUTO_SGA -totalMemory 4096 \
+  -databaseType MULTIPURPOSE \
+  -createAsContainerDatabase true -numberOfPDBs 1 \
+  -pdbName orclpdb -pdbAdminPassword "ChangeMe!1" \
+  -ignorePreReqs
+'
+----
+. Archivprotokolle werden auf  `+RECO` gesetzt, und der Zustand der pluggable database wird geöffnet und gespeichert. Der Standby verwendet entsprechende Archivprotokolleinstellungen in xref:gcnv-oracle-standby-database.adoc#standby-init-ora-and-nomount[Schritt 2: Standby init.ora, pfile und NOMOUNT]:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+export ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+export ORACLE_SID=orcl
+$ORACLE_HOME/bin/sqlplus -s / as sysdba <<SQL
+ALTER SYSTEM SET log_archive_dest_1='\''LOCATION=+RECO VALID_FOR=(ALL_LOGFILES,ALL_ROLES) DB_UNIQUE_NAME=orcl'\'' SCOPE=BOTH;
+ALTER PLUGGABLE DATABASE ALL OPEN;
+ALTER PLUGGABLE DATABASE ALL SAVE STATE;
+EXIT
+SQL
+'
+----
+. Es wird überprüft, ob die Datenbank unter Oracle Restart läuft:
++
+[source, bash]
+----
+sudo /u01/app/26ai/grid/bin/srvctl status database -d orcl
+# Expected: Database is running
+
+sudo -u oracle sqlplus -s / as sysdba <<<"SELECT name, open_mode, log_mode FROM v\$database;"
+# Expected: ORCL, READ WRITE, ARCHIVELOG
+----
+. Ein rollenbasierter Anwendungsdienst sorgt dafür, dass Anwendungen sich über  `orclapp` verbinden und ein Failover transparent erfolgt, wenn Data Guard aktiviert ist:
++
+[source, bash]
+----
+sudo -u oracle bash -c '
+export GRID_HOME=/u01/app/26ai/grid
+export ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+export PATH=$ORACLE_HOME/bin:$GRID_HOME/bin:$PATH
+
+srvctl add service \
+  -db orcl \
+  -service orclapp \
+  -pdb orclpdb \
+  -role PRIMARY \
+  -policy AUTOMATIC
+
+srvctl start service -db orcl -service orclapp
+srvctl status service -db orcl -service orclapp
+'
+----
++
+Nach der Aktivierung des Data Guard Broker `orclapp` läuft nur auf dem PRIMARY. Steuerdateien über ASM-Festplattengruppen multiplexen und den Arbeitsspeicher auf die Arbeitslast dimensionieren.
+
+
+
+
+
+== Was kommt als Nächstes?
+
+Um Standby-Schutz und Failover-Bereitschaft einzurichten, gehen Sie zu xref:gcnv-oracle-standby-database.adoc[Die Oracle Standby-Datenbank erstellen] auf  `oracdb2`.

@@ -1,0 +1,209 @@
+---
+sidebar: sidebar 
+permalink: oracle/gcnv-oracle-install-software.html 
+keywords: oracle database, grid infrastructure, oracle restart, asm, asm disk groups, oracle database 26ai, silent install, gridsetup 
+summary: Oracle Grid Infrastructure mit Oracle Restart und ASM auf Google Cloud NetApp Volumes iSCSI-Speicher für jeden Datenbankhost installieren, anschließend die Oracle Database 26ai Software installieren. Dieses Verfahren umfasst das Bereitstellen und Entpacken der Oracle Grid Infrastructure GoldImage, das Ausführen der gridSetup Antwortdatei, das Erstellen von ASM Festplattengruppen auf GCNV Volumes sowie die Durchführung einer unbeaufsichtigten, rein softwarebasierten Installation des Oracle Database Home. 
+---
+= Oracle Grid Infrastructure und Oracle Database 26ai auf Google Cloud NetApp Volumes installieren
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Oracle Grid Infrastructure mit Oracle Restart und ASM auf Google Cloud NetApp Volumes iSCSI-Speicher für jeden Datenbankhost installieren, danach die Oracle Database 26ai Software installieren. Dieses Verfahren umfasst das Staging von Oracle GoldImages, das Ausführen unbeaufsichtigter Installationen mit Antwortdateien, das Erstellen von ASM-Festplattengruppen auf GCNV Volumes sowie die Vorbereitung sowohl der primären als auch der Standby-Hosts mit identischer Oracle Software vor der Datenbankerstellung.
+
+
+
+== Schritt 1: Installation der Grid Infrastructure auf jedem DB-Host
+
+Die Oracle Grid Infrastructure GoldImage ist auf jedem Datenbankhost zu installieren, um Oracle Restart und ASM zu ermöglichen. Beide Hosts benötigen jeweils ein eigenes Grid Home, eine eigene ASM-Instanz und eigene Festplattengruppen; Data Guard repliziert Daten über Oracle Net, nicht über gemeinsam genutzten Speicher. Alle Schritte sind auf  `oracdb1` vollständig durchzuführen, bevor sie auf  `oracdb2` wiederholt werden.
+
+. [[stage-oracle-binaries-on-u01]]Die Oracle GoldImages-, Release Update- und OPatch-Binärdateien werden in  `/u01/stage` bereitgestellt:
++
+[source, bash]
+----
+sudo chown oracle:oinstall /u01/stage && sudo chmod 775 /u01/stage
+# Upload GoldImages, RU, OPatch to /u01/stage.
+----
+. [[unzip-grid-home]]Das Grid GoldImage wird direkt am Ziel-Grid-Home entpackt. Das 26ai GoldImage wird durch direktes Entpacken in das Zielverzeichnis installiert:
++
+[source, bash]
+----
+sudo -u grid bash -c '
+cd /u01/app/26ai/grid
+unzip -q /u01/stage/LINUX.X64_<RELEASE>_grid_home.zip
+'
+sudo chown -R grid:oinstall /u01/app/26ai/grid
+----
++
+Wenn das Grid GoldImage älter als die Ziel-RU ist, kann das Grid-Verzeichnis während der Einrichtung mithilfe des  `gridSetup.sh -applyRU` Flows gepatcht werden, oder es wird ein GoldImage mit der RU gebündelt verwendet. Grid- und Datenbankverzeichnisse sollten sich auf dem gleichen vorgesehenen Patch-Stand befinden.
+
+. [[gridsetup-response-file]]Die  `gridSetup`Antwortdatei `/tmp/grid.rsp`wird auf jedem Host erstellt. Der Hostname wird ersetzt und starke Passwörter werden verwendet:
++
+[source, bash]
+----
+HOST=$(hostname -s)
+
+sudo -u grid bash -c "cat > /tmp/grid.rsp <<RSP
+oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v23.0.0
+INVENTORY_LOCATION=/u01/app/oraInventory
+installOption=HA_CONFIG
+ORACLE_BASE=/u01/app/grid
+clusterUsage=GENERAL_PURPOSE
+OSDBA=asmdba
+OSOPER=asmoper
+OSASM=asmadmin
+storageOption=FLEX_ASM_STORAGE
+sysasmPassword=WelcomeOracle1!
+asmsnmpPassword=WelcomeOracle1!
+diskGroupName=DATA
+redundancy=EXTERNAL
+auSize=4
+diskString=/dev/mapper/ora_${HOST}_*p*
+diskList=/dev/mapper/ora_${HOST}_data_01p1,/dev/mapper/ora_${HOST}_data_02p1
+managementOption=NONE
+RSP"
+sudo -u grid chmod 600 /tmp/grid.rsp
+----
+. Im Silent-Modus  `gridSetup.sh`werden die Binärdateien kopiert und die Konfiguration bereitgestellt. Zu erwarten sind  `Successfully Setup Software with warning(s).`die Exit-Codes 6 (Warnungen) oder 0:
++
+[source, bash]
+----
+sudo -u grid bash -c '
+export ORACLE_HOME=/u01/app/26ai/grid
+export ORACLE_BASE=/u01/app/grid
+cd /u01/app/26ai/grid
+./gridSetup.sh -silent -responseFile /tmp/grid.rsp -ignorePrereqFailure
+'
+----
+. [[run-orainstroot-and-root]] `orainstRoot.sh` und  `root.sh` als Root ausführen. Das  `root.sh`Skript erstellt die  `crsctl`,  `srvctl` und  `asmcmd` Wrapper und startet OHAS:
++
+[source, bash]
+----
+sudo /u01/app/oraInventory/orainstRoot.sh
+sudo /u01/app/26ai/grid/root.sh
+----
+. [[execute-config-tools]] `gridSetup.sh -executeConfigTools` ausführen, um die Konfigurationsassistenten (NETCA, ASMCA, CVU) für <<gridsetup-response-file,die Antwortdatei>> auszuführen. Dadurch werden die ASM-Instanz und die  `+DATA` Festplattengruppe erstellt. Nach NETCA / ASMCA / CVU ist Folgendes zu erwarten:  `Successfully Configured Software.`
++
+[source, bash]
+----
+sudo -u grid bash -c '
+export ORACLE_HOME=/u01/app/26ai/grid
+export ORACLE_BASE=/u01/app/grid
+cd /u01/app/26ai/grid
+./gridSetup.sh -silent -executeConfigTools -responseFile /tmp/grid.rsp
+'
+----
+. [[create-reco-and-fra-disk-groups]]Die  `+RECO` und  `+FRA` Festplattengruppen werden mit  `asmca` erstellt. Die Single-Shot-Installation erstellt nur  `+DATA`:
++
+[source, bash]
+----
+HOST=$(hostname -s)
+
+sudo -u grid bash -c "
+export ORACLE_HOME=/u01/app/26ai/grid
+export ORACLE_SID=+ASM
+
+\$ORACLE_HOME/bin/asmca -silent -createDiskGroup \
+  -diskGroupName RECO \
+  -disk /dev/mapper/ora_${HOST}_arch_01p1 \
+  -redundancy EXTERNAL -au_size 4
+
+\$ORACLE_HOME/bin/asmca -silent -createDiskGroup \
+  -diskGroupName FRA \
+  -disk /dev/mapper/ora_${HOST}_fra_01p1 \
+  -redundancy EXTERNAL -au_size 4
+"
+----
+. [[verify-asm-and-oracle-restart]]Der Status der ASM-Festplattengruppen und der Oracle Restart-Ressourcen kann überprüft werden:
++
+[source, bash]
+----
+sudo -u grid ORACLE_HOME=/u01/app/26ai/grid ORACLE_SID=+ASM \
+  /u01/app/26ai/grid/bin/sqlplus -s / as sysasm <<'SQL'
+SELECT name, total_mb, free_mb, state FROM v$asm_diskgroup ORDER BY name;
+SQL
+
+sudo /u01/app/26ai/grid/bin/crsctl stat res -t
+# Expected ONLINE: ora.DATA.dg, ora.RECO.dg, ora.FRA.dg, ora.LISTENER.lsnr, ora.asm, ora.cssd, ora.evmd.
+----
+. Die oben genannten Schritte werden auf  `oracdb2` wiederholt. Das  `HOST=$(hostname -s)`-Muster in <<gridsetup-response-file,Schritte 3 und 4>> und <<create-reco-and-fra-disk-groups,Schritt 7>> wählt automatisch die GCNV iSCSI-Geräte dieses Hosts aus.
++
+Verwenden Sie dieselben ASM-Festplattengruppennamen — Data Guard repliziert über Oracle Net, nicht über den Speicher.
+
+
+
+
+
+== Schritt 2: Installation der Oracle Database auf jedem DB-Host
+
+Die Oracle Database 26ai Software-Home wird auf jedem Datenbankhost mittels einer unbeaufsichtigten, rein softwarebasierten Installation mit dem neuesten Release Update installiert. Alle Schritte werden auf  `oracdb1` abgeschlossen, bevor sie auf  `oracdb2` wiederholt werden.
+
+. [[unzip-db-home-and-ru-patch]]Das Datenbank-Home, den neuesten OPatch und den RU-Patch in die jeweiligen Verzeichnisse entpacken. Die Oracle-Dokumentation enthält Informationen zum RU-Verzeichnisaufbau und zum  `-applyRU` Pfad.
++
+[source, bash]
+----
+sudo su - oracle
+cd /u01/app/oracle/product/26ai/db_1
+unzip -q /u01/stage/LINUX.X64_<RELEASE>_db_home.zip
+rm -rf OPatch
+unzip -q /u01/stage/p6880880_<base>_Linux-x86-64.zip                    # latest OPatch
+unzip -q /u01/stage/p<RU_PATCH>_<base>_Linux-x86-64.zip -d /u01/stage   # latest 26ai RU
+----
+. [[silent-db-home-install]]Die Installationsantwortdatei wird erstellt und die unbeaufsichtigte Softwareinstallation mit angewendetem RU durchgeführt. Unter OL 8/9 ist  `-applyOneOffs` in der  `runInstaller` Zeile wegzulassen:
++
+[source, bash]
+----
+sudo -u oracle tee /u01/stage/dbinstall.rsp >/dev/null <<'EOF'
+oracle.install.option=INSTALL_DB_SWONLY
+UNIX_GROUP_NAME=oinstall
+INVENTORY_LOCATION=/u01/app/oraInventory
+ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+ORACLE_BASE=/u01/app/oracle
+oracle.install.db.InstallEdition=EE
+oracle.install.db.OSDBA_GROUP=dba
+oracle.install.db.OSOPER_GROUP=oper
+oracle.install.db.OSBACKUPDBA_GROUP=backupdba
+oracle.install.db.OSDGDBA_GROUP=dgdba
+oracle.install.db.OSKMDBA_GROUP=kmdba
+oracle.install.db.OSRACDBA_GROUP=racdba
+oracle.install.db.rootconfig.executeRootScript=false
+EOF
+
+sudo -u oracle bash -c '
+export CV_ASSUME_DISTID=OEL10    # OEL9 / OEL8.10 if cluvfy requires it
+cd /u01/app/oracle/product/26ai/db_1
+./runInstaller -applyRU /u01/stage/<RU_PATCH> \
+  -applyOneOffs /u01/stage/39292021 \
+  -silent -ignorePrereqFailure -responseFile /u01/stage/dbinstall.rsp
+'
+----
+. Das Root-Skript nach der Installation ausführen:
++
+[source, bash]
+----
+sudo /u01/app/oracle/product/26ai/db_1/root.sh
+----
+. [[set-oracle-environment]]Die Oracle-Umgebung wird auf jedem DB-Host festgelegt. Verwendung von  `ORACLE_SID=orcl` auf  `oracdb1` und  `ORACLE_SID=orcls` auf  `oracdb2`:
++
+[source, bash]
+----
+sudo -u oracle tee -a /home/oracle/.bash_profile >/dev/null <<'EOF'
+export ORACLE_HOME=/u01/app/oracle/product/26ai/db_1
+export ORACLE_SID=orcl                          # use 'orcls' on oracdb2
+export GRID_HOME=/u01/app/26ai/grid
+export PATH=$ORACLE_HOME/bin:$GRID_HOME/bin:$PATH
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+EOF
+----
++
+Die Standby-Datenbank wird in xref:gcnv-oracle-standby-database.adoc[Erstellen Sie die Standby-Datenbank] erstellt.
+
+
+
+
+
+== Was kommt als Nächstes?
+
+Um die primäre Produktionsinstanz für Ihre HA-Bereitstellung zu erstellen, gehen Sie zu xref:gcnv-oracle-primary-database.adoc[Die primäre Oracle Datenbank erstellen] auf  `oracdb1`.

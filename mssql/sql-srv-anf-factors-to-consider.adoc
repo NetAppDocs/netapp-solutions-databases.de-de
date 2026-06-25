@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: mssql/sql-srv-anf-factors-to-consider.html 
 keywords: performance, redundancy, high availability, storage configuration, continuously available shares, validation, 
-summary: In diesem Abschnitt werden die verschiedenen Aspekte beschrieben, die Sie bei der Verwendung von Azure NetApp Files mit SQL Server in der Cloud berücksichtigen sollten. 
+summary: In diesem Abschnitt werden die verschiedenen Aspekte beschrieben, die bei der Verwendung von Azure NetApp Files mit SQL Server in der Cloud zu berücksichtigen sind. 
 ---
 = Zu berücksichtigende Faktoren
 :hardbreaks:
@@ -65,7 +65,7 @@ Die Verwendung von Azure NetApp Files für SQL Server bietet unter anderem folge
 *Anmerkungen:*
 
 * Um Redundanz und Hochverfügbarkeit zu erhöhen, sollten SQL Server-VMs entweder im selben https://docs.microsoft.com/en-us/azure/virtual-machines/availability-set-overview["Verfügbarkeitssatz"^] oder in verschiedenen https://docs.microsoft.com/en-us/azure/availability-zones/az-overview["Verfügbarkeitszonen"^] .  Berücksichtigen Sie die Anforderungen an den Dateipfad, wenn benutzerdefinierte Datendateien erforderlich sind. Wählen Sie in diesem Fall SQL FCI statt SQL AOAG.
-* Der folgende UNC-Pfad wird unterstützt: file:///\\ANFSMB-b4ca.anf.test\SQLDB%20and%20\\ANFSMB-b4ca.anf.test\SQLDB\["\\ANFSMB-b4ca.anf.test\SQLDB und \\ANFSMB-b4ca.anf.test\SQLDB\"^] .
+* Folgende UNC-Pfade werden unterstützt:  `\\ANFSMB-b4ca.anf.test\SQLDB` und  `\\ANFSMB-b4ca.anf.test\SQLDB\`.
 * Der Loopback-UNC-Pfad wird nicht unterstützt.
 * Verwenden Sie zur Größenbestimmung historische Daten aus Ihrer lokalen Umgebung.  Passen Sie bei OLTP-Workloads die Ziel-IOPS an die Leistungsanforderungen an, indem Sie Workloads zu Durchschnitts- und Spitzenzeiten zusammen mit den Leistungsindikatoren für Festplattenlesevorgänge/Sek. und Festplattenschreibvorgänge/Sek. verwenden.  Passen Sie für Data Warehouse- und Berichtsarbeitslasten den Zieldurchsatz an, indem Sie die Arbeitslasten zu Durchschnitts- und Spitzenzeiten sowie die Datenträgerlesebytes/s und Datenträgerschreibbytes/s verwenden.  Durchschnittswerte können in Verbindung mit Funktionen zur Volumenumformung verwendet werden.
 
