@@ -67,13 +67,13 @@ indexpage:
       url: "/mssql/customer-usecase-mssql-fsx1.html"
     - title: SAP mit Microsoft SQL Server unter Windows unter Verwendung von Clustered
         Data ONTAP
-      url: https://www.netapp.com/pdf.html?item=/media/16865-tr-4467pdf.pdf
+      url: https://www.netapp.com/pdf.html?item=/media/16865-tr-4467.pdf
     - title: Modernisieren Sie Microsoft SQL Server
       url: https://www.netapp.com/pdf.html?item=/media/15613-na-446.pdf
     - title: Best Practices für Microsoft SQL Server mit ONTAP
       url: https://www.netapp.com/pdf.html?item=/media/8585-tr4590.pdf
     - title: Best Practices für Microsoft SQL Server mit EF-Series
-      url: https://www.netapp.com/pdf.html?item=/media/17086-tr4764pdf.pdf
+      url: https://www.netapp.com/pdf.html?item=/media/17086-tr4764.pdf
   - title: Hybrid-Cloud-Datenbanklösungen
     links:
     - title: Bereitstellen und Schützen von Oracle RAC mit vVols in VCF
@@ -87,7 +87,7 @@ indexpage:
     - title: Stellen Sie Oracle19c auf ONTAP mit Automatisierung bereit
       url: "/automation/db-protection-overview.html"
     - title: Führen Sie Oracle-Datenbanken auf der NetApp EF-Serie aus
-      url: https://www.netapp.com/pdf.html?item=/media/17248-tr4794pdf.pdf
+      url: https://www.netapp.com/pdf.html?item=/media/17248-tr4794.pdf
   - title: Open-Source-Datenbanken
     links:
     - title: Stellen Sie eine PostgreSQL-Datenbank bereit und richten Sie die Notfallwiederherstellung

@@ -186,4 +186,4 @@ image:snapctr-sql-dr-012.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt 
 [[where-to-go-for-help]]
 == Wo bekomme ich Hilfe?
 
-Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie bitte demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.
+Falls Sie Hilfe mit dem Toolkit benötigen, besuchen Sie die link:https://community.netapp.com/["NetApp Community"^] und stellen Sie Ihre Fragen.

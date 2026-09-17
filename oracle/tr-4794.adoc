@@ -18,4 +18,4 @@ Mitch Blackburn, Ebin Kadavy, NetApp
 [role="lead"]
 TR-4794 soll Speicheradministratoren und Datenbankadministratoren dabei helfen, Oracle erfolgreich auf NetApp EF-Series-Speicher bereitzustellen.
 
-link:https://www.netapp.com/pdf.html?item=/media/17248-tr4794pdf.pdf["TR-4794: Oracle-Datenbanken auf der NetApp EF-Serie"^]
+link:https://www.netapp.com/pdf.html?item=/media/17248-tr4794.pdf["TR-4794: Oracle-Datenbanken auf der NetApp EF-Serie"^]

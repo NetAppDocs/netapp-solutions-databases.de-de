@@ -622,9 +622,9 @@ image:sqlsb-aws-093.png["Abbildung, die einen Eingabe-/Ausgabedialog zeigt oder 
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:
 
-* https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf["TR-4714: Best Practices-Leitfaden für Microsoft SQL Server mit NetApp SnapCenter"^]
+* https://www.netapp.com/pdf.html?item=/media/12400-tr4714.pdf["TR-4714: Best Practices-Leitfaden für Microsoft SQL Server mit NetApp SnapCenter"^]
 +
-https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf["https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf"^]
+https://www.netapp.com/pdf.html?item=/media/12400-tr4714.pdf["https://www.netapp.com/pdf.html?item=/media/12400-tr4714pdf.pdf"^]
 
 * https://docs.netapp.com/us-en/snapcenter-45/protect-scsql/concept_requirements_for_restoring_a_database.html["Voraussetzungen für die Wiederherstellung einer Datenbank"^]
 +

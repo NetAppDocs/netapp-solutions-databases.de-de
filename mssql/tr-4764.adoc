@@ -18,4 +18,4 @@ Mitch Blackburn, Pat Sinthusan, NetApp
 [role="lead"]
 Dieser Best Practices-Leitfaden soll Speicheradministratoren und Datenbankadministratoren dabei helfen, Microsoft SQL Server erfolgreich auf NetApp EF-Series-Speicher bereitzustellen.
 
-link:https://www.netapp.com/pdf.html?item=/media/17086-tr4764pdf.pdf["TR-4764: Best Practices für Microsoft SQL Server mit NetApp EF-Serie"^]
+link:https://www.netapp.com/pdf.html?item=/media/17086-tr4764.pdf["TR-4764: Best Practices für Microsoft SQL Server mit NetApp EF-Serie"^]

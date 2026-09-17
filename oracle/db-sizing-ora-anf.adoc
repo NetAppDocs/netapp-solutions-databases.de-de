@@ -93,7 +93,7 @@ Rufen Sie das Toolkit aus dem Repository ablink:https://netapp.sharepoint.com/si
 ====
 Das Toolkit besteht aus einem webbasierten HTML-Parser und zwei SQL-Skripten zum Sammeln von Oracle-Datenbankinformationen.  Die Ausgabe wird dann in eine Excel-Vorlage eingegeben, um Größenrichtlinien für Rechenleistung und Speicher für den Oracle-Datenbankserver zu erstellen.
 
-* Verwenden Sie einlink:https://app.atroposs.com/#/awr-module["HTML-Parser"^] AWR-Modul zum Abrufen von Größeninformationen einer aktuellen Oracle-Datenbank aus einem AWR-Bericht.
+* Ein HTML Parser AWR-Modul kann verwendet werden, um Größeninformationen einer aktuellen Oracle Datenbank aus einem AWR-Bericht abzurufen.
 * Führen Sie ora_db_data_szie.sql als DBA aus, um die physische Größe der Oracle-Datendatei aus der Datenbank abzurufen.
 * Führen Sie ora_db_logs_size.sql als DBA aus, um die Größe der archivierten Oracle-Protokolle mit dem gewünschten Aufbewahrungsfenster (Tage) für die Archivprotokolle abzurufen.
 * Geben Sie die oben erhaltenen Größeninformationen in die Excel-Vorlagendatei oracle_db_sizing_template_anf.xlsx ein, um eine Größenrichtlinie für Rechenleistung und Speicher für den Oracle DB-Server zu erstellen.

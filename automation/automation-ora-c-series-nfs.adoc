@@ -693,6 +693,6 @@ NetApp empfiehlt das SnapCenter -UI-Tool zur Verwaltung der in der C-Serie berei
 
 Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:
 
-* link:https://www.netapp.com/pdf.html?item=/media/81583-da-4240-aff-c-series.pdf["NetApp AFF C-Serie"^]
+* link:https://www.netapp.com/pdf.html?item=/media/81583-ds-4240-aff-c-series.pdf["NetApp AFF C-Serie"^]
 * link:https://docs.oracle.com/en/database/oracle/oracle-database/19/ladbi/deploying-dnfs.html#GUID-D06079DB-8C71-4F68-A1E3-A75D7D96DCE2["Bereitstellen von Oracle Direct NFS"^]
 

@@ -526,7 +526,7 @@ Weitere Informationen zu den in diesem Dokument beschriebenen Informationen find
 
 * NETAPP ASA: ALL-FLASH SAN ARRAY
 +
-link:https://www.netapp.com/data-storage/all-flash-san-storage-array/["https://www.netapp.com/data-storage/all-flash-san-storage-array/"^]
+link:https://www.netapp.com/pdf.html?item=/media/85736-ds-4254-asa.pdf["https://www.netapp.com/pdf.html?item=/media/85736-ds-4254-asa.pdf"^]
 
 * Installieren von Oracle Grid Infrastructure für einen eigenständigen Server mit einer neuen Datenbankinstallation
 +

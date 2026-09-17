@@ -310,8 +310,6 @@
   <block id="91935697a3dec69875fc666d39a8fef8" category="inline-link-macro">Vereinfachtes, selbstverwaltetes Oracle in VMware Cloud auf AWS mit gastmontiertem FSx ONTAP</block>
   <block id="d49572b6f320bb9c7fb90a4c4fc671fe" category="paragraph">Siehe TR-4979<block ref="b3e18c7c22919dcba778748c61b50f2e" category="inline-link-macro-rx"></block> Abschnitt<block ref="d372b360dda93a1ed98b047b474a8d14" prefix=" " category="inline-code"></block> Weitere Informationen zum Einrichten von SnapCenter und zum Ausführen der Workflows zum Sichern, Wiederherstellen und Klonen von Datenbanken.</block>
   <block id="6a56c935b27efdd9e9fde9e036ca687b" category="list-text">NETAPP ASA: ALL-FLASH SAN ARRAY</block>
-  <block id="fa78b7e09f15ae55ea12cbcb34d44847" category="inline-link-macro"><block ref="fa78b7e09f15ae55ea12cbcb34d44847" category="inline-link-rx"></block></block>
-  <block id="1d2dc43013dd6328b22d33484061bd50" category="paragraph"><block ref="1d2dc43013dd6328b22d33484061bd50" category="inline-link-macro-rx"></block></block>
   <block id="5424ed1a1b4c4815e1d1676f23aa1da4" category="list-text">Installieren von Oracle Grid Infrastructure für einen eigenständigen Server mit einer neuen Datenbankinstallation</block>
   <block id="a7410994d191ba6c350f0f764df86934" category="inline-link-macro"><block ref="a7410994d191ba6c350f0f764df86934" category="inline-link-rx"></block></block>
   <block id="094328bca120efd3d6fba90d69b806f8" category="paragraph"><block ref="094328bca120efd3d6fba90d69b806f8" category="inline-link-macro-rx"></block></block>
@@ -431,7 +429,6 @@
   <block id="5803335e5bcae83badcbc5583ac2d60e" category="inline-link-macro">Vereinfachtes, selbstverwaltetes Oracle in VMware Cloud auf AWS mit gastmontiertem FSx ONTAP</block>
   <block id="7747db3e6614970aeeeeaef060f430c8" category="paragraph">NetApp empfiehlt das SnapCenter -UI-Tool zur Verwaltung der in der C-Serie bereitgestellten Oracle-Datenbank.  Siehe TR-4979<block ref="353ca98728b30d2ae31625a468ea2722" category="inline-link-macro-rx"></block> Abschnitt<block ref="d372b360dda93a1ed98b047b474a8d14" prefix=" " category="inline-code"></block> Weitere Informationen zum Einrichten von SnapCenter und zum Ausführen der Workflows zum Sichern, Wiederherstellen und Klonen von Datenbanken.</block>
   <block id="0f48ba7e158160e65859ff8d64ceec40" category="inline-link-macro">NetApp AFF C-Serie</block>
-  <block id="2f76b6fc093e529f4873d6981e8dfccb" category="list-text"><block ref="2f76b6fc093e529f4873d6981e8dfccb" category="inline-link-macro-rx"></block></block>
   <block id="f18e1c3f82c945878e4905241940fa6b" category="list-text"><block ref="f18e1c3f82c945878e4905241940fa6b" category="inline-link-macro-rx"></block></block>
   <block id="77848b259d26eb7f84ae5e2cbfc59ed1" category="summary">Die Lösung bietet ein auf Ansible basierendes Automatisierungs-Toolkit zum Einrichten, Klonen und Aktualisieren von Oracle-Klondatenbanken aus der physischen Standby-Datenbank von Oracle Data Guard, die in der Azure-Cloud auf Azure NetApp Files Speicher mit ASM-Konfiguration gehostet wird.</block>
   <block id="93a5d2dc01885a305bad9a0a7f8be64b" category="doc">Automatisierter Oracle-Klon-Lebenszyklus auf ANF mit ASM</block>
@@ -851,7 +848,6 @@
   <block id="593581e466784760a050bceaea5e0c48" category="admonition">Es gibt viele Methoden zum Bereitstellen von Cloud Manager und Cloud Volumes ONTAP. Diese Methode ist die einfachste, erfordert jedoch die meisten Berechtigungen.  Wenn diese Methode für Ihre AWS-Umgebung nicht geeignet ist, konsultieren Sie bitte die<block ref="97a20614f8c0e53f461a9353634e5e51" category="inline-link-rx"></block> .</block>
   <block id="bb3e779fdf877143137572122cf424e3" category="section-title">Bereitstellen des Cloud Manager-Connectors</block>
   <block id="1273c8a63109161e6fd1f18d6998523f" category="inline-link">NetApp BlueXP</block>
-  <block id="1bb916142b871b5d3ca15de98567916e" category="list-text">Navigieren Sie zu<block ref="830bc671a5f7a65e4c0ded8f63d397ba" category="inline-link-rx"></block> und melden Sie sich an oder registrieren Sie sich.</block>
   <block id="e282a5afe40f9227d1f4acfdd3e5e741" category="paragraph"><block ref="e282a5afe40f9227d1f4acfdd3e5e741" category="inline-image-macro-rx" type="image"></block></block>
   <block id="2300b8579a8761e452d89a2af6636b7d" category="list-text">Nach der Anmeldung sollten Sie zum Canvas weitergeleitet werden.</block>
   <block id="7ac8c7bcb29721730eca3892f6e6f8c7" category="paragraph"><block ref="7ac8c7bcb29721730eca3892f6e6f8c7" category="inline-image-macro-rx" type="image"></block></block>
@@ -1481,7 +1477,6 @@
   <block id="68236fcee9bee8dbdc1c54b7b2d84b34" category="list-text">Überprüfen Sie, ob die letzte Transaktion mit allen Protokolldateiklonen und -wiederherstellungen repliziert und wiederhergestellt wurde.</block>
   <block id="84796a21de5593c952d0ae1c4869387f" category="paragraph"><block ref="84796a21de5593c952d0ae1c4869387f" category="inline-image-macro-rx" type="image"></block></block>
   <block id="50159c53d6f87eb33c314abd9f0bd28f" category="list-text">Konfigurieren Sie ein neues SnapCenter -Protokollverzeichnis auf dem DR-Server für die SQL Server-Protokollsicherung.</block>
-  <block id="50f8c30e062c542679b96127a844db6a" category="paragraph">Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie bitte dem<block ref="f9456f3b54a140d5d3858823c684363f" category="inline-link-macro-rx"></block> und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.</block>
   <block id="d89002d36151bd13d2bba69f3533ee5f" category="summary">Diese Lösung bietet NetApp -Mitarbeitern und Kunden Anweisungen und Anleitungen zum Konfigurieren, Betreiben und Migrieren von Datenbanken in eine Hybrid-Cloud-Umgebung mithilfe des GUI-basierten Tools NetApp SnapCenter und des NetApp -Speicherdienstes CVO in öffentlichen Clouds.</block>
   <block id="8269707c3930f3cbcd49193be33bc125" category="doc">TR-4908: Hybrid Cloud-Datenbanklösungen mit SnapCenter – Übersicht</block>
   <block id="7c4d94e1b484fb577b0aeafbec788ea1" category="paragraph">Alan Cao, Felix Melligan, NetApp</block>
@@ -2224,9 +2219,7 @@
   <block id="990f2c472997ae0e656e936d74d82472" category="paragraph"><block ref="990f2c472997ae0e656e936d74d82472" category="inline-image-macro-rx" type="image"></block></block>
   <block id="7d5b957cd473f6eaf5ad335a9c63c4ff" category="paragraph">Weitere Informationen zu den in diesem Dokument beschriebenen Informationen finden Sie in den folgenden Dokumenten und/oder auf den folgenden Websites:</block>
   <block id="425103b894468ffe6015f984f2683d74" category="inline-link">TR-4714: Best Practices-Leitfaden für Microsoft SQL Server mit NetApp SnapCenter</block>
-  <block id="9c42feba6d2410200720e2ceda752e13" category="list-text"><block ref="9c42feba6d2410200720e2ceda752e13" category="inline-link-rx"></block></block>
   <block id="ee50ef71e7fa5dbc3292cb856c5f8ee5" category="inline-link"><block ref="ee50ef71e7fa5dbc3292cb856c5f8ee5" category="inline-link-rx"></block></block>
-  <block id="822d30d1b5bfcb219aa830739d5b89a0" category="paragraph"><block ref="822d30d1b5bfcb219aa830739d5b89a0" category="inline-link-rx"></block></block>
   <block id="818095849ac39056a1077a0f3a155684" category="inline-link">Voraussetzungen für die Wiederherstellung einer Datenbank</block>
   <block id="0305a2a48c225d49081b5bccd776b23d" category="list-text"><block ref="0305a2a48c225d49081b5bccd776b23d" category="inline-link-rx"></block></block>
   <block id="9f413d2e154ecad28af03b6125df6837" category="inline-link"><block ref="9f413d2e154ecad28af03b6125df6837" category="inline-link-rx"></block></block>
@@ -2237,7 +2230,6 @@
   <block id="ebcadd0d5b1096e72d18133b1e0e3098" category="doc">TR-4467: SAP mit Microsoft SQL Server unter Windows – Best Practices bei der Verwendung von NetApp Clustered Data ONTAP und SnapCenter</block>
   <block id="611a4a6b98272a717f8e1f6bf5ba787b" category="paragraph">Marco Schoen, NetApp</block>
   <block id="dbd408dfbba42c9529974244acc200aa" category="paragraph">TR-4467 bietet Kunden und Partnern Best Practices für die Bereitstellung von geclustertem NetApp Data ONTAP zur Unterstützung von SAP Business Suite-Lösungen, die in einer Microsoft SQL Server-Umgebung in einer Windows-Umgebung ausgeführt werden.</block>
-  <block id="d90b6dfa1c90883fc207f3309f98b1bf" category="paragraph"><block ref="d90b6dfa1c90883fc207f3309f98b1bf" category="inline-link-macro-rx"></block></block>
   <block id="0502e6755528910223db364699e71622" category="doc">TR-4590: Best Practice-Leitfaden für Microsoft SQL Server mit ONTAP</block>
   <block id="7788b16f8e56867380c0e39b9e9a9b73" category="paragraph">Manohar Kulkarni und Pat Sinthusan, NetApp</block>
   <block id="cf2906d4a365d3dbf40f1f495ff7a0eb" category="paragraph">Dieses Dokument beschreibt Best Practices und bietet Einblicke in Designüberlegungen für die Bereitstellung von SQL Server auf NetApp -Speichersystemen mit NetApp ONTAP -Software mit dem Ziel, eine effektive und effiziente Speicherbereitstellung sowie eine durchgängige Planung von Datenschutz und Datenaufbewahrung zu erreichen.</block>
@@ -2246,7 +2238,6 @@
   <block id="046c9e52934c311f81497ca664d86a24" category="doc">TR-4764: Best Practices für Microsoft SQL Server mit NetApp EF-Serie</block>
   <block id="d9cd8ac988f5ea26e28a2da5f3485ff9" category="paragraph">Mitch Blackburn, Pat Sinthusan, NetApp</block>
   <block id="9db08b91ae68a77b71af230b40b31325" category="paragraph">Dieser Best Practices-Leitfaden soll Speicheradministratoren und Datenbankadministratoren dabei helfen, Microsoft SQL Server erfolgreich auf NetApp EF-Series-Speicher bereitzustellen.</block>
-  <block id="730874cec0e792d7ebad5a796a90b3be" category="paragraph"><block ref="730874cec0e792d7ebad5a796a90b3be" category="inline-link-macro-rx"></block></block>
   <block id="d79b12332bd4254f1e9cd6c23201a104" category="doc">TR-4722: MySQL-Datenbank auf NetApp ONTAP – Best Practices</block>
   <block id="ecb384a7266ef6f8f011aa654a810c39" category="paragraph">Anup Bharti, Manohar Kulkarni, Jeffrey Steiner NetApp</block>
   <block id="ccf4f5e223b1332c8f679f6a75664cae" category="paragraph">MySQL und seine Varianten, einschließlich MariaDB und Percona, werden häufig für viele Unternehmensanwendungen verwendet.  Diese Anwendungen reichen von globalen sozialen Netzwerken und riesigen E-Commerce-Systemen bis hin zu SMB-Hosting-Systemen mit Tausenden von Datenbankinstanzen.  Dieses Dokument beschreibt die Konfigurationsanforderungen und bietet Anleitungen zur Optimierung und Speicherkonfiguration für die Bereitstellung von MySQL auf der Datenverwaltungssoftware NetApp ONTAP .  Um festzustellen, ob die in diesem Bericht angegebene Umgebung, Konfigurationen und Versionen Ihre Umgebung unterstützen, konsultieren Sie das Interoperability Matrix Tool (IMT).</block>
@@ -3858,8 +3849,6 @@
   <block id="d61fd641d504e6b15572a5b645d11d7d" category="paragraph">Rufen Sie das Toolkit aus dem Repository ab<block ref="9d80dd73d3a7a092e6605ac547074b0f" category="inline-link-macro-rx"></block></block>
   <block id="ef67c85019e8ac817ecbbb2983bd0153" category="section-title">Wie verwende ich das Toolkit?</block>
   <block id="e0849abccea244e0fba40c3aa575d398" category="paragraph">Das Toolkit besteht aus einem webbasierten HTML-Parser und zwei SQL-Skripten zum Sammeln von Oracle-Datenbankinformationen.  Die Ausgabe wird dann in eine Excel-Vorlage eingegeben, um Größenrichtlinien für Rechenleistung und Speicher für den Oracle-Datenbankserver zu erstellen.</block>
-  <block id="f5db9a220f11d7b08f96f33f94122f33" category="inline-link-macro">HTML-Parser</block>
-  <block id="e82f0c37b6bd3400eddaf0d48fac4a76" category="list-text">Verwenden Sie ein<block ref="735c7742f70fe756ee1537fe41775ee0" category="inline-link-macro-rx"></block> AWR-Modul zum Abrufen von Größeninformationen einer aktuellen Oracle-Datenbank aus einem AWR-Bericht.</block>
   <block id="c000aa7f2c0d2b7df671b9d059b39d9a" category="list-text">Führen Sie ora_db_data_szie.sql als DBA aus, um die physische Größe der Oracle-Datendatei aus der Datenbank abzurufen.</block>
   <block id="7e56648a80a16947fe5208c82f20d2f8" category="list-text">Führen Sie ora_db_logs_size.sql als DBA aus, um die Größe der archivierten Oracle-Protokolle mit dem gewünschten Aufbewahrungsfenster (Tage) für die Archivprotokolle abzurufen.</block>
   <block id="d4cc69ca96964b53d4dc4a8c8e70fa45" category="list-text">Geben Sie die oben erhaltenen Größeninformationen in die Excel-Vorlagendatei oracle_db_sizing_template_anf.xlsx ein, um eine Größenrichtlinie für Rechenleistung und Speicher für den Oracle DB-Server zu erstellen.</block>
@@ -4583,7 +4572,6 @@
   <block id="6e170e4c0b9eb50546a09aafc90dc157" category="doc">TR-4794: Oracle-Datenbanken auf der NetApp EF-Serie</block>
   <block id="9b6fc59469e9f5ee36cb85b08daacec3" category="paragraph">Mitch Blackburn, Ebin Kadavy, NetApp</block>
   <block id="fa8b4902d0c1e464dcf9256a434920ba" category="paragraph">TR-4794 soll Speicheradministratoren und Datenbankadministratoren dabei helfen, Oracle erfolgreich auf NetApp EF-Series-Speicher bereitzustellen.</block>
-  <block id="c6f1106d361e6595d08ff6340c004516" category="paragraph"><block ref="c6f1106d361e6595d08ff6340c004516" category="inline-link-macro-rx"></block></block>
   <block id="fe9155886965f88b4bb029103061156b" category="summary">Die Lösung bietet einen Überblick und Details zur Oracle-Bereitstellung und zum Schutz in VMware Cloud Foundation (VCF) mit vSphere Virtual Volumes (vVols) als primärem Datenbankspeicher und Oracle-Datenbank in der Real Application Clusters (RAC)-Konfiguration.</block>
   <block id="d04e05cc6f5337608b6ccfaae12a4905" category="doc">TR-4997: Oracle RAC-Bereitstellung und -Schutz in VCF mit vVols</block>
   <block id="ac91541ff82c6ee76b58150eca1250c7" category="paragraph">VMware vSphere Virtual Volumes (vVols) ist ein SAN/NAS-Verwaltungs- und Integrationsframework, das virtuelle Datenträger als native Speicherobjekte verfügbar macht und Array-basierte Vorgänge auf der Ebene virtueller Datenträger ermöglicht.  Mit anderen Worten: vVols machen SAN/NAS-Geräte VM-fähig und ermöglichen die Nutzung arraybasierter Datendienste mit einem VM-zentrierten Ansatz auf der Granularität einer einzelnen virtuellen Festplatte. vVols ermöglicht es Kunden, die einzigartigen Möglichkeiten ihrer aktuellen Speicherinvestitionen zu nutzen und ohne Unterbrechungen auf ein einfacheres und effizienteres Betriebsmodell umzusteigen, das für virtuelle Umgebungen optimiert ist und mit allen Speichertypen kompatibel ist.</block>
@@ -5471,7 +5459,6 @@
   <block id="8e9e0674f514401c315626d105eebbcd" category="list-text">Führen Sie den folgenden Checkpoint auf beiden Servern aus, um SQL Server und die Clusterkommunikation durch die Firewall zuzulassen.</block>
   <block id="e3e7cd0f4a7ef7b2159e33cd0495d21b" category="paragraph">Passen Sie die Portnummern an, wenn Sie benutzerdefinierte Konfigurationen haben.</block>
   <block id="06880fa41019c1cec71a1f1d0dee33b1" category="inline-link-macro">Anforderungen an Windows Server-Dienste und Netzwerkports</block>
-  <block id="ea1bfb4e0199bc61655220a3e7ae9a8f" category="paragraph">Detaillierte Informationen zu den Firewall-Anforderungen finden Sie unter <block ref="7d6297f1cd817785a1254289ad7b65fa" category="inline-link-macro-rx"></block>.</block>
   <block id="1eeb53e050d9b4e4e35834f4b471cba7" category="list-text">Führen Sie Validierungsprüfungen auf beiden Knoten durch, bevor Sie den Cluster erstellen:</block>
   <block id="4572920938cf8d7680040c800198b6b8" category="section-title">Erstellen Sie den Failover-Cluster</block>
   <block id="0ffad8e207b70ed5bd0af63d94e2b285" category="paragraph">Erstellen Sie einen Windows Server Failover Cluster mit beiden SQL Server-Knoten, um Hochverfügbarkeit und automatische Failover-Funktionen zu ermöglichen.</block>
@@ -6243,4 +6230,17 @@
   <block id="c43a14b15d77a2ca0858f8c596a9f3ff" category="sidebar">Informationen zu Google Cloud NetApp Volumes für Oracle HA</block>
   <block id="a2627b9fc881a72aff56f8dd68b20ea1" category="sidebar">Google Cloud NetApp Volumes mit Oracle HA implementieren</block>
   <block id="1b3c2813631c4b890b70d7b8abe4c245" category="sidebar">Compute Engine Instanzen bereitstellen</block>
+  <block id="d609d95c74f58af0677b17d65554005e" category="inline-link-macro"><block ref="d609d95c74f58af0677b17d65554005e" category="inline-link-rx"></block></block>
+  <block id="59aaa217ee0cb94ce796b376789a5f5f" category="paragraph"><block ref="59aaa217ee0cb94ce796b376789a5f5f" category="inline-link-macro-rx"></block></block>
+  <block id="1d9c6b8d8daec693aaf6605491f3b203" category="list-text"><block ref="1d9c6b8d8daec693aaf6605491f3b203" category="inline-link-macro-rx"></block></block>
+  <block id="06f70bdc0632629a375dc5c072f431f5" category="list-text">Navigieren Sie zu <block ref="bd65f9bfe577af0daae332de597fcfc1" category="inline-link-rx"></block> und melden Sie sich an oder registrieren Sie sich.</block>
+  <block id="dd490b81914dd945601e442a41cb4222" category="inline-link-macro">NetApp Community</block>
+  <block id="8e201ca2438da0190f1d4fee8db9f98d" category="paragraph">Falls Sie Hilfe mit dem Toolkit benötigen, besuchen Sie die <block ref="a6159e77c91be3ab1d481e4c7c939636" category="inline-link-macro-rx"></block> und stellen Sie Ihre Fragen.</block>
+  <block id="bf8fb7dd8b2627d1d3eacf1fabdecec0" category="paragraph">Detaillierte Informationen zu den Firewall-Anforderungen finden Sie unter <block ref="348f1f08867f112c105b3a78ffb586df" category="inline-link-macro-rx"></block>.</block>
+  <block id="5247fab54f9e8bcfd8158ac966c09566" category="list-text"><block ref="5247fab54f9e8bcfd8158ac966c09566" category="inline-link-rx"></block></block>
+  <block id="98ec22f1e633b44d85c251abe3d76431" category="paragraph"><block ref="98ec22f1e633b44d85c251abe3d76431" category="inline-link-rx"></block></block>
+  <block id="4df8ff916c96ff6c46fc2671c04b77e0" category="paragraph"><block ref="4df8ff916c96ff6c46fc2671c04b77e0" category="inline-link-macro-rx"></block></block>
+  <block id="b06c01ad278ddcf98874b5b5267765b6" category="paragraph"><block ref="b06c01ad278ddcf98874b5b5267765b6" category="inline-link-macro-rx"></block></block>
+  <block id="052b909238ebf4917da28464c5adb557" category="list-text">Ein HTML Parser AWR-Modul kann verwendet werden, um Größeninformationen einer aktuellen Oracle Datenbank aus einem AWR-Bericht abzurufen.</block>
+  <block id="a6a77e0f909108a38e794073d621e60b" category="paragraph"><block ref="a6a77e0f909108a38e794073d621e60b" category="inline-link-macro-rx"></block></block>
 </blocks>
