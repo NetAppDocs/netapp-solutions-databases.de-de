@@ -153,10 +153,3 @@ image:snapctr-sql-clone-010.png["Abbildung, die einen Eingabe-/Ausgabedialog zei
 . Löschen Sie geklonte Datenbanken und bereinigen Sie die Cloud-DB-Serverumgebung.  Befolgen Sie dann die vorherigen Verfahren, um eine neue Datenbank mit neuen Daten zu klonen.  Das Klonen einer neuen Datenbank dauert nur wenige Minuten.
 . Fahren Sie die Klondatenbank herunter und führen Sie mithilfe der CLI einen Befehl zum Aktualisieren des Klons aus.  Weitere Informationen finden Sie in der folgenden SnapCenter -Dokumentation:link:https://docs.netapp.com/us-en/snapcenter/protect-sco/task_refresh_a_clone.html["Aktualisieren eines Klons"^] .
 
-
-
-
-[[where-to-go-for-help]]
-== Wo bekomme ich Hilfe?
-
-Wenn Sie Hilfe bei dieser Lösung und den Anwendungsfällen benötigen, treten Sie demlink:https://netapppub.slack.com/archives/C021R4WC0LC["Slack-Kanal für den Support der NetApp Solution Automation-Community"] und suchen Sie nach dem Kanal zur Lösungsautomatisierung, um Ihre Fragen oder Anfragen zu posten.
