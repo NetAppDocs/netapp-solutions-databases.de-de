@@ -1,0 +1,115 @@
+---
+sidebar: sidebar 
+permalink: mssql/sql-smb3-aff-overview.html 
+keywords: Microsoft SQL server, SMB 3, AFF, ONTAP, continuous availability 
+summary: SQL Server 2025 kann Datenbanken auf SMB 3-Freigaben mit kontinuierlicher Verfügbarkeit auf einem NetApp AFF System speichern, auf dem ONTAP ausgeführt wird. Informationen zu den Vorteilen, den Lösungskomponenten, den Designprinzipien und dazu, wie die kontinuierliche Verfügbarkeit Datenbanken während eines Controller Failover online hält. 
+---
+= Informationen zu SQL Server 2025 auf NetApp AFF mit kontinuierlicher Verfügbarkeit von SMB 3
+:allow-uri-read: 
+:icons: font
+:experimental: 
+:nofooter: 
+:source-highlighter: highlight.js
+:svm: a50-sql
+:host: sql-1
+:svc-account: SAPCC\sql1admin
+:imagesdir: ../media/
+
+
+[role="lead"]
+SQL Server 2025 kann Datenbanken auf SMB 3-Freigaben mit kontinuierlicher Verfügbarkeit (CA) auf einem NetApp AFF System mit ONTAP speichern. Beschrieben werden die Vorteile, Lösungskomponenten und Designprinzipien dieser Konfiguration sowie die Frage, wie die kontinuierliche Verfügbarkeit Datenbanken während eines Controller-Failover online hält.
+
+Microsoft SQL Server unterstützt seit SQL Server 2012 das Speichern von Datenbankdateien auf SMB-Dateifreigaben. Mit SMB 3 Continuously Available (CA)-Freigaben ist eine Dateifreigabe eine unterstützte Storage-Option für SQL Server-Datenbanken und eine Alternative zu Block-Storage (iSCSI- oder FCP-LUNs).
+
+ONTAP auf AFF All-Flash-Systemen implementiert SMB 3 nativ. In Kombination mit SQL Server 2025 und Windows Server 2025 bietet dies eine fehlertolerante Storage-Architektur, die in den Datenschutz von NetApp integriert ist.
+
+Informationen zum Einsetzen dieser Konfiguration finden Sie unter link:sql-smb3-aff.html["Bereitstellung von SQL Server 2025 auf NetApp AFF mithilfe von SMB 3 kontinuierlich verfügbaren Freigaben"].
+
+
+
+[[benefits-of-sql-server-on-smb-3-with-netapp-ontap]]
+[[why]]
+== Vorteile von SQL Server auf SMB 3 mit NetApp ONTAP
+
+[cols="1,3"]
+|===
+| Nutzen | Beschreibung 
+
+
+| Einfache Provisionierung | Es gibt keine LUNs, igroups, MPIO, Datenträgerinitialisierung oder Laufwerksbuchstaben zu managen. Der Speicherort einer Datenbankdatei ist lediglich ein UNC-Pfad wie  `+\\a50-sql\sql1_data+`. 
+
+
+| Online-Kapazitätsmanagement | Sie vergrößern (oder verkleinern) ein Volume online in ONTAP, und SQL Server erkennt die neue Kapazität sofort. Windows-Festplatten- oder Partitionsvorgänge sind nicht erforderlich, und autogrow kann dies automatisch übernehmen. 
+
+
+| Unterbrechungsfreier Betrieb | CA-Freigaben gewährleisten den Betrieb von SQL Server während ONTAP Übernahmen und Rückgaben, unterbrechungsfreien Upgrades (NDU), LIF-Migrationen und Volume-Verschiebungen. 
+
+
+| Performance und Ausfallsicherheit | SMB Multichannel verteilt die E/A auf mehrere Netzwerkpfade und Netzwerkkarten und übersteht den Ausfall eines einzelnen Pfades. SMB Freigaben unterstützen außerdem SQL Server Failoverclusterinstanzen (FCI). 
+
+
+| Speichereffizienz | Inline-Deduplizierung, Komprimierung und Verdichtung reduzieren zusammen mit Thin Provisioning die von Datenbanken und Backups genutzte physische Kapazität. 
+
+
+| Integrierter Datenschutz | ONTAP Snapshots, SnapRestore, FlexClone und SnapMirror, orchestriert von NetApp SnapCenter, ermöglichen Backups in Sekunden, Wiederherstellungen in Minuten und sofortige Datenbankklone. 
+
+
+| Flexibilität | Datenbanken lassen sich zwischen Hosts verschieben, indem sie einfach an einen anderen Server angebunden werden, ohne das Storage neu zuzuordnen. Dieselbe SVM kann auch Home-Verzeichnisse, Dateidienste oder andere Anwendungen bereitstellen. 
+|===
+
+
+[[solution-components]]
+[[architecture]]
+== Lösungskomponenten
+
+Die Lösung besteht aus folgenden Komponenten:
+
+[cols="1,3"]
+|===
+| Komponente | Rolle 
+
+
+| Windows Server 2025 Host (`{host}`) | Verwendet SQL Server 2025. Die SQL Server Binärdateien und Systemdatenbanken befinden sich auf der lokalen Festplatte; auf alle Benutzerdatenbanken, Protokolle, TempDB und Backups wird über SMB 3 zugegriffen. 
+
+
+| SQL Server 2025 | Datenbank-Engine, die unter einem Domänendienstkonto ausgeführt wird (`{svc-account}`), das Zugriff auf die SMB-Freigaben hat. 
+
+
+| Active Directory und DNS | Authentifiziert das SQL Server-Dienstkonto und den CIFS-Server (Kerberos) und bietet Namensauflösung und Zeitsynchronisierung. 
+
+
+| NetApp AFF A50 HA Paar | Zwei Controller mit gemeinsam genutztem NVMe Storage. Fällt ein Controller aus oder wird er aktualisiert, übernimmt der Partner dessen Storage und Netzwerkschnittstellen. 
+
+
+| SVM `{svm}` | Ein dedizierter, in Active Directory eingebundener CIFS-Server mit einem SMB-Daten-LIF pro Knoten, der vier Volumes mit CA-Freigaben hostet. 
+|===
+image::sql25_smb_bp_001.svg[Lösungsarchitektur: SQL Server 2025 auf SMB 3 CA-Freigaben mit NetApp AFF]
+
+
+
+[[design-principles]]
+[[design]]
+== Gestaltungsprinzipien
+
+Das Design folgt den NetApp Best Practices für SQL Server über SMB:
+
+* *Separate Volumes pro Dateityp.* Daten, Transaktionsprotokolle, TempDB und Backups werden auf separaten FlexVol Volumes und Freigaben gespeichert. Jedes Volume kann eigene Einstellungen für Größe, QoS, Effizienz, Snapshots und Replikation haben. TempDB wird von Backups ausgeschlossen.
+* *Die Volumes sind auf beide Knoten verteilt.* Daten- und Backup-Volumes befinden sich auf Knoten 1, Protokoll- und TempDB-Volumes auf Knoten 2, sodass beide Controller sinnvolle Arbeit leisten.
+* *Ein SMB-Daten-LIF pro Knoten.* Der Host verfügt immer über einen direkten Pfad zu dem Knoten, dem ein Volume gehört, und SMB multichannel kann beide Pfade nutzen.
+* *NTFS-Sicherheitsstil und CA-Freigaben.* Diese sind für SQL Server über SMB auf ONTAP obligatorisch.
+* *Keine geplanten ONTAP Snapshots auf den Datenbankvolumes.* Backups müssen applikationskonsistent sein; sie werden von SnapCenter erstellt.
+
+
+image::sql25_smb_bp_002.svg[Speicherlayout: SQL Server Dateien auf SMB-Freigaben]
+
+
+
+[[how-continuous-availability-works]]
+[[ca]]
+== Wie kontinuierliche Verfügbarkeit funktioniert
+
+Bei einer Standard-SMB-Freigabe schließt ein Controller-Failover die geöffneten Dateihandles. SQL Server kennzeichnet die betroffenen Datenbanken dann als verdächtig, und sie müssen manuell wiederhergestellt werden.
+
+Bei einer CA-Freigabe hält ONTAP den Status der geöffneten Dateien (persistente Handles) auf den HA-Partner gespiegelt. Während eines Takeover migriert die SMB LIF des ausgefallenen Knotens zum Partner. Der SMB 3-Client auf dem SQL Server Host stellt die Verbindung automatisch wieder her und fordert seine Handles erneut an. SQL Server verzeichnet nur eine kurze I/O-Pause von wenigen Sekunden; die Datenbanken bleiben online, und es gehen keine Transaktionen verloren. Dasselbe gilt für geplante Ereignisse wie ONTAP Upgrades, Giveback, LIF-Migrationen und Volume-Verschiebungen.
+
+image::sql25_smb_bp_003.svg[Wie die kontinuierliche Verfügbarkeit von SMB 3 SQL Server schützt]
