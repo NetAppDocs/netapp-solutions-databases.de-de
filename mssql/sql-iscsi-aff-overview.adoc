@@ -1,0 +1,172 @@
+---
+sidebar: sidebar 
+permalink: mssql/sql-iscsi-aff-overview.html 
+keywords: Microsoft SQL server, iSCSI, AFF, ONTAP, MPIO, ALUA, NetApp Console 
+summary: SQL Server 2025 kann Datenbanken auf iSCSI-LUNs auf einem NetApp AFF System speichern, auf dem ONTAP ausgeführt wird. Beschrieben werden die Vorteile, Lösungskomponenten, Designprinzipien, wie Multipathing Datenbanken bei Pfad- und Controller-Ausfällen online hält und wie NetApp Console Backup and Recovery die Datenbanken schützt. 
+---
+= Informationen zu SQL Server 2025 auf NetApp AFF mit iSCSI-LUNs
+:allow-uri-read: 
+
+
+[role="lead"]
+SQL Server 2025 kann Datenbanken auf iSCSI-LUNs auf einem NetApp AFF System speichern, auf dem ONTAP ausgeführt wird. Beschrieben werden die Vorteile, Lösungskomponenten und Designprinzipien dieser Konfiguration, wie Multipathing Datenbanken bei Pfad- und Controller-Ausfällen online hält und wie NetApp Console Backup and Recovery die Datenbanken schützt.
+
+iSCSI überträgt SCSI-Blockbefehle über Standard-TCP/IP-Ethernet-Netzwerke. Für Windows und SQL Server ist eine iSCSI-LUN ein lokaler Datenträger: Sie wird initialisiert, partitioniert und mit NTFS formatiert und erhält einen Laufwerksbuchstaben oder einen Mountpunkt. Block Storage über iSCSI ist die am weitesten verbreitete und am besten bekannte Storage Option für SQL Server, und jede SQL Server Funktion sowie jedes Drittanbietertool unterstützen sie.
+
+ONTAP auf AFF All-Flash-Systemen implementiert iSCSI nativ. In Kombination mit SQL Server 2025, Windows Server 2025 und dem Microsoft MPIO-Framework bietet dies eine Storage-Architektur, die durchgängig niedrige Latenzzeiten bereitstellt, den Ausfall von Pfaden und Controllern toleriert und sich in den NetApp Datenschutz integriert.
+
+Informationen zum Einsetzen dieser Konfiguration finden Sie unter link:sql-iscsi-aff.html["Bereitstellung von SQL Server 2025 auf NetApp AFF mithilfe von iSCSI-LUNs"].
+
+
+
+[[benefits-of-sql-server-on-iscsi-with-netapp-ontap]]
+[[why]]
+== Vorteile von SQL Server auf iSCSI mit NetApp ONTAP
+
+[cols="1,3"]
+|===
+| Nutzen | Beschreibung 
+
+
+| Universelle Kompatibilität | Eine iSCSI LUN ist eine lokale NTFS-Festplatte für Windows. SQL Server, seine Tools und Drittanbieteranwendungen benötigen keine spezielle Konfiguration; lokale Dienstkonten und virtuelle Konten funktionieren wie gewohnt. 
+
+
+| Standard-Ethernet | iSCSI läuft über das bestehende Ethernet-Netzwerk im Datacenter. Es werden weder Fibre Channel Fabric, HBAs noch FC-Switches benötigt. 
+
+
+| Hochverfügbarkeit | MPIO mit ALUA nutzt mehrere Pfade zu beiden Knoten des HA-Paars. Pfadausfälle, ONTAP Takeover/Giveback und unterbrechungsfreie Upgrades werden vom Windows-Multipath-Treiber transparent verarbeitet. 
+
+
+| Performance | AFF Systeme bieten konstant niedrige Latenzzeiten. Mehrere iSCSI-Sitzungen verteilen die E/A auf mehrere Netzwerkpfade und Ports. 
+
+
+| Speichereffizienz | Thin Provisionierung, Inline-Deduplizierung, Komprimierung und Verdichtung reduzieren die von Datenbanken und Backups belegte physische Kapazität. SCSI UNMAP gibt freigegebene Blöcke an das Aggregat zurück. 
+
+
+| Integrierter Datenschutz | ONTAP Snapshots, SnapRestore, FlexClone und SnapMirror, orchestriert von NetApp Console Backup and Recovery, ermöglichen Backups in Sekundenschnelle, Wiederherstellungen in Minuten und sofortige Datenbankklone. 
+
+
+| Online-Kapazitätsmanagement | Volumes und LUNs können in ONTAP online vergrößert werden, und das NTFS-Volume kann in Windows online erweitert werden. 
+|===
+
+
+[[solution-components]]
+[[architecture]]
+== Lösungskomponenten
+
+Die Lösung besteht aus folgenden Komponenten:
+
+[cols="1,3"]
+|===
+| Komponente | Rolle 
+
+
+| Windows Server 2025 Host (`{host}`) | Läuft mit SQL Server 2025. Die SQL Server Binärdateien und Systemdatenbanken befinden sich auf der lokalen Festplatte `C:`; Benutzerdatenbanken, Protokolle, TempDB und Protokollsicherungen befinden sich auf vier NetApp LUNs. 
+
+
+| Microsoft iSCSI-Initiator und MPIO | Den Host mit den iSCSI LIFs der SVM verbinden und die Pfade zu jeder LUN zu einem Multipath-Datenträger zusammenführen. 
+
+
+| SQL Server 2025 | Datenbankmodul, Standardinstanz `MSSQLSERVER`. 
+
+
+| Active Directory und DNS | Domänenmitgliedschaft, Windows Authentifizierung von SQL Server Administratoren, Namensauflösung und Zeitsynchronisierung. 
+
+
+| NetApp AFF A50 HA Paar | Zwei Controller mit gemeinsam genutztem NVMe Storage. Fällt ein Controller aus oder wird er aufgerüstet, übernimmt der Partner seinen Storage, und die iSCSI-Pfade des Partners werden aktiv. 
+
+
+| SVM `{svm}` | Stellt dem iSCSI-Ziel pro Knoten zwei iSCSI-LIFs, die Initiatorgruppe `{igroup}` und die vier LUNs zur Verfügung, jeweils in einer eigenen FlexVol volume. 
+
+
+| NetApp Console Backup und Recovery | Erstellt applikationskonsistent Snapshot-Backups und bietet Wiederherstellungs-, Klon- und Replikationsfunktionen. 
+|===
+image::sql25_iscsi_bp_001.svg[Lösungsarchitektur: SQL Server 2025 auf iSCSI-LUNs mit NetApp AFF]
+
+
+
+[[design-principles]]
+[[design]]
+== Gestaltungsprinzipien
+
+Das Design folgt den Best Practices von NetApp für SQL Server auf ONTAP SAN Storage:
+
+* *Separate LUNs und Volumes pro Dateityp.* Daten, Transaktionsprotokolle, TempDB und Protokollsicherungen liegen auf separaten LUNs, und jede LUN befindet sich in ihrer eigenen FlexVol volume. Jedes Volume kann über eigene Einstellungen für Größe, QoS, Effizienz, Snapshots und Replikation verfügen, und ein Snapshot des Datenvolumes enthält niemals TempDB.
+* *Die Volumes sind auf beide Knoten verteilt.* Daten- und Backup-Volumes befinden sich auf Knoten 1, Protokoll- und TempDB-Volumes auf Knoten 2, sodass beide Controller sinnvolle Arbeit leisten.
+* *Zwei iSCSI LIFs pro Knoten.* Jede LUN ist über vier Pfade erreichbar: zwei aktive/optimierte Pfade über den Knoten, dem die LUN gehört, und zwei aktive/nicht optimierte Pfade über den HA-Partner.
+* *MPIO mit Microsoft DSM.* NetApp Windows Host Utilities legt die empfohlenen Timeouts und die Multipath-Richtlinie fest.
+* *Thin Provisionierung und keine geplanten ONTAP Snapshots auf den Datenbankvolumes.* Backups müssen applikationskonsistent sein; sie werden von NetApp Console Backup and Recovery erstellt.
+* *Dediziertes iSCSI-Netzwerk.* Für iSCSI eignen sich dedizierte NICs oder VLANs mit durchgängig konfigurierten Jumbo-Frames (MTU 9000).
+
+
+image::sql25_iscsi_bp_002.svg[Storage-Layout: SQL Server-Dateien auf Windows-Volumes, LUNs, Volumes und Knoten]
+
+
+
+[[how-multipathing-protects-sql-server]]
+[[mpio]]
+== Wie Multipathing SQL Server schützt
+
+ONTAP verwendet Asymmetric Logical Unit Access (ALUA), um dem Host mitzuteilen, welche Pfade die besten sind. Die Pfade über die iSCSI-LIFs des Knotens, dem die LUN gehört, werden als *aktiv/optimiert* gemeldet. Die Pfade über die LIFs des HA-Partners werden als *aktiv/nicht optimiert* gemeldet; über diese Pfade gesendete E/A-Anfragen werden über den Cluster-Interconnect weitergeleitet. Der Microsoft DSM sendet E/A-Anfragen nur über die optimierten Pfade (Richtlinie *Round Robin with Subset*) und hält die nicht optimierten Pfade als Standby-Pfade bereit.
+
+Wenn ein Pfad ausfällt, setzt MPIO die Verarbeitung über den verbleibenden optimierten Pfad fort. Fällt der zuständige Knoten aus oder wird er für ein Upgrade übernommen, übernimmt der Partnerknoten das Aggregat, ONTAP meldet die neuen ALUA-Zustände, und MPIO verlagert die E/A auf die neuen optimierten Pfade. SQL Server erkennt lediglich eine kurze E/A-Pause; die Datenbanken bleiben online.
+
+image::sql25_iscsi_bp_003.svg[iSCSI Multipathing mit MPIO und ALUA]
+
+
+
+[[data-protection-with-netapp-console-backup-and-recovery]]
+[[console]]
+== Datensicherung mit NetApp Console Backup and Recovery
+
+*NetApp Console* ist die einheitliche Kontrollebene von NetApp für Storage und Datenservices. Der Service *Backup and Recovery* schützt Microsoft SQL Server-Datenbanken auf ONTAP mit applikationskonsistenten Snapshots und kann sie auf ein sekundäres ONTAP System und in Objekt-Storage replizieren.
+
+
+
+[[architecture]]
+[[console-architecture]]
+=== Architektur
+
+Die Lösung besteht aus folgenden Komponenten:
+
+* *NetApp Console* (SaaS): Weboberfläche für Inventar, Richtlinien, Zeitpläne, Wiederherstellung und Klonen, Jobüberwachung, rollenbasierte Zugriffssteuerung und Benachrichtigungen.
+* *Console agent*: eine Linux-VM in Ihrem Datacenter, die die Console mit dem ONTAP Cluster und dem SQL Server Host verbindet. Der Console agent kommuniziert mit der Console ausschließlich über ausgehendes HTTPS.
+* *SnapCenter Plug-in für SQL Server und Windows*: Die Bereitstellung auf dem SQL Server Host erfolgt durch die Console. Es erkennt die Instanz und ihre Datenbanken, ordnet die Datenbankdateien den NetApp LUNs zu und versetzt SQL Server während einer Sicherung in einen Ruhezustand. Das Plug-in lauscht auf Port 8145 und erfordert auf dem Host PowerShell 7 und .NET.
+* *ONTAP*: erstellt die Snapshots der Volumes `sql_iscsi_1_data` und `sql_iscsi_1_log`, und führt Operationen mit SnapRestore und FlexClone durch. SQL Server selbst greift weiterhin über iSCSI auf seine Dateien zu.
+
+
+image::sql25_iscsi_bp_056.svg[NetApp Console Backup- und Recovery-Architektur für SQL Server auf iSCSI-LUNs]
+
+
+
+[[how-a-local-snapshot-backup-works]]
+[[console-workflow]]
+=== So funktioniert eine lokale Snapshot-Sicherung
+
+. NetApp Console startet den Sicherungsauftrag, entweder gemäß der Datensicherungsstrategie oder bei Bedarf.
+. Das Plug-in nutzt die SQL Server VDI/VSS-Schnittstelle, um die Schreib-I/O der Datenbanken für einige Sekunden einzufrieren.
+. ONTAP erstellt konsistente Snapshots der Daten- und Protokollvolumes (`sql_iscsi_1_data`, `sql_iscsi_1_log`). Es werden keine Daten kopiert.
+. Die Datenbanken werden wieder aufgenommen, und die Sicherung wird im SQL Server-Sicherungsverlauf (`msdb`) und im Console Katalog zusammen mit ihrer Aufbewahrungsdauer erfasst.
+. Transaktionsprotokollsicherungen werden in kurzen Abständen (z. B. alle 15 Minuten) ausgeführt, um `H:\backup` und eine zeitpunktgenaue Wiederherstellung zu ermöglichen.
+. Optional: Die Snapshots werden mit SnapMirror auf ein sekundäres ONTAP System repliziert oder in Object Storage gesichert, um eine 3-2-1-Backup-Strategie umzusetzen.
+
+
+image::sql25_iscsi_bp_057.svg[NetApp Console lokaler Backup-Workflow für SQL Server]
+
+
+
+[[benefits-of-netapp-console-for-sql-server]]
+[[console-benefits]]
+=== Vorteile der NetApp Console für SQL Server
+
+* *Backups in Sekundenschnelle.* Ein Snapshot-Backup dauert bei Datenbanken jeder Größe nur Sekunden; Sicherungsfenster verschwinden praktisch.
+* *Keine Auswirkungen auf die Performance.* Es werden weder auf dem Host noch über das Netzwerk Daten gelesen oder kopiert. SQL Server wird nur für wenige Sekunden angehalten.
+* *Wiederherstellung in wenigen Minuten.* Die Datenbankdateien werden nahezu sofort aus dem Snapshot wiederhergestellt. In Kombination mit Protokollsicherungen können Sie eine Wiederherstellung zu jedem beliebigen Zeitpunkt durchführen.
+* *Speicherplatzsparende Backups.* Snapshots speichern nur geänderte Blöcke, sodass Sie viele Wiederherstellungspunkte mit geringem zusätzlichem Speicherplatz behalten können.
+* *Sofortklone.* FlexClone erstellt innerhalb von Sekunden beschreibbare Kopien von Produktionsdatenbanken für Entwicklung, Tests, Berichterstellung oder Fehlerbehebung. Sie benötigen keine zusätzliche Kapazität, solange sich die Daten nicht ändern.
+* *3-2-1-Schutz durch eine einzige Richtlinie.* Lokale Snapshots, die Replikation auf ein sekundäres ONTAP System und das Backup in Objekt-Storage (z. B. NetApp StorageGRID oder eine Public Cloud) sind in derselben Datensicherungsstrategie konfiguriert.
+* *Keine Backup-Infrastruktur erforderlich.* Die Kontrollebene wird als Dienst bereitgestellt; nur der schlanke Console Agent wird lokal ausgeführt. Es gibt keinen Backup-Server und keine Katalogdatenbank, die installiert, gepatcht oder geschützt werden muss.
+* *Zentrale Verwaltung.* Inventar, Richtlinien, Zeitpläne, Aufbewahrung, rollenbasierte Zugriffssteuerung, Auftragsüberwachung und Benachrichtigungen für alle SQL Server-Hosts befinden sich in einer Weboberfläche mit REST-APIs zur Automatisierung.
+* *Reibungsloser Übergang von SnapCenter.* Bestehende SnapCenter Konfigurationen können in NetApp Console importiert werden.
+* *Ransomware-Resilienz.* ONTAP Snapshots sind schreibgeschützt, aber privilegierte Benutzer können entsperrte Snapshots löschen. Zum Schutz vor Löschung kann in ONTAP die manipulationssichere Snapshot-Sperre mit einer Aufbewahrungsfrist verwendet und, sofern unterstützt, mit Autonomous Ransomware Protection kombiniert werden.
+

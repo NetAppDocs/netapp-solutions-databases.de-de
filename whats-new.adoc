@@ -15,10 +15,16 @@ Erfahren Sie, was es Neues bei Datenbanklösungen gibt.
 
 
 
+= 23. November 2026
+
+Das SQL Server iSCSI-Dokument wurde hinzugefügt: link:https://docs.netapp.com/us-en/netapp-solutions-databases/mssql/sql-iscsi-aff-overview.html["Microsoft SQL Server 2025 auf Windows Server 2025 mit iSCSI auf NetApp AFF"^]
+
+
+
 [[9-november-2026]]
 == 9. November 2026
 
-Das SQL Server SMB-Dokument wurde hinzugefügt: link:https://docs.netapp.com/us-en/mssql/sql-smb3-aff.html["Bereitstellung von Microsoft SQL Server 2025 auf Windows Server 2025 mithilfe von SMB 3 Freigaben mit kontinuierlicher Verfügbarkeit auf NetApp AFF"^]
+Das SQL Server SMB-Dokument wurde hinzugefügt: link:https://docs.netapp.com/us-en/netapp-solutions-databases/mssql/sql-smb3-aff-overview.html["Microsoft SQL Server 2025 auf Windows Server 2025 mit kontinuierlich verfügbaren SMB 3 Freigaben auf NetApp AFF"^]
 
 
 

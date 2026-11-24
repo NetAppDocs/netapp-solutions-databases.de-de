@@ -51,7 +51,7 @@ Informationen zum Einsetzen dieser Konfiguration finden Sie unter link:sql-smb3-
 | Speichereffizienz | Inline-Deduplizierung, Komprimierung und Verdichtung reduzieren zusammen mit Thin Provisioning die von Datenbanken und Backups genutzte physische Kapazität. 
 
 
-| Integrierter Datenschutz | ONTAP Snapshots, SnapRestore, FlexClone und SnapMirror, orchestriert von NetApp SnapCenter, ermöglichen Backups in Sekunden, Wiederherstellungen in Minuten und sofortige Datenbankklone. 
+| Integrierter Datenschutz | ONTAP Snapshots, SnapRestore, FlexClone und SnapMirror, orchestriert von  https://docs.netapp.com/us-en/snapcenter/protect-scsql/concept_snapcenter_plug_in_for_microsoft_sql_server_overview.html["NetApp SnapCenter"], bieten Backups in Sekundenschnelle, Wiederherstellungen in Minuten und sofortige Datenbankklone. 
 
 
 | Flexibilität | Datenbanken lassen sich zwischen Hosts verschieben, indem sie einfach an einen anderen Server angebunden werden, ohne das Storage neu zuzuordnen. Dieselbe SVM kann auch Home-Verzeichnisse, Dateidienste oder andere Anwendungen bereitstellen. 
